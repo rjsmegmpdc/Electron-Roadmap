@@ -1,0 +1,11 @@
+key,value
+theme,light
+defaultLane,Platform
+defaultFinancialTreatment,CAPEX
+autoSaveInterval,30000
+showCompletedTasks,true
+defaultEffortHours,40
+dateFormat,DD-MM-YYYY
+currencySymbol,$
+workHoursPerDay,8
+fiscalYearStart,01-07

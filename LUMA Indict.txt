@@ -1,0 +1,15 @@
+*LUMA Indict
+
+-Splash page for loading screen.
+
+
+Create a Brand and set of imagery for LUMA Induct
+
+
+
+
+Create a progress bar above all the Scenarios to show how much more is to be completed.
+
+I want to track completion or partial completion of each item.
+
+I want a governance and oversight data activity for reading into another app called LUMA Manager. All data is in JSON and stored for collection in the SharePoint document library. For the demo create a csv file for the purposes of demonstrating the write back.

@@ -1,0 +1,279 @@
+# Project Coordinator - Implementation Status
+
+**Last Updated:** 2025-11-08 02:15 UTC  
+**Status:** Phase 1-2 Complete ✅ - CSV Import Ready!
+
+---
+
+## ✅ Completed
+
+### Phase 1: Database Schema (Week 1) - 100% Complete
+- ✅ **12 New Tables Added** to `app/main/db.ts`:
+  - `raw_timesheets` - SAP CATS timesheet data
+  - `raw_actuals` - SAP FI actuals data
+  - `raw_labour_rates` - Fiscal year labour rates
+  - `financial_resources` - Resource master data (FTE/SOW/External Squad)
+  - `resource_commitments` - "I can commit X hours" capacity tracking
+  - `feature_allocations` - Resource → Feature assignments
+  - `financial_workstreams` - Project workstream/WBSE mapping
+  - `project_financial_detail` - Project finance codes (Sentinel, WBSE, IO, SAP)
+  - `ado_feature_mapping` - ADO work item sync with milestones
+  - `variance_thresholds` - Adjustable variance thresholds
+  - `variance_alerts` - Multi-dimensional variance alerts
+  - `finance_ledger_entries` - P&L ledger by period
+
+- ✅ **All Indexes Created** - 36 performance indexes added
+- ✅ **Schema Version 6** - Migration added to db.ts
+- ✅ **TypeScript Types** - Complete type definitions in `app/main/types/coordinator.ts`
+
+### Phase 2: CSV Import Services (Week 2) - 100% Complete
+
+#### Utilities
+- ✅ `app/main/utils/dateParser.ts` - DD-MM-YYYY date parsing & validation
+- ✅ `app/main/utils/csvParser.ts` - Generic CSV parser with PapaParse
+
+#### Import Services
+- ✅ `app/main/services/coordinator/TimesheetImportService.ts`
+  - Full validation (date format, hours, personnel number)
+  - Transaction-based bulk insert
+  - Row-by-row error reporting
+  - Processed flag tracking
+
+- ✅ `app/main/services/coordinator/ActualsImportService.ts`
+  - Amount validation
+  - Automatic categorization (software/hardware/contractor by cost element)
+  - Cost element validation
+
+- ✅ `app/main/services/coordinator/LabourRatesImportService.ts`
+  - NZD amount parsing (handles $, commas)
+  - Fiscal year replacement (replaces existing rates)
+  - Daily/hourly rate validation (8x check)
+
+#### IPC Integration
+- ✅ `app/main/ipc/coordinatorHandlers.ts` - IPC handlers for all 3 import types
+- ✅ Registered in `app/main/main.ts` - Wired into main process
+
+#### UI
+- ✅ `app/renderer/components/ImportManager.tsx` - Complete import UI
+  - File picker for CSV files
+  - Import type selector (Timesheets/Actuals/Labour Rates)
+  - Fiscal year input for labour rates
+  - Success/failure results display
+  - Error list with row numbers and details
+  - Real-time import progress
+
+---
+
+## 🎯 How to Use (Right Now!)
+
+### 1. Start the Application
+```powershell
+npm run dev
+```
+
+### 2. Access the Import Manager
+Currently, you need to add the `<ImportManager />` component to your app. You can:
+
+**Option A: Add to existing layout**
+Edit `app/renderer/components/App.tsx` or your main layout to include:
+```tsx
+import { ImportManager } from './components/ImportManager';
+
+// Then render it in your UI:
+<ImportManager />
+```
+
+**Option B: Create a new route** (if you have routing):
+Add a new route for `/coordinator/import` that renders `<ImportManager />`
+
+### 3. Import Your CSV Files
+
+The Import Manager supports 3 file types:
+
+#### **Timesheets (SAP CATS)**
+Required columns:
+- Stream
+- Month
+- Name of employee or applicant
+- Personnel Number
+- Date (DD-MM-YYYY format)
+- Activity Type (N4_CAP, N4_OPX, etc.)
+- General receiver (WBSE)
+- Number (unit) (Hours)
+
+#### **Actuals (SAP FI)**
+Required columns:
+- Month
+- Posting Date
+- Cost Element
+- WBS element
+- Value in Obj. Crcy
+
+After import, actuals are automatically categorized:
+- Software: Cost Element starts with "115"
+- Hardware: Cost Element starts with "116"
+- Contractor: Personnel Number != "0"
+
+#### **Labour Rates**
+Required columns:
+- Band
+- Activity Type
+- Hourly Rate (supports $, commas: "$92.63" or "92.63")
+- Daily Rate
+
+**Important:** When importing labour rates, specify the Fiscal Year (e.g., "FY26"). This will replace all existing rates for that fiscal year.
+
+### 4. View Import Results
+
+After importing, you'll see:
+- **Processed:** Total rows in CSV
+- **Imported:** Successfully imported records
+- **Failed:** Rows with errors
+- **Error List:** First 10 errors with row numbers, fields, and messages
+
+---
+
+## 📊 What's Stored in the Database
+
+After importing, your data is stored in SQLite tables:
+
+```sql
+-- View imported timesheets
+SELECT * FROM raw_timesheets LIMIT 10;
+
+-- View imported actuals
+SELECT * FROM raw_actuals LIMIT 10;
+
+-- View labour rates
+SELECT * FROM raw_labour_rates WHERE fiscal_year = 'FY26';
+
+-- Check import counts
+SELECT COUNT(*) as timesheet_count FROM raw_timesheets;
+SELECT COUNT(*) as actuals_count FROM raw_actuals;
+SELECT COUNT(*) as rates_count FROM raw_labour_rates;
+```
+
+Database location:
+```
+Windows: C:\Users\<username>\AppData\Roaming\RoadmapTool\roadmap.db
+```
+
+---
+
+## 🔄 Next Steps (Remaining Implementation)
+
+### Phase 3: Resource Management (Week 3)
+- ResourceCommitmentService - "I can commit X hours per day/week/fortnight"
+- AllocationService - Link resources to features with reconciliation
+- Working days calculation (integrates with Calendar module)
+- Commitment entry UI
+
+### Phase 4: ADO Integration (Week 4)
+- AdoSyncService - Sync ADO work items to allocations
+- External squad milestone tracking (5 milestone dates)
+- Resource allocation from ADO assigned_to
+- Periodic sync scheduler
+
+### Phase 5: Variance Detection (Week 5)
+- VarianceDetectionService with 5 detection types:
+  1. Commitment variance (resource capacity)
+  2. Effort variance (feature allocations)
+  3. Cost variance (project budget)
+  4. Schedule variance (ADO milestones)
+  5. Unauthorized time detection
+- Adjustable thresholds (resource/project/global)
+- Alert acknowledgement workflow
+
+### Phase 6: Finance & Reporting (Week 6)
+- FinanceLedgerService - P&L calculation
+- Ledger entry generation from allocations/actuals
+- Project Finance Tab UI
+
+### Phase 7-8: Dashboards & Testing (Weeks 7-8)
+- Capacity Dashboard (visual capacity cards)
+- Variance Alert Dashboard (filterable alerts)
+- Project Finance Tab (budget overview, ledger table)
+- E2E tests
+- Unit tests
+
+---
+
+## 🧪 Testing the Import
+
+### Sample Timesheet CSV
+Create `test-timesheets.csv`:
+```csv
+Stream,Month,Name of employee or applicant,Personnel Number,Date,Activity Type,General receiver,Number (unit)
+OneIntune,October,John Smith,19507812,31-10-2025,N4_CAP,N.93003271.004,8.000
+OneIntune,October,Jane Doe,19507813,31-10-2025,N4_CAP,N.93003271.004,6.000
+```
+
+### Sample Labour Rates CSV
+Create `test-rates.csv`:
+```csv
+Band,Activity Type,Hourly Rate,Daily Rate
+CAPEX BAND H (N4_CAP),N4_CAP,$92.63,$741.01
+CAPEX BAND J (N5_CAP),N5_CAP,$103.45,$827.60
+```
+
+Import these files via the Import Manager to test the functionality!
+
+---
+
+## 📁 Files Created
+
+### Backend
+- `app/main/types/coordinator.ts` (325 lines)
+- `app/main/utils/dateParser.ts` (53 lines)
+- `app/main/utils/csvParser.ts` (92 lines)
+- `app/main/services/coordinator/TimesheetImportService.ts` (202 lines)
+- `app/main/services/coordinator/ActualsImportService.ts` (156 lines)
+- `app/main/services/coordinator/LabourRatesImportService.ts` (134 lines)
+- `app/main/ipc/coordinatorHandlers.ts` (86 lines)
+
+### Frontend
+- `app/renderer/components/ImportManager.tsx` (226 lines)
+
+### Database
+- `app/main/db.ts` - Modified with 12 new tables + 36 indexes
+
+### Documentation
+- `docs/PROJECT_COORDINATOR_IMPLEMENTATION_PLAN.md` (Part 1)
+- `docs/PROJECT_COORDINATOR_IMPLEMENTATION_PLAN_PART2.md` (Part 2)
+- `docs/PROJECT_COORDINATOR_STATUS.md` (This file)
+
+---
+
+## 🚀 Build Status
+
+```
+✅ TypeScript compilation: PASSED
+✅ Vite build: PASSED
+✅ All services created: PASSED
+✅ IPC handlers registered: PASSED
+✅ Database schema version: 6
+```
+
+Ready to import CSV files!
+
+---
+
+## 💡 Tips
+
+1. **Large CSV Files:** The import uses database transactions for atomic operations. If import fails, nothing is saved (all-or-nothing).
+
+2. **Error Handling:** Errors are collected row-by-row. Even if some rows fail, successful rows are still imported.
+
+3. **Duplicate Imports:** Currently, re-importing the same CSV will create duplicate records. For labour rates, it replaces all rates for the fiscal year.
+
+4. **Date Format:** Dates MUST be DD-MM-YYYY format (e.g., "31-10-2025"). ISO format (2025-10-31) will be rejected.
+
+5. **Labour Rates:** When importing new rates, ALL existing rates for that fiscal year are deleted and replaced.
+
+---
+
+## 🎉 Success!
+
+Phase 1-2 complete! You now have a fully functional CSV import system for SAP CATS timesheets, SAP FI actuals, and labour rates. The data is validated, stored in SQLite, and ready for the next phases of resource management, variance detection, and financial reporting.
+
+**Next:** Test the import with your actual SAP export files and we'll continue with Phase 3 (Resource Management).

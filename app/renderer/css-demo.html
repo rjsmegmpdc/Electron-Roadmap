@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Styles Comparison - Roadmap Electron</title>
+    <style>
+        /* Base reset and layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .style-column {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 100vh;
+        }
+
+        .style-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .style-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .style-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .component-section {
+            margin-bottom: 30px;
+        }
+
+        .component-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .component-group {
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        
+        <!-- UNIFIED STYLES COLUMN -->
+        <div class="style-column">
+            <div class="style-header">
+                <h2>Unified Styles</h2>
+                <p>Modern OneNZ branded system with CSS variables</p>
+            </div>
+
+            <!-- Load Unified Styles -->
+            <link rel="stylesheet" href="styles/unified-styles.css">
+
+            <div class="component-section">
+                <h3>Colors & Branding</h3>
+                <div class="component-group">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <div style="width: 50px; height: 30px; background: var(--color-primary); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-secondary); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-success); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-warning); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-error); border-radius: 4px;"></div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 12px;">OneNZ Green Primary (#00A45F)</p>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Buttons</h3>
+                <div class="component-group">
+                    <button class="btn primary" style="margin-right: 8px; margin-bottom: 8px;">Primary</button>
+                    <button class="btn secondary" style="margin-right: 8px; margin-bottom: 8px;">Secondary</button>
+                    <button class="btn success" style="margin-right: 8px; margin-bottom: 8px;">Success</button>
+                    <button class="btn warning" style="margin-right: 8px; margin-bottom: 8px;">Warning</button>
+                    <button class="btn danger" style="margin-right: 8px; margin-bottom: 8px;">Danger</button>
+                </div>
+                <div class="component-group">
+                    <button class="btn-outline" style="margin-right: 8px;">Outline</button>
+                    <button class="btn ghost" style="margin-right: 8px;">Ghost</button>
+                    <button class="btn link">Link</button>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Form Elements</h3>
+                <div class="component-group">
+                    <div class="form-group">
+                        <label class="label">Input Label</label>
+                        <input type="text" class="input" placeholder="Enter text here">
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Select Label</label>
+                        <select class="select">
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Textarea</label>
+                        <textarea class="textarea" placeholder="Enter description"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Status Badges</h3>
+                <div class="component-group">
+                    <span class="status-badge completed" style="margin-right: 8px;">Completed</span>
+                    <span class="status-badge running" style="margin-right: 8px;">Running</span>
+                    <span class="status-badge idle" style="margin-right: 8px;">Idle</span>
+                    <span class="badge-primary" style="margin-right: 8px; padding: 4px 8px; border-radius: 12px; color: white; font-size: 12px;">Primary</span>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Cards</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Card Title</h4>
+                        <p class="card-subtitle">Card subtitle</p>
+                    </div>
+                    <div class="card-body">
+                        <p>This is a sample card with unified styling. It uses CSS variables for consistent theming.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn primary">Action</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Navigation</h3>
+                <nav class="nav-list">
+                    <div class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <span class="nav-icon">📊</span>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">📝</span>
+                            <span class="nav-text">Projects</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">⚙️</span>
+                            <span class="nav-text">Settings</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="component-section">
+                <h3>Progress & Loading</h3>
+                <div class="component-group">
+                    <div class="progress-bar" style="margin-bottom: 10px;">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                    <div class="loading-spinner" style="margin: 10px 0;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEGACY VARIABLES COLUMN -->
+        <div class="style-column">
+            <div class="style-header">
+                <h2>Legacy Variables</h2>
+                <p>Dark theme CSS variables system</p>
+            </div>
+
+            <!-- Load Legacy Variables -->
+            <link rel="stylesheet" href="styles/legacy-backup/variables.css">
+            <style>
+                /* Apply legacy variables styling to this column */
+                .style-column:nth-child(2) {
+                    background: var(--bg-primary, #1f2937);
+                    color: var(--text-primary, #f9fafb);
+                }
+                .style-column:nth-child(2) .style-header {
+                    border-bottom-color: var(--border-color, #6b7280);
+                }
+                .style-column:nth-child(2) .style-header h2 {
+                    color: var(--text-primary, #f9fafb);
+                }
+                .style-column:nth-child(2) .component-section h3 {
+                    color: var(--text-primary, #f9fafb);
+                    border-bottom-color: var(--border-color, #6b7280);
+                }
+
+                /* Legacy buttons */
+                .legacy-btn {
+                    padding: 8px 16px;
+                    border: 2px solid transparent;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.2s ease;
+                    margin-right: 8px;
+                    margin-bottom: 8px;
+                }
+                .legacy-btn-primary {
+                    background: var(--color-primary, #4f46e5);
+                    color: white;
+                    border-color: var(--color-primary, #4f46e5);
+                }
+                .legacy-btn-secondary {
+                    background: var(--bg-secondary, #374151);
+                    color: var(--text-primary, #f9fafb);
+                    border: 2px solid var(--border-color, #6b7280);
+                }
+                .legacy-btn-success {
+                    background: var(--color-success, #10b981);
+                    color: white;
+                    border-color: var(--color-success, #10b981);
+                }
+                .legacy-btn-warning {
+                    background: var(--color-warning, #f59e0b);
+                    color: white;
+                    border-color: var(--color-warning, #f59e0b);
+                }
+                .legacy-btn-error {
+                    background: var(--color-error, #ef4444);
+                    color: white;
+                    border-color: var(--color-error, #ef4444);
+                }
+
+                /* Legacy form elements */
+                .legacy-input {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 2px solid var(--border-color, #6b7280);
+                    border-radius: 6px;
+                    background: var(--bg-secondary, #374151);
+                    color: var(--text-primary, #f9fafb);
+                    font-size: 14px;
+                    margin-bottom: 10px;
+                }
+                .legacy-select {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 2px solid var(--border-color, #6b7280);
+                    border-radius: 6px;
+                    background: var(--bg-secondary, #374151);
+                    color: var(--text-primary, #f9fafb);
+                    font-size: 14px;
+                    margin-bottom: 10px;
+                }
+                .legacy-textarea {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 2px solid var(--border-color, #6b7280);
+                    border-radius: 6px;
+                    background: var(--bg-secondary, #374151);
+                    color: var(--text-primary, #f9fafb);
+                    font-size: 14px;
+                    min-height: 80px;
+                    resize: vertical;
+                }
+
+                /* Legacy card */
+                .legacy-card {
+                    background: var(--bg-secondary, #374151);
+                    border: 1px solid var(--border-color, #6b7280);
+                    border-radius: 8px;
+                    padding: 20px;
+                    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.07));
+                }
+                .legacy-card h4 {
+                    color: var(--text-primary, #f9fafb);
+                    margin-bottom: 8px;
+                }
+                .legacy-card p {
+                    color: var(--text-secondary, #9ca3af);
+                    margin-bottom: 16px;
+                }
+
+                /* Legacy badges */
+                .legacy-badge {
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    margin-right: 8px;
+                }
+                .legacy-badge-primary { background: var(--color-primary, #4f46e5); color: white; }
+                .legacy-badge-success { background: var(--color-success, #10b981); color: white; }
+                .legacy-badge-warning { background: var(--color-warning, #f59e0b); color: white; }
+                .legacy-badge-error { background: var(--color-error, #ef4444); color: white; }
+
+                /* Legacy nav */
+                .legacy-nav {
+                    list-style: none;
+                    padding: 0;
+                }
+                .legacy-nav-item {
+                    margin-bottom: 4px;
+                }
+                .legacy-nav-link {
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 12px;
+                    background: var(--bg-secondary, #374151);
+                    color: var(--text-primary, #f9fafb);
+                    text-decoration: none;
+                    border-radius: 6px;
+                    border: 1px solid var(--border-color, #6b7280);
+                }
+                .legacy-nav-link.active {
+                    background: var(--color-primary, #4f46e5);
+                    border-color: var(--color-primary, #4f46e5);
+                }
+            </style>
+
+            <div class="component-section">
+                <h3>Colors & Branding</h3>
+                <div class="component-group">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <div style="width: 50px; height: 30px; background: var(--color-primary, #4f46e5); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-secondary, #6b7280); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-success, #10b981); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-warning, #f59e0b); border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: var(--color-error, #ef4444); border-radius: 4px;"></div>
+                    </div>
+                    <p style="color: var(--text-secondary, #9ca3af); font-size: 12px;">Indigo Primary (#4f46e5)</p>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Buttons</h3>
+                <div class="component-group">
+                    <button class="legacy-btn legacy-btn-primary">Primary</button>
+                    <button class="legacy-btn legacy-btn-secondary">Secondary</button>
+                    <button class="legacy-btn legacy-btn-success">Success</button>
+                    <button class="legacy-btn legacy-btn-warning">Warning</button>
+                    <button class="legacy-btn legacy-btn-error">Error</button>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Form Elements</h3>
+                <div class="component-group">
+                    <label style="color: var(--text-primary, #f9fafb); display: block; margin-bottom: 4px;">Input Label</label>
+                    <input type="text" class="legacy-input" placeholder="Enter text here">
+                    
+                    <label style="color: var(--text-primary, #f9fafb); display: block; margin-bottom: 4px;">Select Label</label>
+                    <select class="legacy-select">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                    
+                    <label style="color: var(--text-primary, #f9fafb); display: block; margin-bottom: 4px;">Textarea</label>
+                    <textarea class="legacy-textarea" placeholder="Enter description"></textarea>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Status Badges</h3>
+                <div class="component-group">
+                    <span class="legacy-badge legacy-badge-success">Completed</span>
+                    <span class="legacy-badge legacy-badge-warning">Running</span>
+                    <span class="legacy-badge" style="background: var(--bg-tertiary, #4b5563); color: var(--text-secondary, #9ca3af);">Idle</span>
+                    <span class="legacy-badge legacy-badge-primary">Primary</span>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Cards</h3>
+                <div class="legacy-card">
+                    <h4>Card Title</h4>
+                    <p>Card subtitle</p>
+                    <p>This is a sample card with legacy variable styling. Uses indigo as primary color with dark theme.</p>
+                    <button class="legacy-btn legacy-btn-primary">Action</button>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Navigation</h3>
+                <ul class="legacy-nav">
+                    <li class="legacy-nav-item">
+                        <a href="#" class="legacy-nav-link active">
+                            <span style="margin-right: 8px;">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="legacy-nav-item">
+                        <a href="#" class="legacy-nav-link">
+                            <span style="margin-right: 8px;">📝</span>
+                            Projects
+                        </a>
+                    </li>
+                    <li class="legacy-nav-item">
+                        <a href="#" class="legacy-nav-link">
+                            <span style="margin-right: 8px;">⚙️</span>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- LEGACY GLOBALS COLUMN -->
+        <div class="style-column">
+            <div class="style-header">
+                <h2>Legacy Globals</h2>
+                <p>Traditional hardcoded CSS approach</p>
+            </div>
+
+            <!-- Load Legacy Globals -->
+            <link rel="stylesheet" href="styles/legacy-backup/globals.css">
+            <style>
+                /* Legacy globals styling */
+                .globals-btn {
+                    padding: 8px 16px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    background: white;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: all 0.2s ease;
+                    margin-right: 8px;
+                    margin-bottom: 8px;
+                    font-family: inherit;
+                }
+                .globals-btn:hover {
+                    background: #f5f5f5;
+                    border-color: #bbb;
+                }
+                .globals-btn.primary {
+                    background: #2196f3;
+                    color: white;
+                    border-color: #2196f3;
+                }
+                .globals-btn.primary:hover {
+                    background: #1976d2;
+                    border-color: #1976d2;
+                }
+                .globals-btn.secondary {
+                    background: #6c757d;
+                    color: white;
+                    border-color: #6c757d;
+                }
+                .globals-btn.secondary:hover {
+                    background: #545b62;
+                    border-color: #545b62;
+                }
+                .globals-btn.success {
+                    background: #28a745;
+                    color: white;
+                    border-color: #28a745;
+                }
+                .globals-btn.success:hover {
+                    background: #218838;
+                    border-color: #218838;
+                }
+                .globals-btn.warning {
+                    background: #ffc107;
+                    color: #212529;
+                    border-color: #ffc107;
+                }
+                .globals-btn.warning:hover {
+                    background: #e0a800;
+                    border-color: #e0a800;
+                }
+                .globals-btn.danger {
+                    background: #dc3545;
+                    color: white;
+                    border-color: #dc3545;
+                }
+                .globals-btn.danger:hover {
+                    background: #c82333;
+                    border-color: #c82333;
+                }
+
+                /* Legacy form elements */
+                .globals-input {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    background-color: white;
+                    color: #333;
+                    margin-bottom: 16px;
+                }
+                .globals-input:focus {
+                    outline: none;
+                    border-color: #2196f3;
+                    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+                }
+                .globals-select {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    background: white;
+                    color: #333;
+                    margin-bottom: 16px;
+                }
+                .globals-textarea {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    background-color: white;
+                    color: #333;
+                    min-height: 80px;
+                    resize: vertical;
+                }
+
+                /* Legacy card */
+                .globals-card {
+                    background: white;
+                    border-radius: 8px;
+                    padding: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    border: 1px solid #e0e0e0;
+                }
+                .globals-card h4 {
+                    margin: 0 0 8px 0;
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #333;
+                }
+                .globals-card p {
+                    margin: 4px 0 16px 0;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                /* Legacy status badges */
+                .status-planned { background-color: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; }
+                .status-in-progress { background-color: #fff3e0; color: #f57c00; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; }
+                .status-done { background-color: #e8f5e8; color: #388e3c; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; }
+                .status-blocked { background-color: #ffebee; color: #d32f2f; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; }
+
+                /* Legacy navigation */
+                .globals-nav {
+                    list-style: none;
+                    padding: 0;
+                }
+                .globals-nav-item {
+                    margin-bottom: 8px;
+                }
+                .globals-nav-link {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    background: white;
+                    color: #333;
+                    text-decoration: none;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 4px;
+                    transition: all 0.2s ease;
+                }
+                .globals-nav-link:hover {
+                    background: #f5f5f5;
+                    border-color: #bbb;
+                }
+                .globals-nav-link.active {
+                    background: #2196f3;
+                    color: white;
+                    border-color: #2196f3;
+                }
+            </style>
+
+            <div class="component-section">
+                <h3>Colors & Branding</h3>
+                <div class="component-group">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                        <div style="width: 50px; height: 30px; background: #2196f3; border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: #6c757d; border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: #28a745; border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: #ffc107; border-radius: 4px;"></div>
+                        <div style="width: 50px; height: 30px; background: #dc3545; border-radius: 4px;"></div>
+                    </div>
+                    <p style="color: #666; font-size: 12px;">Material Blue Primary (#2196f3)</p>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Buttons</h3>
+                <div class="component-group">
+                    <button class="globals-btn primary">Primary</button>
+                    <button class="globals-btn secondary">Secondary</button>
+                    <button class="globals-btn success">Success</button>
+                    <button class="globals-btn warning">Warning</button>
+                    <button class="globals-btn danger">Danger</button>
+                </div>
+                <div class="component-group">
+                    <button class="globals-btn">Default</button>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Form Elements</h3>
+                <div class="component-group">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #2c3e50; font-size: 13px;">Input Label</label>
+                    <input type="text" class="globals-input" placeholder="Enter text here">
+                    
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #2c3e50; font-size: 13px;">Select Label</label>
+                    <select class="globals-select">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                    
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #2c3e50; font-size: 13px;">Textarea</label>
+                    <textarea class="globals-textarea" placeholder="Enter description"></textarea>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Status Badges</h3>
+                <div class="component-group">
+                    <span class="status-done">Completed</span>
+                    <span class="status-in-progress">Running</span>
+                    <span class="status-planned">Planned</span>
+                    <span class="status-blocked">Blocked</span>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Cards</h3>
+                <div class="globals-card">
+                    <h4>Card Title</h4>
+                    <p>Card subtitle</p>
+                    <p>This is a sample card with legacy globals styling. Uses Material Design blue with light theme.</p>
+                    <button class="globals-btn primary">Action</button>
+                </div>
+            </div>
+
+            <div class="component-section">
+                <h3>Navigation</h3>
+                <ul class="globals-nav">
+                    <li class="globals-nav-item">
+                        <a href="#" class="globals-nav-link active">
+                            <span style="margin-right: 8px;">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="globals-nav-item">
+                        <a href="#" class="globals-nav-link">
+                            <span style="margin-right: 8px;">📝</span>
+                            Projects
+                        </a>
+                    </li>
+                    <li class="globals-nav-item">
+                        <a href="#" class="globals-nav-link">
+                            <span style="margin-right: 8px;">⚙️</span>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers to all buttons to show they work
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const originalText = this.textContent;
+                    this.textContent = 'Clicked!';
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 1000);
+                });
+            });
+
+            // Add click handlers to nav links
+            document.querySelectorAll('a[href="#"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Remove active class from siblings
+                    const parent = this.closest('nav, ul');
+                    if (parent) {
+                        parent.querySelectorAll('.active').forEach(active => {
+                            active.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

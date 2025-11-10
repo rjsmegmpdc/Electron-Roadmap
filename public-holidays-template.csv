@@ -1,0 +1,11 @@
+name,start_date,end_date,description,is_recurring,source
+New Year's Day,2024-01-01,2024-01-01,New Year's Day,true,manual
+Waitangi Day,2024-02-06,2024-02-06,Waitangi Day - New Zealand's national day,true,manual
+Good Friday,2024-03-29,2024-03-29,Good Friday,false,manual
+Easter Monday,2024-04-01,2024-04-01,Easter Monday,false,manual
+ANZAC Day,2024-04-25,2024-04-25,ANZAC Day,true,manual
+Queen's Birthday,2024-06-03,2024-06-03,Queen's Birthday (first Monday in June),false,manual
+Matariki,2024-06-28,2024-06-28,Matariki - Māori New Year,false,manual
+Labour Day,2024-10-28,2024-10-28,Labour Day (fourth Monday in October),false,manual
+Christmas Day,2024-12-25,2024-12-25,Christmas Day,true,manual
+Boxing Day,2024-12-26,2024-12-26,Boxing Day,true,manual

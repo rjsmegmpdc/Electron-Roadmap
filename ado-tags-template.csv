@@ -1,0 +1,13 @@
+category,tag_name,tag_value,is_active,sort_order
+Priority,High,High,true,1
+Priority,Medium,Medium,true,2
+Priority,Low,Low,true,3
+Value Area,Business,Business,true,1
+Value Area,Architectural,Architectural,true,2
+Risk,High,High,true,1
+Risk,Medium,Medium,true,2
+Risk,Low,Low,true,3
+State,New,New,true,1
+State,Active,Active,true,2
+State,Resolved,Resolved,true,3
+State,Closed,Closed,true,4

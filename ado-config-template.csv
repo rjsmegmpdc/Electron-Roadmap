@@ -1,0 +1,2 @@
+org_url,project_name,auth_mode,is_enabled,max_retry_attempts,base_delay_ms
+https://dev.azure.com/yourorg,YourProject,PAT,true,3,500

@@ -1,0 +1,6 @@
+Roadmap_ResourceID,ResourceName,Email,WorkArea,ActivityType_CAP,ActivityType_OPX,Contract Type,EmployeeID
+1,John Smith,john.smith@example.com,Engineering,N3_CAP,N3_OPX,FTE,EMP001
+2,Jane Doe,jane.doe@example.com,Product,N4_CAP,N4_OPX,FTE,EMP002
+3,Bob Johnson,bob.johnson@example.com,Design,N2_CAP,N2_OPX,SOW,SOW001
+4,Alice Williams,alice.williams@example.com,Engineering,N5_CAP,N5_OPX,FTE,EMP003
+5,External Team Lead,external.lead@vendor.com,External,N6_CAP,N6_OPX,External Squad,EXT001

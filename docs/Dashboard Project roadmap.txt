@@ -1,0 +1,75 @@
+****************************************
+Testing UI
+*****************************************
+
+Dashboard | Project roadmap Gantt legend needs to move above the Gantt Chart and remain always on screen.
+Dashboard | Project roadmap Gantt legend is a filter checkbox to filter the display in the Gannt Chart.
+Dashboard | Project roadmap Gantt time scale zoom in and out, to a week, fortnight, month, quarter and two views by year. View one is Financial year which is 1 April to 1 April, View two for year is Calendar Year.
+Dashboard | Project roadmap the Gantt style calendar need to default today on screen, with a scroll bar to move time scale left and right.
+Dashboard | Project roadmap Gantt needs to have 10 rows on screen. then scroll to see remaining.
+
+Dashboard | clicking the button refreshes the page.
+
+Dashboard | Project roadmap
+I want a filter by Project status above the data display window with the same filter fields as in Projects.
+
+
+New Calendar Module.
+I want to be able to import public Holidays - ical file.
+I want to be able to enter data on dates which is the following
+By Year
+Then for each month, 
+-Days
+-Working days
+-weekend days
+-public holidays
+-work hours
+-resource holidays
+
+New Resource Module
+Name of Person (first name, last name) 
+Nickname/alias
+Email of Person
+Holidays (start date, end date) 
+Salary Band
+Daily Cost
+I want to be able to import a csv file for Band, daily cost and the result is to update the Resource Module z(entries and not overwrite any entry
+
+Finance Module
+
+
+Projects | Edit projects 
+I want the form to be wider, contain all the fields in two columns within the Edit context. Places the Close 'X' in top right corner. Save Button at the bottom.
+
+Projects | Project Management
+Display up to 9 projects at time.
+
+Epic & Feature Configuration
+Common Defaults, Epic Defaults, Feature Defaults
+Allow the ability to Type in a new criteria which is added to the pull down list for the setting the default.
+Allow the ability from the Pull Down list to delete an item in the list with a "X" at the end.
+
+Epic & Feature Configuration
+Feature Default Values pull down list
+Default Product Owner
+Default Delivery Lead
+Default Tech Lead
+Default Business Owner
+Default Process Owner
+Default Platform Owner
+
+EPIC Defaults Values pull down list
+Default Epic Owner
+Default Delivery Lead
+Default Tech Lead
+Default Business Owner
+Default Process Owner
+Default Platform Owner
+
+
+ADO Integration
+When a Configuration is Saved place this in a nice frame which when clicked opens the detail for the integration and allows editing.
+When a Configuration is Saved. Display the key Expiry date for the created item.
+
+Token Expiry Date is automatically 7 days later from Create date.
+I want a single line banner at top of the form highlighting key congfigurations missing like ADO Integration AND when the Token needs to be updated (based on Token Expiry Date)

@@ -1,0 +1,4 @@
+id,project_id,title,description,state,effort,business_value,time_criticality,start_date,end_date,assigned_to,area_path,iteration_path,risk,value_area,parent_feature,sort_order
+epic-001,proj-001,Platform Modernization,Upgrade infrastructure and core services,Active,21,100,50,01-01-2024,30-06-2024,John Smith,\Project\Platform,\Project\2024\Q1,Medium,Business,,1
+epic-002,proj-001,Security Enhancements,Implement enhanced security measures,New,13,80,70,01-02-2024,31-05-2024,Jane Doe,\Project\Security,\Project\2024\Q1,High,Business,,2
+epic-003,proj-002,User Experience Improvements,Redesign user interface and workflows,Active,8,90,60,01-03-2024,30-06-2024,Bob Johnson,\Project\UX,\Project\2024\Q2,Low,Business,,1

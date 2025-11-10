@@ -1,0 +1,5 @@
+id,epic_id,project_id,title,description,state,effort,business_value,time_criticality,start_date,end_date,assigned_to,area_path,iteration_path,risk,value_area,sort_order
+feat-001,epic-001,proj-001,Database Migration,Migrate to new database platform,Active,8,50,40,01-01-2024,31-03-2024,Alice Williams,\Project\Platform\Database,\Project\2024\Q1,Medium,Business,1
+feat-002,epic-001,proj-001,API Modernization,Update APIs to RESTful standards,New,5,40,30,01-02-2024,30-04-2024,Bob Johnson,\Project\Platform\API,\Project\2024\Q1,Low,Architectural,2
+feat-003,epic-002,proj-001,Authentication System,Implement SSO and MFA,Active,5,80,70,01-02-2024,31-03-2024,Jane Doe,\Project\Security\Auth,\Project\2024\Q1,High,Business,1
+feat-004,epic-003,proj-002,Responsive Design,Make UI mobile-friendly,New,3,60,50,01-03-2024,30-04-2024,Alice Williams,\Project\UX\Design,\Project\2024\Q2,Low,Business,1

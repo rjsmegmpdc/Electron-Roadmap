@@ -1,0 +1,10 @@
+ConfigType,Priority,ValueArea,AreaPath,IterationPath,EpicSizing,Risk,EpicOwner,ProductOwner,DeliveryLead,TechLead,BusinessOwner,ProcessOwner,PlatformOwner,Tags,PathValue
+Common,2,Business,IT\BTE Tribe,IT\Sprint\FY26\Q1,,,,,,,,,,
+Epic,,,,,M,Medium,Yash.Yash@one.nz,,Farhan.Sarfraz@one.nz,Ashish.Shivhare@one.nz,Adrian.Albuquerque@one.nz,,,integration;devops;platform,
+Feature,,,,,,,,Sanjeev.Lokavarapu@one.nz,Farhan.Sarfraz@one.nz,Ashish.Shivhare@one.nz,,,,feature;user-story;frontend,
+Iteration,,,,,,,,,,,,,,,IT\Sprint\FY26\Q1\Sprint 1
+Iteration,,,,,,,,,,,,,,,IT\Sprint\FY26\Q1\Sprint 2
+Iteration,,,,,,,,,,,,,,,IT\Sprint\FY26\Q1\Sprint 3
+AreaPath,,,,,,,,,,,,,,,IT\BTE Tribe
+AreaPath,,,,,,,,,,,,,,,IT\BTE Tribe\Integration and DevOps Tooling
+AreaPath,,,,,,,,,,,,,,,IT\BTE Tribe\Platform Engineering

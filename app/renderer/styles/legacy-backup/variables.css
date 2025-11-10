@@ -1,0 +1,236 @@
+/**
+ * CSS Variables and Theme Definitions
+ * 
+ * This file contains all CSS custom properties (variables) used across
+ * the Roadmap-Electron application for consistent theming and styling.
+ */
+
+:root {
+  /* Primary Colors */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-active: #3730a3;
+  --color-primary-light: #a5b4fc;
+  --color-primary-dark: #312e81;
+  
+  /* Secondary Colors */
+  --color-secondary: #6b7280;
+  --color-secondary-hover: #4b5563;
+  --color-secondary-light: #9ca3af;
+  --color-secondary-dark: #374151;
+  
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-success-hover: #059669;
+  --color-success-light: #a7f3d0;
+  --color-success-dark: #047857;
+  
+  --color-warning: #f59e0b;
+  --color-warning-hover: #d97706;
+  --color-warning-light: #fde68a;
+  --color-warning-dark: #92400e;
+  
+  --color-error: #ef4444;
+  --color-error-hover: #dc2626;
+  --color-error-light: #fca5a5;
+  --color-error-dark: #991b1b;
+  
+  --color-info: #3b82f6;
+  --color-info-hover: #2563eb;
+  --color-info-light: #93c5fd;
+  --color-info-dark: #1d4ed8;
+  
+  /* Priority Colors */
+  --color-priority-1: #dc2626; /* Critical */
+  --color-priority-2: #ea580c; /* High */
+  --color-priority-3: #ca8a04; /* Medium */
+  --color-priority-4: #65a30d; /* Low */
+  
+  /* Risk Colors */
+  --color-risk-low: #10b981;
+  --color-risk-medium: #f59e0b;
+  --color-risk-high: #ef4444;
+  --color-risk-critical: #dc2626;
+  
+  /* Background Colors - Dark Theme */
+  --bg-primary: #1f2937;
+  --bg-secondary: #374151;
+  --bg-tertiary: #4b5563;
+  --bg-quaternary: #6b7280;
+  --bg-hover: #4b5563;
+  --bg-active: #374151;
+  --bg-selected: rgba(79, 70, 229, 0.1);
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* Text Colors - Dark Theme */
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  --text-muted: #4b5563;
+  --text-inverse: #1f2937;
+  
+  /* Border Colors */
+  --border-color: #6b7280;
+  --border-color-light: #9ca3af;
+  --border-color-dark: #4b5563;
+  --border-focus: var(--color-primary);
+  
+  /* Accent Colors */
+  --accent-color: var(--color-primary);
+  --accent-hover: var(--color-primary-hover);
+  --accent-color-10: rgba(79, 70, 229, 0.1);
+  --accent-color-20: rgba(79, 70, 229, 0.2);
+  --accent-color-30: rgba(79, 70, 229, 0.3);
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+  /* Button Shadows */
+  --shadow-button: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-button-hover: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-button-primary: 0 2px 8px rgba(79, 70, 229, 0.3);
+  --shadow-button-primary-hover: 0 4px 12px rgba(79, 70, 229, 0.4);
+  
+  /* Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  --focus-ring-error: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  --focus-ring-success: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  
+  /* Typography */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Transitions */
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  
+  --transition-colors: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  --transition-transform: transform 0.2s ease;
+  --transition-opacity: opacity 0.2s ease;
+  --transition-all: all 0.2s ease;
+  
+  /* Layout */
+  --sidebar-width: 250px;
+  --header-height: 60px;
+  --footer-height: 40px;
+  --content-max-width: 1200px;
+  
+  /* Z-Index Layers */
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-fixed: 1200;
+  --z-modal-backdrop: 1300;
+  --z-modal: 1400;
+  --z-popover: 1500;
+  --z-tooltip: 1600;
+  --z-toast: 1700;
+  
+  /* Animation */
+  --animation-duration-fast: 150ms;
+  --animation-duration-normal: 200ms;
+  --animation-duration-slow: 300ms;
+  
+  /* Component Specific Variables */
+  --button-height-sm: 32px;
+  --button-height-md: 40px;
+  --button-height-lg: 48px;
+  
+  --input-height-sm: 32px;
+  --input-height-md: 40px;
+  --input-height-lg: 48px;
+  
+  --card-padding: var(--spacing-lg);
+  --card-border-radius: var(--radius-lg);
+  
+  --form-grid-gap: var(--spacing-lg);
+  --form-field-gap: var(--spacing-sm);
+}
+
+/* Light Theme Override */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --bg-quaternary: #e5e7eb;
+    --bg-hover: #f3f4f6;
+    --bg-active: #e5e7eb;
+    
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --text-tertiary: #6b7280;
+    --text-muted: #9ca3af;
+    --text-inverse: #ffffff;
+    
+    --border-color: #d1d5db;
+    --border-color-light: #e5e7eb;
+    --border-color-dark: #9ca3af;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --text-secondary: var(--text-primary);
+    --shadow-md: 0 0 0 1px var(--border-color);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: none;
+    --transition-normal: none;
+    --transition-slow: none;
+    --transition-colors: none;
+    --transition-transform: none;
+    --transition-opacity: none;
+    --transition-all: none;
+    
+    --animation-duration-fast: 0ms;
+    --animation-duration-normal: 0ms;
+    --animation-duration-slow: 0ms;
+  }
+}

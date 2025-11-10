@@ -1,0 +1,13 @@
+year,month,days,working_days,weekend_days,public_holidays,work_hours,notes
+2024,1,31,22,8,1,176,New Year's Day holiday
+2024,2,29,21,8,0,168,Leap year
+2024,3,31,21,10,0,168,
+2024,4,30,22,8,0,176,
+2024,5,31,23,8,0,184,
+2024,6,30,20,10,0,160,Queen's Birthday
+2024,7,31,23,8,0,184,
+2024,8,31,22,8,1,176,
+2024,9,30,21,9,0,168,
+2024,10,31,23,8,0,184,Labour Day
+2024,11,30,21,9,0,168,
+2024,12,31,20,9,2,160,Christmas and Boxing Day
