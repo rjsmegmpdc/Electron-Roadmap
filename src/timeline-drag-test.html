@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Drag Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #218838;
+        }
+        .feature-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .drag-demo {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .drag-handle {
+            width: 6px;
+            height: 20px;
+            background: #6c757d;
+            cursor: ew-resize;
+            border-radius: 3px;
+        }
+        .drag-bar {
+            flex: 1;
+            height: 20px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            cursor: move;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Timeline Drag & Drop Test</h1>
+    
+    <div class="test-section">
+        <h2>Drag & Drop Features Implemented</h2>
+        <div class="feature-list">
+            <p>✅ <strong>Resize Start Date:</strong> Drag left handle to change project start date</p>
+            <p>✅ <strong>Resize End Date:</strong> Drag right handle to change project end date</p>
+            <p>✅ <strong>Move Project:</strong> Drag project bar to move entire project to new dates</p>
+            <p>✅ <strong>Real-time Feedback:</strong> Shows new dates while dragging</p>
+            <p>✅ <strong>Auto-save:</strong> Automatically updates project data in storage</p>
+            <p>✅ <strong>Visual Indicators:</strong> Different cursors for different drag types</p>
+            <p>✅ <strong>Validation:</strong> Prevents invalid date ranges</p>
+            <p>✅ <strong>Zoom Support:</strong> Works at all zoom levels (Year → Week)</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Drag Interaction Demo</h2>
+        <div class="drag-demo">
+            <div class="drag-handle" title="Resize start date"></div>
+            <div class="drag-bar">Project Bar (Drag to Move)</div>
+            <div class="drag-handle" title="Resize end date"></div>
+        </div>
+        <p><small>This shows the drag handles that appear when you hover over project bars</small></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Timeline Dragging</h2>
+        <button class="test-button" onclick="addDragTestProjects()">➕ Add Test Projects</button>
+        <button class="test-button" onclick="openTimeline()">🗓️ Open Timeline (Test Dragging)</button>
+        <button class="test-button" onclick="showInstructions()">📖 Show Instructions</button>
+        
+        <div id="status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>How to Test Dragging</h2>
+        <ol>
+            <li><strong>Add Test Projects:</strong> Click "Add Test Projects" to create sample projects</li>
+            <li><strong>Open Timeline:</strong> Click "Open Timeline" to see the Gantt chart</li>
+            <li><strong>Hover over Project:</strong> You'll see resize handles appear on left/right edges</li>
+            <li><strong>Try Different Drags:</strong>
+                <ul>
+                    <li>🔽 <strong>Left Handle:</strong> Drag to change start date (cursor: ↔)</li>
+                    <li>🔽 <strong>Right Handle:</strong> Drag to change end date (cursor: ↔)</li>
+                    <li>🔽 <strong>Project Bar:</strong> Drag to move entire project (cursor: ✋)</li>
+                </ul>
+            </li>
+            <li><strong>Visual Feedback:</strong> Watch for date tooltips while dragging</li>
+            <li><strong>Auto-save:</strong> Dates automatically save when you release</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>What You'll See</h2>
+        <div class="feature-list">
+            <p><strong>🎯 Visual Cues:</strong></p>
+            <ul>
+                <li><strong>Hover:</strong> Resize handles appear on project edges</li>
+                <li><strong>Cursor Changes:</strong> ↔ for resize, ✋ for move</li>
+                <li><strong>Live Feedback:</strong> Date tooltip shows new dates while dragging</li>
+                <li><strong>Success Message:</strong> "Updated [Project] dates" when complete</li>
+            </ul>
+            
+            <p><strong>🔧 Drag Types:</strong></p>
+            <ul>
+                <li><strong>◀ Resize Left:</strong> Changes start date, keeps end date fixed</li>
+                <li><strong>▶ Resize Right:</strong> Changes end date, keeps start date fixed</li>
+                <li><strong>↔ Move:</strong> Moves both dates, keeps duration same</li>
+            </ul>
+            
+            <p><strong>✅ Smart Features:</strong></p>
+            <ul>
+                <li><strong>Minimum Duration:</strong> Can't resize smaller than 1 day</li>
+                <li><strong>Date Validation:</strong> Start date must be before end date</li>
+                <li><strong>Zoom Awareness:</strong> Drag precision matches current zoom level</li>
+                <li><strong>Revert on Error:</strong> Invalid drags automatically revert</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        const SimpleStorage = {
+            getProjects() {
+                try {
+                    return JSON.parse(localStorage.getItem('roadmap-projects') || '[]');
+                } catch {
+                    return [];
+                }
+            },
+            saveProject(project) {
+                const projects = this.getProjects();
+                project.id = project.id || 'proj-' + Date.now();
+                project.status = project.status || 'concept-design';
+                projects.push(project);
+                localStorage.setItem('roadmap-projects', JSON.stringify(projects));
+                return project;
+            },
+            clearAll() {
+                localStorage.removeItem('roadmap-projects');
+            }
+        };
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<p style="color: ${type === 'success' ? '#28a745' : '#007bff'}; font-weight: bold;">📅 ${message}</p>`;
+        }
+        
+        function addDragTestProjects() {
+            SimpleStorage.clearAll();
+            
+            const today = new Date();
+            const testProjects = [
+                {
+                    title: '🎯 Drag Me Left/Right',
+                    start_date: formatDate(addDays(today, -10)),
+                    end_date: formatDate(addDays(today, 20)),
+                    budget_cents: 100000,
+                    status: 'engineering',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: '📏 Resize My Dates',
+                    start_date: formatDate(addDays(today, 5)),
+                    end_date: formatDate(addDays(today, 35)),
+                    budget_cents: 80000,
+                    status: 'concept-design',
+                    financial_treatment: 'CAPEX'
+                },
+                {
+                    title: '🚀 Move Me Around',
+                    start_date: formatDate(addDays(today, -20)),
+                    end_date: formatDate(addDays(today, -5)),
+                    budget_cents: 120000,
+                    status: 'uat',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: '⏰ Extend My Timeline',
+                    start_date: formatDate(addDays(today, 15)),
+                    end_date: formatDate(addDays(today, 30)),
+                    budget_cents: 90000,
+                    status: 'solution-design',
+                    financial_treatment: 'CAPEX'
+                }
+            ];
+            
+            testProjects.forEach(project => {
+                SimpleStorage.saveProject(project);
+            });
+            
+            updateStatus(`✅ Added ${testProjects.length} drag-test projects!`, 'success');
+        }
+        
+        function openTimeline() {
+            updateStatus('Opening timeline - hover over projects to see drag handles!', 'info');
+            window.open('index.html', '_blank');
+        }
+        
+        function showInstructions() {
+            alert(`🎯 Timeline Drag Instructions:
+
+1. HOVER over any project bar
+   → Resize handles appear on edges
+
+2. DRAG TYPES:
+   📌 Left Handle: Resize start date
+   📌 Right Handle: Resize end date  
+   📌 Project Bar: Move entire project
+
+3. VISUAL FEEDBACK:
+   ↔ Cursor for resizing
+   ✋ Cursor for moving
+   📅 Date tooltip while dragging
+
+4. AUTO-SAVE:
+   Changes save automatically on release
+
+5. VALIDATION:
+   Invalid drags revert automatically
+
+Try different zoom levels - dragging works at all zoom levels!`);
+        }
+        
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+        
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        // Initialize
+        updateStatus('Drag test page ready - add projects and test!');
+        
+        setTimeout(() => {
+            const projects = SimpleStorage.getProjects();
+            updateStatus(`Found ${projects.length} existing projects in storage`);
+        }, 500);
+    </script>
+</body>
+</html>

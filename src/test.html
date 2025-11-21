@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page - Roadmap Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .console-output {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 JavaScript Test Page</h1>
+    <p>This page tests if JavaScript is working properly.</p>
+    
+    <button id="test-btn-1">Test Button 1 - Alert</button>
+    <button id="test-btn-2">Test Button 2 - Console Log</button>
+    <button id="test-btn-3">Test Button 3 - Navigate to Launchpad</button>
+    
+    <h2>Manual Button Click Test</h2>
+    <button onclick="alert('Inline onclick works!')">Inline onclick Test</button>
+    
+    <div class="console-output" id="console-output">
+        <div>Console output will appear here...</div>
+    </div>
+    
+    <script>
+        // Override console.log to also display in the page
+        const originalLog = console.log;
+        const outputDiv = document.getElementById('console-output');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const div = document.createElement('div');
+            div.textContent = args.join(' ');
+            outputDiv.appendChild(div);
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        };
+        
+        console.log('🚀 Test page JavaScript loaded');
+        console.log('📍 Current URL:', window.location.href);
+        console.log('📄 Document ready state:', document.readyState);
+        
+        // Test 1: Simple event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('✅ DOMContentLoaded event fired');
+            
+            // Button 1: Alert test
+            const btn1 = document.getElementById('test-btn-1');
+            if (btn1) {
+                btn1.addEventListener('click', () => {
+                    console.log('🎯 Test button 1 clicked');
+                    alert('Button 1 works! JavaScript is functioning.');
+                });
+                console.log('✅ Button 1 event listener attached');
+            }
+            
+            // Button 2: Console test
+            const btn2 = document.getElementById('test-btn-2');
+            if (btn2) {
+                btn2.addEventListener('click', () => {
+                    console.log('🎯 Test button 2 clicked');
+                    console.log('✅ Console logging is working');
+                    console.log('🕒 Current time:', new Date().toISOString());
+                });
+                console.log('✅ Button 2 event listener attached');
+            }
+            
+            // Button 3: Navigation test
+            const btn3 = document.getElementById('test-btn-3');
+            if (btn3) {
+                btn3.addEventListener('click', () => {
+                    console.log('🎯 Test button 3 clicked - navigating to launchpad');
+                    window.location.href = 'launchpad.html';
+                });
+                console.log('✅ Button 3 event listener attached');
+            }
+            
+            console.log('🎉 All test event listeners attached successfully');
+        });
+        
+        // Test immediate functionality
+        setTimeout(() => {
+            console.log('⏰ 1 second delay test passed');
+            console.log('📊 Found buttons:', document.querySelectorAll('button').length);
+        }, 1000);
+        
+        // Global test function
+        window.runTest = () => {
+            console.log('🧪 Manual test function called');
+            const buttons = document.querySelectorAll('button');
+            console.log(`Found ${buttons.length} buttons:`);
+            buttons.forEach((btn, i) => {
+                console.log(`  ${i}: ${btn.id || btn.textContent}`);
+            });
+        };
+        
+        console.log('💡 Try calling: window.runTest()');
+    </script>
+</body>
+</html>

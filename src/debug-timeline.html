@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Timeline - Roadmap Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .debug-panel {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px;
+            font-family: 'Courier New', monospace;
+        }
+        .debug-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border-left: 4px solid #28a745;
+        }
+        .debug-error {
+            border-left-color: #dc3545;
+        }
+        .debug-warning {
+            border-left-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔍 Timeline Debug Panel</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+            <a href="project-details.html">Project Details</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="debug-panel">
+            <h2>📊 Project Storage Debug</h2>
+            <div id="debug-output">
+                <p>Loading debug information...</p>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button id="btn-reload-debug" class="primary-btn">🔄 Reload Debug</button>
+                <button id="btn-clear-storage" class="danger-btn">🗑️ Clear Storage</button>
+                <button id="btn-add-test-project" class="success-btn">➕ Add Test Project</button>
+            </div>
+        </div>
+        
+        <div class="debug-panel">
+            <h2>📅 Timeline Render Test</h2>
+            <div id="timeline-debug">
+                <!-- Timeline will be rendered here -->
+            </div>
+        </div>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🔍 Debug Timeline page loaded');
+        
+        function debugProjectStorage() {
+            const debugOutput = document.getElementById('debug-output');
+            debugOutput.innerHTML = '';
+            
+            try {
+                // Check localStorage directly
+                const rawData = localStorage.getItem('roadmap-projects');
+                
+                const debugInfo = [
+                    `<div class="debug-item">
+                        <strong>Raw localStorage data:</strong><br>
+                        <code>${rawData || 'null'}</code>
+                    </div>`,
+                    
+                    `<div class="debug-item">
+                        <strong>Data length:</strong> ${rawData ? rawData.length : 0} characters
+                    </div>`
+                ];
+                
+                if (rawData) {
+                    try {
+                        const parsed = JSON.parse(rawData);
+                        debugInfo.push(`<div class="debug-item">
+                            <strong>Parsed projects count:</strong> ${Array.isArray(parsed) ? parsed.length : 'Not an array'}
+                        </div>`);
+                        
+                        if (Array.isArray(parsed)) {
+                            parsed.forEach((project, index) => {
+                                debugInfo.push(`<div class="debug-item">
+                                    <strong>Project ${index + 1}:</strong><br>
+                                    <code>ID: ${project.id || 'undefined'}</code><br>
+                                    <code>Title: ${project.title || 'undefined'}</code><br>
+                                    <code>Start: ${project.start_date || 'undefined'}</code><br>
+                                    <code>End: ${project.end_date || 'undefined'}</code><br>
+                                    <code>Status: ${project.status || 'undefined'}</code>
+                                </div>`);
+                            });
+                        }
+                    } catch (parseError) {
+                        debugInfo.push(`<div class="debug-item debug-error">
+                            <strong>JSON Parse Error:</strong><br>
+                            <code>${parseError.message}</code>
+                        </div>`);
+                    }
+                }
+                
+                // Check SimpleStorage function
+                if (typeof SimpleStorage !== 'undefined') {
+                    const projects = SimpleStorage.getAllProjects();
+                    debugInfo.push(`<div class="debug-item">
+                        <strong>SimpleStorage.getAllProjects():</strong> ${projects.length} projects
+                    </div>`);
+                } else {
+                    debugInfo.push(`<div class="debug-item debug-error">
+                        <strong>SimpleStorage not available!</strong>
+                    </div>`);
+                }
+                
+                debugOutput.innerHTML = debugInfo.join('');
+                
+            } catch (error) {
+                debugOutput.innerHTML = `<div class="debug-item debug-error">
+                    <strong>Debug Error:</strong><br>
+                    <code>${error.message}</code>
+                </div>`;
+            }
+        }
+        
+        function clearStorage() {
+            if (confirm('Are you sure you want to clear all project data?')) {
+                localStorage.removeItem('roadmap-projects');
+                debugProjectStorage();
+                console.log('🗑️ Storage cleared');
+            }
+        }
+        
+        function addTestProject() {
+            const testProject = {
+                title: 'Debug Test Project',
+                start_date: '2025-10-01',
+                end_date: '2025-12-31',
+                budget_cents: 5000000, // $50,000
+                status: 'engineering',
+                financial_treatment: 'CAPEX'
+            };
+            
+            if (typeof SimpleStorage !== 'undefined') {
+                SimpleStorage.saveProject(testProject);
+                debugProjectStorage();
+                console.log('✅ Test project added');
+            } else {
+                console.error('❌ SimpleStorage not available');
+            }
+        }
+        
+        // Add event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial debug
+            debugProjectStorage();
+            
+            // Button handlers
+            document.getElementById('btn-reload-debug').addEventListener('click', debugProjectStorage);
+            document.getElementById('btn-clear-storage').addEventListener('click', clearStorage);
+            document.getElementById('btn-add-test-project').addEventListener('click', addTestProject);
+            
+            console.log('✅ Debug page initialized');
+        });
+    </script>
+</body>
+</html>

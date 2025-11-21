@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collision Detection & Auto-Snap Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8f9fa; 
+            padding: 20px;
+        }
+        .test-info {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-controls {
+            background: #fff3cd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .timeline-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            height: 650px;
+        }
+        .snap-instructions {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .feature-badge {
+            background: #dc3545;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .collision-test {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .legend {
+            background: #e2e3e5;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="test-info">
+            <h1>🎯 Collision Detection & Auto-Snap Test</h1>
+            <p><strong>Purpose:</strong> Test the enhanced drop zone system with collision detection and automatic conflict resolution.</p>
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li>🎨 <strong>Visual Drop Zones</strong><span class="feature-badge">NEW</span>: All rows visible including empty ones</li>
+                <li>🚫 <strong>Collision Prevention</strong><span class="feature-badge">NEW</span>: Projects automatically avoid overlaps</li>
+                <li>⚡ <strong>Auto-Snap</strong><span class="feature-badge">NEW</span>: Smart positioning finds best available space</li>
+                <li>📍 <strong>Conflict Resolution</strong><span class="feature-badge">NEW</span>: Multiple strategies for handling conflicts</li>
+                <li>🎪 <strong>Enhanced Feedback</strong><span class="feature-badge">NEW</span>: Clear notifications when auto-snap occurs</li>
+            </ul>
+        </div>
+
+        <div class="test-controls">
+            <div class="row">
+                <div class="col-md-8">
+                    <button class="btn btn-warning" onclick="loadCollisionTestProjects()">⚠️ Load Collision Test Projects</button>
+                    <button class="btn btn-success" onclick="loadSpacedProjects()">📏 Load Well-Spaced Projects</button>
+                    <button class="btn btn-secondary" onclick="clearAllProjects()">🗑️ Clear All</button>
+                    <button class="btn btn-info" onclick="TimelineRenderer.renderTimeline()">🔄 Refresh</button>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('out')">🔍 Zoom Out</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('reset')">🎯 Month</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('in')">🔍 Zoom In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="snap-instructions">
+            <h5>🎮 Auto-Snap Testing Instructions</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Collision Detection Tests:</h6>
+                    <ul style="font-size: 14px;">
+                        <li><strong>Load Collision Tests:</strong> Creates intentionally overlapping projects</li>
+                        <li><strong>Drag Over Occupied Space:</strong> Try dropping on existing projects</li>
+                        <li><strong>Watch Auto-Snap:</strong> Projects automatically find empty spaces</li>
+                        <li><strong>Notice Feedback:</strong> Notifications show when auto-snap occurs</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Drop Zone Features:</h6>
+                    <ul style="font-size: 14px;">
+                        <li><strong>Empty Rows Visible:</strong> See available drop zones (gray "+ Row" labels)</li>
+                        <li><strong>Hover Effects:</strong> Rows highlight blue when dragging over them</li>
+                        <li><strong>Smart Positioning:</strong> Projects snap to nearest available space</li>
+                        <li><strong>Date Adjustment:</strong> Dates may shift to avoid conflicts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="timeline-container">
+                    <!-- Timeline Header -->
+                    <div class="timeline-header" style="overflow-x: auto; margin-bottom: 10px;">
+                        <div class="timeline-dates" style="position: relative; height: 90px;"></div>
+                    </div>
+                    
+                    <!-- Timeline Content -->
+                    <div id="timeline-container" style="overflow-x: auto; overflow-y: visible; height: 520px; border: 1px solid #ddd; border-radius: 8px;">
+                        <!-- Timeline content will be rendered here -->
+                    </div>
+                    
+                    <div class="legend mt-2">
+                        <strong>Legend:</strong> 
+                        <span style="color: #007bff;">●</span> Occupied Rows | 
+                        <span style="color: #6c757d;">●</span> Empty Drop Zones | 
+                        <span style="color: #28a745;">●</span> Auto-Snapped Project
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="test-info">
+                    <h6>🧪 Test Scenarios</h6>
+                    <ol style="font-size: 13px;">
+                        <li>Load collision test projects</li>
+                        <li>Try dragging Project A onto Project B's dates</li>
+                        <li>Watch auto-snap find empty space</li>
+                        <li>Drag to empty rows (gray "+ Row" labels)</li>
+                        <li>Test date conflicts within same row</li>
+                        <li>Verify notifications show auto-snap actions</li>
+                    </ol>
+                </div>
+                
+                <div class="collision-test">
+                    <h6>⚠️ Collision Strategies</h6>
+                    <div style="font-size: 12px;">
+                        <p><strong>1. Same Row Space:</strong><br>Find gap in current row</p>
+                        <p><strong>2. Nearest Empty Row:</strong><br>Move to closest empty row</p>
+                        <p><strong>3. Any Available Row:</strong><br>Find any row with space</p>
+                        <p><strong>4. Create New Row:</strong><br>Add to new row if needed</p>
+                    </div>
+                </div>
+                
+                <div class="test-info mt-3">
+                    <h6>🎯 Expected Behaviors</h6>
+                    <ul style="font-size: 13px;">
+                        <li>Projects never overlap on same row</li>
+                        <li>Auto-snap finds optimal positions</li>
+                        <li>Dates may adjust to prevent conflicts</li>
+                        <li>Visual feedback shows resolution</li>
+                        <li>Empty rows are always available</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include JavaScript -->
+    <script src="js/core/config.js"></script>
+    <script src="js/storage-system.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        // Test projects with intentional conflicts for collision detection
+        function loadCollisionTestProjects() {
+            console.log('⚠️ Loading collision detection test projects...');
+            
+            const testProjects = [
+                {
+                    id: 'collision-test-1',
+                    title: '🔴 Project A - FY26 Collision Base',
+                    description: 'Base project for collision testing Q1 FY26',
+                    start_date: '2025-05-01',
+                    end_date: '2025-06-15',
+                    status: 'engineering',
+                    row: 0
+                },
+                {
+                    id: 'collision-test-2', 
+                    title: '🟯 Project B - Q1 Overlapper',
+                    description: 'This will overlap with Project A in Q1 FY26',
+                    start_date: '2025-05-15',
+                    end_date: '2025-07-01',
+                    status: 'solution-design',
+                    row: 0 // Same row as A - should cause conflict
+                },
+                {
+                    id: 'collision-test-3',
+                    title: '🟢 Project C - Gap Filler FY26',
+                    description: 'Should find space or create new row Q1 FY26',
+                    start_date: '2025-05-20',
+                    end_date: '2025-06-10',
+                    status: 'uat',
+                    row: 0 // Same row as A and B - should auto-resolve
+                },
+                {
+                    id: 'collision-test-4',
+                    title: '🔵 Project D - Safe Zone FY26',
+                    description: 'This should be safe in another row Q1 FY26',
+                    start_date: '2025-04-15',
+                    end_date: '2025-05-31',
+                    status: 'concept-design',
+                    row: 1 // Different row - should be safe
+                },
+                {
+                    id: 'collision-test-5',
+                    title: '🟪 Project E - Edge Case FY26',
+                    description: 'Edge touching test Q1-Q2 FY26',
+                    start_date: '2025-06-15',
+                    end_date: '2025-08-15',
+                    status: 'release',
+                    row: 0 // Starts exactly when A ends - edge case
+                }
+            ];
+            
+            // Clear existing projects
+            localStorage.removeItem('roadmap-projects');
+            
+            // Save test projects
+            localStorage.setItem('roadmap-projects', JSON.stringify(testProjects));
+            
+            // Re-render timeline
+            TimelineRenderer.renderTimeline();
+            
+            showNotification(`⚠️ Loaded ${testProjects.length} projects with intentional conflicts for collision testing!`, 'warning');
+            console.log('✅ Collision test projects loaded - watch for auto-snap behavior');
+            
+            // Add helpful tip
+            setTimeout(() => {
+                showNotification('🎯 Try dragging projects onto each other to test collision detection!', 'info');
+            }, 2000);
+        }
+        
+        // Well-spaced projects for testing empty row drops
+        function loadSpacedProjects() {
+            console.log('📏 Loading well-spaced test projects...');
+            
+            const testProjects = [
+                {
+                    id: 'spaced-test-1',
+                    title: '🎯 Spaced Project A - Q1 FY26',
+                    description: 'Well-spaced project for testing Q1 FY26',
+                    start_date: '2025-04-01',
+                    end_date: '2025-06-30',
+                    status: 'engineering',
+                    row: 0
+                },
+                {
+                    id: 'spaced-test-2',
+                    title: '🎯 Spaced Project B - Q2 FY26',
+                    description: 'Well-spaced project for Q2 FY26',
+                    start_date: '2025-07-01',
+                    end_date: '2025-09-30',
+                    status: 'solution-design',
+                    row: 1
+                },
+                {
+                    id: 'spaced-test-3',
+                    title: '🎯 Spaced Project C - Q3 FY26',
+                    description: 'Well-spaced project for Q3 FY26',
+                    start_date: '2025-10-01',
+                    end_date: '2025-12-31',
+                    status: 'uat',
+                    row: 2
+                },
+                {
+                    id: 'spaced-test-4',
+                    title: '🎯 Spaced Project D - Q4 FY26',
+                    description: 'Final quarter FY26 project',
+                    start_date: '2026-01-01',
+                    end_date: '2026-03-31',
+                    status: 'concept-design',
+                    row: 3
+                }
+            ];
+            
+            // Clear existing projects
+            localStorage.removeItem('roadmap-projects');
+            
+            // Save test projects
+            localStorage.setItem('roadmap-projects', JSON.stringify(testProjects));
+            
+            // Re-render timeline
+            TimelineRenderer.renderTimeline();
+            
+            showNotification(`📏 Loaded ${testProjects.length} well-spaced projects. Try dropping into empty rows!`, 'success');
+            console.log('✅ Spaced projects loaded - test empty row dropping');
+        }
+        
+        function clearAllProjects() {
+            localStorage.removeItem('roadmap-projects');
+            TimelineRenderer.renderTimeline();
+            showNotification('🗑️ All projects cleared', 'info');
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Collision Detection & Auto-Snap Test Initialized');
+            
+            // Initialize timeline
+            TimelineRenderer.init();
+            
+            console.log('⚠️ Ready to test collision detection and auto-snap!');
+            
+            // Auto-load collision test if no projects exist
+            const existingProjects = SimpleStorage.getAllProjects();
+            if (existingProjects.length === 0) {
+                setTimeout(() => {
+                    console.log('⚠️ Auto-loading collision test projects...');
+                    loadCollisionTestProjects();
+                }, 1000);
+            }
+            
+            // Add instructional tips
+            setTimeout(() => {
+                showNotification('🎮 Drag projects over each other to test auto-snap collision detection!', 'info');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

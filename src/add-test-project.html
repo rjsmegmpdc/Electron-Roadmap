@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Test Project</title>
+</head>
+<body>
+    <h1>Adding Test Project</h1>
+    <div id="status">Loading...</div>
+    
+    <script>
+        // Add test project directly to localStorage
+        const testProjects = [
+            {
+                id: 'proj-test-1',
+                title: 'Website Redesign Project',
+                start_date: '2025-10-01',
+                end_date: '2025-12-31',
+                budget_cents: 7500000, // $75,000
+                status: 'engineering',
+                financial_treatment: 'CAPEX'
+            },
+            {
+                id: 'proj-test-2', 
+                title: 'Mobile App Development',
+                start_date: '2025-11-15',
+                end_date: '2026-03-15',
+                budget_cents: 12000000, // $120,000
+                status: 'concept-design',
+                financial_treatment: 'CAPEX'
+            },
+            {
+                id: 'proj-test-3',
+                title: 'Database Migration',
+                start_date: '2025-09-01',
+                end_date: '2025-10-30',
+                budget_cents: 5000000, // $50,000
+                status: 'solution-design',
+                financial_treatment: 'OPEX'
+            }
+        ];
+        
+        // Store in localStorage
+        localStorage.setItem('roadmap-projects', JSON.stringify(testProjects));
+        
+        document.getElementById('status').innerHTML = `
+            <p style="color: green; font-weight: bold;">✅ Added ${testProjects.length} test projects!</p>
+            <ul>
+                ${testProjects.map(p => `<li>${p.title} (${p.start_date} to ${p.end_date})</li>`).join('')}
+            </ul>
+            <p><a href="index.html" style="color: blue;">→ Go to Timeline</a></p>
+            <p><a href="debug-timeline.html" style="color: blue;">→ Go to Debug Page</a></p>
+        `;
+        
+        console.log('✅ Test projects added:', testProjects);
+    </script>
+</body>
+</html>

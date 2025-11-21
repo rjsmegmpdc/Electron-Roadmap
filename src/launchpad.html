@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap Tool - Launchpad</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <header>
+        <h1>Roadmap Tool</h1>
+        <p>Project management and roadmap visualization</p>
+    </header>
+    
+    <main class="launchpad">
+        <h2 style="text-align: center; color: #2c3e50; margin-bottom: 2rem;">🚀 Main Applications</h2>
+        <div class="navigation-cards">
+            <div class="nav-card">
+                <h2>Timeline View</h2>
+                <p>Visual Gantt chart with drag-and-drop timeline management</p>
+                <button id="btn-roadmap" class="primary-btn">Open Timeline</button>
+            </div>
+            
+            <div class="nav-card">
+                <h2>Project Details</h2>
+                <p>Detailed project management, tasks, resources, and finances</p>
+                <button id="btn-details" class="primary-btn">Manage Projects</button>
+            </div>
+            
+            <div class="nav-card">
+                <h2>Data Table</h2>
+                <p>Tabular view with CSV import/export capabilities</p>
+                <button id="btn-table" class="primary-btn">View Table</button>
+            </div>
+        </div>
+        
+        <!-- Test Components Section -->
+        <div class="test-section">
+            <h2 style="text-align: center; color: #e74c3c; margin: 3rem 0 2rem 0; padding-top: 2rem; border-top: 2px dashed #e0e0e0;">🧪 Test & Development Components</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 2rem; font-style: italic;">Advanced testing tools and feature demonstrations</p>
+            
+            <div class="test-cards">
+                <!-- Core Feature Tests -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>🚦 Multi-Row System</h3>
+                        <span class="test-badge core">Core</span>
+                    </div>
+                    <p>Test multi-row timeline with collision detection and auto-assignment</p>
+                    <a href="test-multi-row.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>🎯 Collision Detection</h3>
+                        <span class="test-badge core">Core</span>
+                    </div>
+                    <p>Test auto-snap functionality and conflict resolution algorithms</p>
+                    <a href="test-collision-snap.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>🚀 Smooth Drag</h3>
+                        <span class="test-badge ux">UX</span>
+                    </div>
+                    <p>Test enhanced drag system with real-time visual feedback</p>
+                    <a href="test-smooth-drag.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <!-- Timeline Feature Tests -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>📅 5-Year Timeline</h3>
+                        <span class="test-badge timeline">Timeline</span>
+                    </div>
+                    <p>Test extended timeline view spanning multiple years</p>
+                    <a href="test-5-year-timeline.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>🔍 Zoom & Today</h3>
+                        <span class="test-badge timeline">Timeline</span>
+                    </div>
+                    <p>Test zoom controls and today navigation functionality</p>
+                    <a href="test-zoom-today.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>📊 Year View</h3>
+                        <span class="test-badge timeline">Timeline</span>
+                    </div>
+                    <p>Test annual overview and year-level project planning</p>
+                    <a href="test-year-view.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <!-- Interaction Tests -->
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>⚡ Auto-Scroll Drag</h3>
+                        <span class="test-badge interaction">Interaction</span>
+                    </div>
+                    <p>Test edge scrolling during drag operations</p>
+                    <a href="test-auto-scroll-drag.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>🔧 Fixes & Patches</h3>
+                        <span class="test-badge debug">Debug</span>
+                    </div>
+                    <p>Test bug fixes and system improvements</p>
+                    <a href="test-fixes.html" class="test-btn">Run Test</a>
+                </div>
+                
+                <div class="test-card">
+                    <div class="test-header">
+                        <h3>📋 General Tests</h3>
+                        <span class="test-badge debug">Debug</span>
+                    </div>
+                    <p>General testing playground for new features</p>
+                    <a href="test.html" class="test-btn">Run Test</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="js/debug-app-fixed.js"></script>
+</body>
+</html>

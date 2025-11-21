@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Year View - Roadmap Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .debug-info {
+            background: #e3f2fd;
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px;
+            font-family: monospace;
+        }
+        .test-controls {
+            background: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔍 Year View Debug Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+            <a href="debug-timeline.html">Debug Page</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="test-controls">
+            <h2>Timeline Zoom Test</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button id="btn-year-view" class="control-btn">📅 Year View</button>
+                <button id="btn-quarter-view" class="control-btn">📊 Quarter View</button>
+                <button id="btn-month-view" class="control-btn">📋 Month View</button>
+                <button id="btn-week-view" class="control-btn">📆 Week View</button>
+            </div>
+            <div id="current-zoom-info" class="debug-info">
+                Current Zoom: <span id="zoom-level">Loading...</span>
+            </div>
+        </div>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+        
+        <div class="debug-info">
+            <h3>Debug Log</h3>
+            <div id="debug-log" style="max-height: 300px; overflow-y: auto; background: #f5f5f5; padding: 10px; border-radius: 4px;">
+                <p>Open browser console (F12) to see detailed logging...</p>
+            </div>
+        </div>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🔍 Year View Debug Test loaded');
+        
+        // Override console.log to also display in page
+        const originalLog = console.log;
+        const debugLogDiv = document.getElementById('debug-log');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            if (debugLogDiv) {
+                const message = args.join(' ');
+                const logEntry = document.createElement('div');
+                logEntry.style.cssText = 'margin: 2px 0; font-size: 12px; color: #333;';
+                logEntry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+                debugLogDiv.appendChild(logEntry);
+                debugLogDiv.scrollTop = debugLogDiv.scrollHeight;
+            }
+        };
+        
+        function updateZoomInfo() {
+            const zoomLevel = document.getElementById('zoom-level');
+            if (zoomLevel && typeof TimelineRenderer !== 'undefined') {
+                const currentZoom = TimelineRenderer.currentZoom;
+                const zoomConfig = TimelineRenderer.zoomLevels[currentZoom];
+                zoomLevel.textContent = `${currentZoom} (${zoomConfig.name}) - dayWidth: ${zoomConfig.dayWidth}, interval: ${zoomConfig.interval}`;
+            }
+        }
+        
+        function setZoomLevel(zoomLevel) {
+            if (typeof TimelineRenderer !== 'undefined') {
+                console.log(`🔍 Setting zoom to: ${zoomLevel}`);
+                TimelineRenderer.currentZoom = zoomLevel;
+                updateZoomInfo();
+                
+                // Re-render timeline
+                setTimeout(() => {
+                    TimelineRenderer.renderTimeline();
+                }, 100);
+            }
+        }
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📖 DOM ready - setting up test controls');
+            
+            // Add test projects if none exist
+            const projects = SimpleStorage.getAllProjects();
+            if (projects.length === 0) {
+                console.log('➕ Adding test projects for year view testing');
+                
+                const testProjects = [
+                    {
+                        id: 'proj-year-test-1',
+                        title: 'Long Term Project Alpha',
+                        start_date: '2025-01-15',
+                        end_date: '2025-08-30',
+                        budget_cents: 10000000,
+                        status: 'engineering',
+                        financial_treatment: 'CAPEX'
+                    },
+                    {
+                        id: 'proj-year-test-2',
+                        title: 'Annual Migration Project',
+                        start_date: '2025-03-01',
+                        end_date: '2026-02-28',
+                        budget_cents: 15000000,
+                        status: 'concept-design',
+                        financial_treatment: 'CAPEX'
+                    },
+                    {
+                        id: 'proj-year-test-3',
+                        title: 'Q4 Initiative',
+                        start_date: '2025-10-01',
+                        end_date: '2025-12-31',
+                        budget_cents: 8000000,
+                        status: 'solution-design',
+                        financial_treatment: 'OPEX'
+                    }
+                ];
+                
+                testProjects.forEach(project => {
+                    SimpleStorage.saveProject(project);
+                });
+            }
+            
+            // Set up button handlers
+            document.getElementById('btn-year-view').addEventListener('click', () => {
+                setZoomLevel('year');
+            });
+            
+            document.getElementById('btn-quarter-view').addEventListener('click', () => {
+                setZoomLevel('quarter');
+            });
+            
+            document.getElementById('btn-month-view').addEventListener('click', () => {
+                setZoomLevel('month');
+            });
+            
+            document.getElementById('btn-week-view').addEventListener('click', () => {
+                setZoomLevel('week');
+            });
+            
+            // Initialize with year view
+            setTimeout(() => {
+                console.log('🎯 Initializing timeline with year view');
+                setZoomLevel('year');
+            }, 500);
+            
+            console.log('✅ Year view debug test initialized');
+        });
+    </script>
+</body>
+</html>

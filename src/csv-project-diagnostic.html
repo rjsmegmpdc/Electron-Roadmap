@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV & Project Diagnostic</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .diagnostic-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .status-log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        .project-display {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 CSV Export & Project Display Diagnostic</h1>
+    
+    <div class="diagnostic-section">
+        <h2>LocalStorage Analysis</h2>
+        <button class="test-button" onclick="analyzeLocalStorage()">🔍 Analyze Stored Projects</button>
+        <button class="test-button" onclick="clearLocalStorage()">🗑️ Clear All Projects</button>
+        <button class="test-button" onclick="addTestProjects()">➕ Add Test Projects</button>
+    </div>
+    
+    <div class="diagnostic-section">
+        <h2>CSV Export Test</h2>
+        <button class="test-button" onclick="testCSVExport()">📤 Test CSV Export</button>
+        <button class="test-button" onclick="testCSVExportFixed()">📤 Test Fixed CSV Export</button>
+        <div id="csv-preview"></div>
+    </div>
+    
+    <div class="diagnostic-section">
+        <h2>Project Display Test</h2>
+        <button class="test-button" onclick="testProjectDisplay()">📊 Test Project Loading</button>
+        <div id="project-display-area"></div>
+    </div>
+    
+    <div class="diagnostic-section">
+        <h2>Status Log</h2>
+        <div id="status-log" class="status-log">Ready for diagnostic...\n</div>
+        <button class="test-button" onclick="clearLog()">🧹 Clear Log</button>
+    </div>
+    
+    <script>
+        const statusLog = document.getElementById('status-log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            statusLog.textContent += logEntry;
+            statusLog.scrollTop = statusLog.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            statusLog.textContent = 'Log cleared...\n';
+        }
+        
+        // Simple storage implementation (matching the main app)
+        const SimpleStorage = {
+            getProjects() {
+                try {
+                    return JSON.parse(localStorage.getItem('roadmap-projects') || '[]');
+                } catch {
+                    return [];
+                }
+            },
+            
+            saveProject(project) {
+                const projects = this.getProjects();
+                project.id = project.id || 'proj-' + Date.now();
+                project.status = project.status || 'concept-design';
+                projects.push(project);
+                localStorage.setItem('roadmap-projects', JSON.stringify(projects));
+                return project;
+            },
+            
+            getAllProjects() {
+                return this.getProjects();
+            },
+            
+            clearAll() {
+                localStorage.removeItem('roadmap-projects');
+            }
+        };
+        
+        function analyzeLocalStorage() {
+            log('🔍 Analyzing localStorage...');
+            
+            const rawData = localStorage.getItem('roadmap-projects');
+            log(`Raw localStorage data: ${rawData ? 'EXISTS' : 'NOT FOUND'}`);
+            
+            if (rawData) {
+                log(`Raw data length: ${rawData.length} characters`);
+                log(`Raw data preview: ${rawData.substring(0, 200)}...`);
+                
+                try {
+                    const projects = JSON.parse(rawData);
+                    log(`✅ Parsed ${projects.length} projects successfully`);
+                    
+                    projects.forEach((project, index) => {
+                        log(`  Project ${index + 1}:`);
+                        log(`    - ID: ${project.id}`);
+                        log(`    - Title: ${project.title}`);
+                        log(`    - Start: ${project.start_date}`);
+                        log(`    - End: ${project.end_date}`);
+                        log(`    - Status: ${project.status}`);
+                        log(`    - Budget: ${project.budget_cents}`);
+                    });
+                } catch (error) {
+                    log(`❌ Failed to parse projects: ${error.message}`);
+                }
+            }
+            
+            const projects = SimpleStorage.getAllProjects();
+            log(`Using SimpleStorage.getAllProjects(): ${projects.length} projects`);
+        }
+        
+        function clearLocalStorage() {
+            SimpleStorage.clearAll();
+            log('🗑️ Cleared all projects from localStorage');
+        }
+        
+        function addTestProjects() {
+            log('➕ Adding test projects...');
+            
+            const testProjects = [
+                {
+                    title: 'Project Alpha',
+                    start_date: '2024-01-01',
+                    end_date: '2024-03-31',
+                    budget_cents: 50000,
+                    status: 'concept-design',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Project Beta',
+                    start_date: '2024-02-01',
+                    end_date: '2024-05-31',
+                    budget_cents: 75000,
+                    status: 'engineering',
+                    financial_treatment: 'CAPEX'
+                },
+                {
+                    title: 'Project Gamma',
+                    start_date: '2024-03-01',
+                    end_date: '2024-06-30',
+                    budget_cents: 100000,
+                    status: 'uat',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Project Delta',
+                    start_date: '2024-04-01',
+                    end_date: '2024-07-31',
+                    budget_cents: 120000,
+                    status: 'release',
+                    financial_treatment: 'CAPEX'
+                }
+            ];
+            
+            testProjects.forEach(project => {
+                SimpleStorage.saveProject({...project});
+                log(`✅ Added: ${project.title}`);
+            });
+            
+            log(`✅ Added ${testProjects.length} test projects`);
+        }
+        
+        function testCSVExport() {
+            log('📤 Testing CSV export (current implementation)...');
+            
+            const projects = SimpleStorage.getAllProjects();
+            log(`Found ${projects.length} projects for export`);
+            
+            if (projects.length === 0) {
+                log('❌ No projects to export');
+                return;
+            }
+            
+            // Simulate the current implementation
+            projects.forEach((project, index) => {
+                try {
+                    const headers = ['Title', 'Start Date', 'End Date', 'Budget', 'Status', 'Financial Treatment'];
+                    const csvRows = [headers.join(',')];
+                    
+                    const row = [
+                        `"${project.title || ''}"`,
+                        `"${project.start_date || ''}"`,
+                        `"${project.end_date || ''}"`,
+                        project.budget_cents ? (project.budget_cents / 100) : 0,
+                        `"${project.status || ''}"`,
+                        `"${project.financial_treatment || ''}"`
+                    ];
+                    csvRows.push(row.join(','));
+                    
+                    const csvContent = csvRows.join('\\n');
+                    log(`CSV Content for project ${index + 1}:`);
+                    log(csvContent);
+                    log('---');
+                    
+                } catch (error) {
+                    log(`❌ Export failed for project ${index + 1}: ${error.message}`);
+                }
+            });
+        }
+        
+        function testCSVExportFixed() {
+            log('📤 Testing FIXED CSV export (single file)...');
+            
+            const projects = SimpleStorage.getAllProjects();
+            log(`Found ${projects.length} projects for export`);
+            
+            if (projects.length === 0) {
+                log('❌ No projects to export');
+                return;
+            }
+            
+            try {
+                const headers = ['Title', 'Start Date', 'End Date', 'Budget', 'Status', 'Financial Treatment'];
+                const csvRows = [headers.join(',')];
+                
+                // Add ALL projects to the same CSV
+                projects.forEach(project => {
+                    const row = [
+                        `"${project.title || ''}"`,
+                        `"${project.start_date || ''}"`,
+                        `"${project.end_date || ''}"`,
+                        project.budget_cents ? (project.budget_cents / 100) : 0,
+                        `"${project.status || ''}"`,
+                        `"${project.financial_treatment || ''}"`
+                    ];
+                    csvRows.push(row.join(','));
+                });
+                
+                const csvContent = csvRows.join('\\n');
+                log(`✅ Generated single CSV with ${projects.length} projects:`);
+                log(csvContent);
+                
+                // Actually create and download the file
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'roadmap-projects-fixed-' + new Date().toISOString().split('T')[0] + '.csv';
+                
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                log('✅ CSV file downloaded successfully!');
+                
+                // Show preview
+                const preview = document.getElementById('csv-preview');
+                preview.innerHTML = `
+                    <h4>CSV Preview:</h4>
+                    <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto;">${csvContent}</pre>
+                `;
+                
+            } catch (error) {
+                log(`❌ Fixed export failed: ${error.message}`);
+            }
+        }
+        
+        function testProjectDisplay() {
+            log('📊 Testing project display...');
+            
+            const projects = SimpleStorage.getAllProjects();
+            log(`Loading ${projects.length} projects for display test`);
+            
+            const displayArea = document.getElementById('project-display-area');
+            displayArea.innerHTML = '';
+            
+            if (projects.length === 0) {
+                displayArea.innerHTML = '<p>No projects found for display</p>';
+                log('❌ No projects to display');
+                return;
+            }
+            
+            projects.forEach((project, index) => {
+                log(`Displaying project ${index + 1}: ${project.title}`);
+                
+                const projectDiv = document.createElement('div');
+                projectDiv.className = 'project-display';
+                projectDiv.innerHTML = `
+                    <h4>${project.title || 'Untitled Project'}</h4>
+                    <p><strong>ID:</strong> ${project.id}</p>
+                    <p><strong>Dates:</strong> ${project.start_date || 'No start'} - ${project.end_date || 'No end'}</p>
+                    <p><strong>Budget:</strong> $${project.budget_cents ? (project.budget_cents / 100).toLocaleString() : '0'}</p>
+                    <p><strong>Status:</strong> ${project.status || 'Unknown'}</p>
+                    <p><strong>Financial Treatment:</strong> ${project.financial_treatment || 'Not set'}</p>
+                `;
+                
+                displayArea.appendChild(projectDiv);
+            });
+            
+            log(`✅ Successfully displayed ${projects.length} projects`);
+        }
+        
+        // Initialize
+        log('🔧 CSV & Project Diagnostic loaded');
+        log('Click buttons above to run diagnostics');
+    </script>
+</body>
+</html>

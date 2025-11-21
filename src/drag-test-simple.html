@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Drag Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .test-info {
+            background: #e3f2fd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+        }
+        .drag-status {
+            background: #f3e5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🖱️ Simple Drag Panning Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+        </nav>
+    </header>
+    
+    <main class="timeline-view">
+        <div class="test-info">
+            <h3>🧪 Test Instructions</h3>
+            <p><strong>Click and hold</strong> in the timeline area below, then <strong>drag left or right</strong>.</p>
+            <p>The timeline should move <strong>immediately</strong> as you drag your mouse.</p>
+            <p>Watch the console (F12) for debug information.</p>
+        </div>
+        
+        <div class="drag-status" id="drag-status">
+            Drag Status: <span id="status-text">Ready</span><br>
+            Mouse Position: <span id="mouse-pos">0, 0</span><br>
+            Scroll Position: <span id="scroll-pos">0</span><br>
+            Is Dragging: <span id="is-dragging">false</span>
+        </div>
+        
+        <section class="timeline-controls">
+            <div class="controls-left">
+                <button id="btn-add-project" class="primary-btn">➕ Add Test Project</button>
+                <button id="btn-reset-view" class="secondary-btn">🔄 Reset View</button>
+            </div>
+        </section>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🧪 Simple drag test loading...');
+        
+        // Add visual feedback for drag testing
+        function updateDragStatus() {
+            const headerContainer = document.querySelector('.timeline-header');
+            const timelineContainer = document.getElementById('timeline-container');
+            
+            if (timelineContainer) {
+                const isDragging = timelineContainer.classList.contains('dragging');
+                const scrollPos = timelineContainer.scrollLeft;
+                
+                document.getElementById('status-text').textContent = isDragging ? 'DRAGGING' : 'Ready';
+                document.getElementById('scroll-pos').textContent = scrollPos + 'px';
+                document.getElementById('is-dragging').textContent = isDragging;
+                
+                document.getElementById('drag-status').style.backgroundColor = isDragging ? '#ffebee' : '#f3e5f5';
+            }
+        }
+        
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            document.getElementById('mouse-pos').textContent = `${e.clientX}, ${e.clientY}`;
+        });
+        
+        function addTestProject() {
+            SimpleStorage.saveProject({
+                title: `Test Project ${Date.now()}`,
+                start_date: '2025-03-01',
+                end_date: '2025-06-30',
+                status: 'engineering',
+                budget_cents: 50000 * 100,
+                financial_treatment: 'CAPEX'
+            });
+            
+            showNotification('Test project added!', 'success');
+            setTimeout(() => loadTimelineProjects(), 300);
+        }
+        
+        function resetView() {
+            const container = document.querySelector('.timeline-wrapper');
+            const headerContainer = document.querySelector('.timeline-header');
+            if (container && headerContainer) {
+                container.parentElement.scrollLeft = 0;
+                headerContainer.scrollLeft = 0;
+                showNotification('View reset!', 'info');
+            }
+        }
+        
+        // Initialize test
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Setting up simple drag test...');
+            
+            document.getElementById('btn-add-project')?.addEventListener('click', addTestProject);
+            document.getElementById('btn-reset-view')?.addEventListener('click', resetView);
+            
+            // Monitor drag status
+            setInterval(updateDragStatus, 50);
+            
+            // Add test project if none exist
+            setTimeout(() => {
+                const projects = SimpleStorage.getAllProjects();
+                if (projects.length === 0) {
+                    addTestProject();
+                }
+            }, 1000);
+            
+            console.log('✅ Simple drag test ready!');
+        });
+    </script>
+</body>
+</html>

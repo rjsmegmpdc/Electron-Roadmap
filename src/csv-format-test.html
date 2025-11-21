@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Format Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .csv-preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border: 1px solid #ddd;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🧪 CSV Format Test</h1>
+    
+    <div class="test-section">
+        <h2>CSV Export Format Fix</h2>
+        <p>✅ <strong>Fixed:</strong> Changed from <code>\\n</code> to <code>\r\n</code> for proper line breaks</p>
+        <p>✅ <strong>Fixed:</strong> Added proper CSV MIME type with UTF-8 encoding</p>
+        <p>✅ <strong>Fixed:</strong> Added quote escaping for text fields</p>
+        <p>✅ <strong>Added:</strong> Detailed console logging for debugging</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Current Projects</h2>
+        <button class="test-button" onclick="testCSVFormat()">📊 Test CSV Format</button>
+        <button class="test-button" onclick="exportTestCSV()">📤 Export Test CSV</button>
+        <button class="test-button" onclick="goToTimeline()">🗓️ Open Timeline</button>
+        
+        <div id="status"></div>
+        <div id="csv-preview"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Expected CSV Format</h2>
+        <div class="csv-preview">Title,Start Date,End Date,Budget,Status,Financial Treatment
+"Project Alpha","2024-01-01","2024-03-31",500,"concept-design","OPEX"
+"Project Beta","2024-02-01","2024-05-31",750,"engineering","CAPEX"
+"Project Gamma","2024-03-01","2024-06-30",1000,"uat","OPEX"
+"Project Delta","2024-04-01","2024-07-31",1200,"release","CAPEX"</div>
+        <p><small>Each project should be on its own row, with headers on the first row.</small></p>
+    </div>
+    
+    <script>
+        // Same storage implementation as main app
+        const SimpleStorage = {
+            getProjects() {
+                try {
+                    return JSON.parse(localStorage.getItem('roadmap-projects') || '[]');
+                } catch {
+                    return [];
+                }
+            },
+            
+            saveProject(project) {
+                const projects = this.getProjects();
+                project.id = project.id || 'proj-' + Date.now();
+                project.status = project.status || 'concept-design';
+                projects.push(project);
+                localStorage.setItem('roadmap-projects', JSON.stringify(projects));
+                return project;
+            },
+            
+            getAllProjects() {
+                return this.getProjects();
+            }
+        };
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<p class="${type}">📊 ${message}</p>`;
+        }
+        
+        function testCSVFormat() {
+            const projects = SimpleStorage.getAllProjects();
+            updateStatus(`Found ${projects.length} projects in storage`);
+            
+            if (projects.length === 0) {
+                updateStatus('No projects found. Add some projects first!', 'warning');
+                return;
+            }
+            
+            // Test the CSV formatting logic
+            try {
+                const headers = ['Title', 'Start Date', 'End Date', 'Budget', 'Status', 'Financial Treatment'];
+                const csvRows = [headers.join(',')];
+                
+                projects.forEach((project, index) => {
+                    const row = [
+                        `"${(project.title || '').replace(/"/g, '""')}"`,
+                        `"${project.start_date || ''}"`,
+                        `"${project.end_date || ''}"`,
+                        project.budget_cents ? (project.budget_cents / 100) : 0,
+                        `"${project.status || 'concept-design'}"`,
+                        `"${project.financial_treatment || 'OPEX'}"`
+                    ];
+                    csvRows.push(row.join(','));
+                });
+                
+                const csvContent = csvRows.join('\r\n');
+                
+                // Show preview
+                const preview = document.getElementById('csv-preview');
+                preview.innerHTML = `<h4>Generated CSV Content:</h4><div class="csv-preview">${csvContent}</div>`;
+                
+                updateStatus(`✅ Successfully generated CSV with ${projects.length} projects`, 'success');
+                
+                console.log('CSV Content:', csvContent);
+                
+            } catch (error) {
+                updateStatus(`❌ Error generating CSV: ${error.message}`, 'error');
+            }
+        }
+        
+        function exportTestCSV() {
+            const projects = SimpleStorage.getAllProjects();
+            
+            if (projects.length === 0) {
+                updateStatus('No projects to export!', 'warning');
+                return;
+            }
+            
+            try {
+                const headers = ['Title', 'Start Date', 'End Date', 'Budget', 'Status', 'Financial Treatment'];
+                const csvRows = [headers.join(',')];
+                
+                projects.forEach((project) => {
+                    const row = [
+                        `"${(project.title || '').replace(/"/g, '""')}"`,
+                        `"${project.start_date || ''}"`,
+                        `"${project.end_date || ''}"`,
+                        project.budget_cents ? (project.budget_cents / 100) : 0,
+                        `"${project.status || 'concept-design'}"`,
+                        `"${project.financial_treatment || 'OPEX'}"`
+                    ];
+                    csvRows.push(row.join(','));
+                });
+                
+                const csvContent = csvRows.join('\r\n');
+                
+                // Create and download file
+                const blob = new Blob([csvContent], { 
+                    type: 'text/csv;charset=utf-8;' 
+                });
+                const url = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'test-roadmap-projects-' + new Date().toISOString().split('T')[0] + '.csv';
+                
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                updateStatus(`✅ Test CSV exported with ${projects.length} projects`, 'success');
+                
+            } catch (error) {
+                updateStatus(`❌ Export failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function goToTimeline() {
+            window.open('index.html', '_blank');
+        }
+        
+        // Initialize
+        updateStatus('CSV format test page loaded');
+        
+        // Auto-test if projects exist
+        setTimeout(() => {
+            const projects = SimpleStorage.getAllProjects();
+            if (projects.length > 0) {
+                testCSVFormat();
+            }
+        }, 500);
+    </script>
+</body>
+</html>

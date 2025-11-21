@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom-to-Today Test - Roadmap Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .zoom-test-info {
+            background: #e3f2fd;
+            border: 2px solid #1976d2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px;
+            font-family: monospace;
+        }
+        .zoom-controls-demo {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px;
+        }
+        .today-indicator {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔍 Zoom-to-Today Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+            <a href="test-auto-scroll-drag.html">Auto-Scroll Test</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="zoom-test-info">
+            <h2>🎯 Zoom-to-Today Functionality</h2>
+            <p>This test verifies that zoom operations always center on "Today" rather than preserving relative scroll position.</p>
+            
+            <h3>📋 Expected Behavior:</h3>
+            <ul>
+                <li><strong>🔍 Zoom In:</strong> Today stays centered, timeline scale increases (projects get wider)</li>
+                <li><strong>🔍 Zoom Out:</strong> Today stays centered, timeline scale decreases (projects get narrower)</li>  
+                <li><strong>🔄 Reset:</strong> Returns to Month view with Today centered</li>
+                <li><strong>📅 Today Marker:</strong> Should always be visible in center after zoom operations</li>
+            </ul>
+        </div>
+        
+        <div class="zoom-controls-demo">
+            <h3>🧪 Test Controls</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <button id="btn-zoom-in-test" class="control-btn">🔍+ Zoom In</button>
+                <button id="btn-zoom-out-test" class="control-btn">🔍- Zoom Out</button>
+                <button id="btn-reset-zoom-test" class="control-btn">🔄 Reset Zoom</button>
+                <button id="btn-go-to-today-test" class="control-btn today-btn">📅 Go to Today</button>
+            </div>
+            
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <span><strong>Current Zoom:</strong> <span id="current-zoom-level">Loading...</span></span>
+                <span class="today-indicator">📅 TODAY</span>
+                <span><strong>Today Date:</strong> <span id="today-date"></span></span>
+            </div>
+        </div>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+        
+        <div class="zoom-test-info">
+            <h2>🔧 Testing Instructions</h2>
+            <ol>
+                <li><strong>Initial View:</strong> Timeline should start in Month view with Today centered</li>
+                <li><strong>Zoom Out:</strong> Click "Zoom Out" - Today marker should stay in center, projects get narrower</li>
+                <li><strong>Zoom In:</strong> Click "Zoom In" - Today marker should stay in center, projects get wider</li>
+                <li><strong>Multiple Zooms:</strong> Try zooming out to Year view, then in to Week view - Today always centered</li>
+                <li><strong>Reset Test:</strong> From any zoom level, click "Reset" - should return to Month view centered on Today</li>
+                <li><strong>Scroll Test:</strong> Scroll away from Today, then zoom - should snap back to center on Today</li>
+            </ol>
+            
+            <h3>💡 Visual Verification:</h3>
+            <ul>
+                <li>Watch the red "TODAY" marker - it should remain centered during zoom operations</li>
+                <li>Projects should appear to "grow" or "shrink" around the Today marker</li>
+                <li>The timeline should feel like you're zooming into/out of a fixed point (Today)</li>
+                <li>Check console logs for detailed zoom positioning information</li>
+            </ul>
+        </div>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🔍 Zoom-to-Today test loaded');
+        
+        function updateZoomDisplay() {
+            const zoomLevel = document.getElementById('current-zoom-level');
+            const todayDate = document.getElementById('today-date');
+            
+            if (zoomLevel && typeof TimelineRenderer !== 'undefined') {
+                const currentZoom = TimelineRenderer.currentZoom;
+                const zoomConfig = TimelineRenderer.zoomLevels[currentZoom];
+                zoomLevel.textContent = `${currentZoom} (${zoomConfig.name})`;
+                zoomLevel.style.color = currentZoom === 'month' ? '#28a745' : '#007bff';
+            }
+            
+            if (todayDate) {
+                const today = new Date();
+                todayDate.textContent = today.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric', 
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+        }
+        
+        function testZoomToToday(action) {
+            console.log(`🧪 Testing zoom action: ${action}`);
+            
+            // Get current scroll position for comparison
+            const timelineContainer = document.getElementById('timeline-container');
+            const beforeScroll = timelineContainer ? timelineContainer.scrollLeft : 0;
+            
+            console.log(`📊 Before zoom - ScrollLeft: ${beforeScroll}px`);
+            
+            // Perform zoom action
+            if (typeof timelineZoom === 'function') {
+                timelineZoom(action);
+            } else {
+                console.error('❌ timelineZoom function not available');
+                return;
+            }
+            
+            // Check result after zoom completes
+            setTimeout(() => {
+                const afterScroll = timelineContainer ? timelineContainer.scrollLeft : 0;
+                console.log(`📊 After zoom - ScrollLeft: ${afterScroll}px`);
+                
+                updateZoomDisplay();
+                
+                // Verify Today is centered (within reasonable tolerance)
+                if (timelineContainer) {
+                    const containerWidth = timelineContainer.clientWidth;
+                    const centerX = afterScroll + (containerWidth / 2);
+                    
+                    // Calculate where Today should be
+                    const projects = SimpleStorage.getAllProjects();
+                    const bounds = TimelineRenderer.calculateTimelineBounds(projects);
+                    const zoomConfig = TimelineRenderer.zoomLevels[TimelineRenderer.currentZoom];
+                    const todayX = Math.floor((bounds.today - bounds.start) / (24 * 60 * 60 * 1000)) * zoomConfig.dayWidth;
+                    
+                    const tolerance = 50; // pixels
+                    const isCentered = Math.abs(centerX - todayX) < tolerance;
+                    
+                    console.log(`🎯 Centering verification:`, {
+                        centerX,
+                        todayX, 
+                        difference: Math.abs(centerX - todayX),
+                        isCentered: isCentered ? '✅ YES' : '❌ NO',
+                        tolerance
+                    });
+                    
+                    if (isCentered) {
+                        showNotification('✅ Today properly centered after zoom!', 'success');
+                    } else {
+                        showNotification('⚠️ Today may not be properly centered', 'warning');
+                    }
+                }
+            }, 400);
+        }
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📖 DOM ready - setting up zoom-to-today test');
+            
+            // Add test projects spanning multiple months for better zoom testing
+            const projects = SimpleStorage.getAllProjects();
+            if (projects.length === 0) {
+                console.log('➕ Adding zoom test projects');
+                
+                const testProjects = [
+                    {
+                        id: 'proj-zoom-past',
+                        title: 'Past Project',
+                        start_date: '2025-08-01',
+                        end_date: '2025-09-30',
+                        budget_cents: 5000000,
+                        status: 'release',
+                        financial_treatment: 'CAPEX'
+                    },
+                    {
+                        id: 'proj-zoom-current',
+                        title: 'Current Project (Around Today)',
+                        start_date: '2025-09-15',
+                        end_date: '2025-11-15',
+                        budget_cents: 8000000,
+                        status: 'engineering',
+                        financial_treatment: 'CAPEX'
+                    },
+                    {
+                        id: 'proj-zoom-future',
+                        title: 'Future Project',
+                        start_date: '2025-11-01',
+                        end_date: '2026-01-31',
+                        budget_cents: 12000000,
+                        status: 'concept-design',
+                        financial_treatment: 'OPEX'
+                    },
+                    {
+                        id: 'proj-zoom-longterm',
+                        title: 'Long-term Initiative',
+                        start_date: '2026-02-01',
+                        end_date: '2026-08-31',
+                        budget_cents: 15000000,
+                        status: 'solution-design',
+                        financial_treatment: 'CAPEX'
+                    }
+                ];
+                
+                testProjects.forEach(project => {
+                    SimpleStorage.saveProject(project);
+                });
+            }
+            
+            // Set up button handlers
+            document.getElementById('btn-zoom-in-test').addEventListener('click', () => {
+                testZoomToToday('in');
+            });
+            
+            document.getElementById('btn-zoom-out-test').addEventListener('click', () => {
+                testZoomToToday('out'); 
+            });
+            
+            document.getElementById('btn-reset-zoom-test').addEventListener('click', () => {
+                testZoomToToday('reset');
+            });
+            
+            document.getElementById('btn-go-to-today-test').addEventListener('click', () => {
+                console.log('🧪 Testing go to today function');
+                if (typeof goToToday === 'function') {
+                    goToToday();
+                } else {
+                    console.error('❌ goToToday function not available');
+                }
+            });
+            
+            // Initialize timeline in month view (default)
+            setTimeout(() => {
+                console.log('🎯 Initializing timeline for zoom-to-today testing');
+                TimelineRenderer.currentZoom = 'month';
+                TimelineRenderer.renderTimeline();
+                updateZoomDisplay();
+                
+                // Show initial instruction
+                setTimeout(() => {
+                    showNotification('🧪 Ready for zoom testing! Try the zoom buttons above.', 'info');
+                }, 1000);
+                
+            }, 500);
+            
+            console.log('✅ Zoom-to-today test initialized');
+        });
+    </script>
+</body>
+</html>

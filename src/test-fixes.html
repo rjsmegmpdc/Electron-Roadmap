@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixes</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #218838;
+        }
+        .status {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Fixes for CSV Export & Project Display</h1>
+    
+    <div class="test-section">
+        <h2>CSV Export Fix Test</h2>
+        <p>✅ <strong>Fixed:</strong> CSV export now prevents duplicate event handlers</p>
+        <p>✅ <strong>Fixed:</strong> Single CSV file will be created regardless of project count</p>
+        <p>✅ <strong>Fixed:</strong> Added initialization guards to prevent duplicate handlers</p>
+        
+        <button class="test-button" onclick="window.open('index.html', '_blank')">
+            🗓️ Test Timeline View & CSV Export
+        </button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Project Display Fix Test</h2>
+        <p>✅ <strong>Fixed:</strong> Added detailed logging for each project load</p>
+        <p>✅ <strong>Fixed:</strong> Better error handling for project bar creation</p>
+        <p>✅ <strong>Fixed:</strong> Display count tracking to identify missing projects</p>
+        
+        <button class="test-button" onclick="testCurrentProjects()">
+            📊 Check Current Projects in Storage
+        </button>
+        
+        <div id="project-status" class="status" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <ol>
+            <li><strong>CSV Export Test:</strong>
+                <ul>
+                    <li>Click "Test Timeline View & CSV Export" above</li>
+                    <li>Click the "Export CSV" button on the timeline page</li>
+                    <li>Verify that only <strong>ONE</strong> CSV file is downloaded</li>
+                    <li>Check that the CSV contains all your projects</li>
+                </ul>
+            </li>
+            <li><strong>Project Display Test:</strong>
+                <ul>
+                    <li>Open browser developer tools (F12)</li>
+                    <li>Go to the Console tab</li>
+                    <li>Refresh the timeline page</li>
+                    <li>Look for detailed project loading logs</li>
+                    <li>Verify all projects are displayed</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>Changes Made</h2>
+        <div class="status">
+🔧 Fixed Issues:
+
+1. CSV Export Creating Multiple Files:
+   - Added data-handler-attached attribute check
+   - Prevents duplicate event listeners on Export CSV button
+   - Added initialization guards (window.uiInitialized)
+
+2. Project Display Showing Only 2 of 4 Projects:
+   - Added detailed logging for each project load
+   - Enhanced error handling in project bar creation
+   - Added display count tracking
+   - Better debugging information in console
+
+3. General Improvements:
+   - Prevented duplicate UI initialization
+   - Better error handling throughout
+   - More detailed console logging for debugging
+        </div>
+    </div>
+    
+    <script>
+        // Quick localStorage check
+        function testCurrentProjects() {
+            const statusDiv = document.getElementById('project-status');
+            statusDiv.style.display = 'block';
+            
+            try {
+                const projects = JSON.parse(localStorage.getItem('roadmap-projects') || '[]');
+                statusDiv.innerHTML = `
+📊 Found ${projects.length} projects in localStorage:
+${projects.map((p, i) => `  ${i + 1}. ${p.title || 'Untitled'} (ID: ${p.id})`).join('\n')}
+
+${projects.length === 0 ? '⚠️ No projects found. Create some projects first!' : ''}
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `❌ Error reading projects: ${error.message}`;
+            }
+        }
+        
+        console.log('🧪 Test Fixes page loaded');
+        console.log('Open browser console to see detailed logs when testing');
+    </script>
+</body>
+</html>

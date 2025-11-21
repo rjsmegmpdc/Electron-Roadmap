@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap Tool - Launchpad (Inline Test)</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        /* Emergency styling in case CSS doesn't load */
+        .navigation-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        
+        .nav-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            min-width: 250px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .primary-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        .primary-btn:hover {
+            background: #0056b3;
+        }
+        
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Roadmap Tool</h1>
+        <p>Project management and roadmap visualization</p>
+    </header>
+    
+    <main class="launchpad">
+        <div class="navigation-cards">
+            <div class="nav-card">
+                <h2>Timeline View</h2>
+                <p>Visual Gantt chart with drag-and-drop timeline management</p>
+                <button id="btn-roadmap" class="primary-btn">Open Timeline</button>
+            </div>
+            
+            <div class="nav-card">
+                <h2>Project Details</h2>
+                <p>Detailed project management, tasks, resources, and finances</p>
+                <button id="btn-details" class="primary-btn">Manage Projects</button>
+            </div>
+            
+            <div class="nav-card">
+                <h2>Data Table</h2>
+                <p>Tabular view with CSV import/export capabilities</p>
+                <button id="btn-table" class="primary-btn">View Table</button>
+            </div>
+        </div>
+    </main>
+    
+    <div class="debug-info" id="debug-info">
+        <div>Debug Console:</div>
+    </div>
+    
+    <script>
+        // INLINE JAVASCRIPT - NO EXTERNAL DEPENDENCIES
+        
+        // Debug logging to page
+        const debugDiv = document.getElementById('debug-info');
+        function debugLog(message) {
+            console.log(message);
+            const div = document.createElement('div');
+            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            debugDiv.appendChild(div);
+            debugDiv.scrollTop = debugDiv.scrollHeight;
+        }
+        
+        debugLog('🚀 INLINE JAVASCRIPT STARTING');
+        debugLog('📍 URL: ' + window.location.href);
+        debugLog('📄 Ready state: ' + document.readyState);
+        
+        // Method 1: Immediate execution
+        debugLog('🔧 Method 1: Immediate execution');
+        function setupButtonsImmediate() {
+            debugLog('Finding buttons immediately...');
+            
+            const btnRoadmap = document.getElementById('btn-roadmap');
+            const btnDetails = document.getElementById('btn-details');
+            const btnTable = document.getElementById('btn-table');
+            
+            debugLog('Roadmap button: ' + !!btnRoadmap);
+            debugLog('Details button: ' + !!btnDetails);
+            debugLog('Table button: ' + !!btnTable);
+            
+            if (btnRoadmap) {
+                btnRoadmap.onclick = function() {
+                    debugLog('🎯 ROADMAP BUTTON CLICKED!');
+                    alert('Roadmap button works! Navigating to timeline...');
+                    window.location.href = 'index.html';
+                };
+                btnRoadmap.style.backgroundColor = '#28a745'; // Green to show it's ready
+                debugLog('✅ Roadmap button setup complete');
+            }
+            
+            if (btnDetails) {
+                btnDetails.onclick = function() {
+                    debugLog('🎯 DETAILS BUTTON CLICKED!');
+                    alert('Details button works! Navigating to project details...');
+                    window.location.href = 'project-details.html';
+                };
+                btnDetails.style.backgroundColor = '#28a745'; // Green to show it's ready
+                debugLog('✅ Details button setup complete');
+            }
+            
+            if (btnTable) {
+                btnTable.onclick = function() {
+                    debugLog('🎯 TABLE BUTTON CLICKED!');
+                    alert('Table button works! (Feature coming soon)');
+                };
+                btnTable.style.backgroundColor = '#ffc107'; // Yellow for "coming soon"
+                debugLog('✅ Table button setup complete');
+            }
+        }
+        
+        // Try immediate setup
+        setupButtonsImmediate();
+        
+        // Method 2: DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('🔧 Method 2: DOMContentLoaded');
+            setupButtonsImmediate();
+        });
+        
+        // Method 3: Window load
+        window.addEventListener('load', function() {
+            debugLog('🔧 Method 3: Window load');
+            setupButtonsImmediate();
+        });
+        
+        // Method 4: Delayed execution
+        setTimeout(function() {
+            debugLog('🔧 Method 4: Delayed execution (1 second)');
+            setupButtonsImmediate();
+        }, 1000);
+        
+        // Method 5: Manual button finding with ALL possible selectors
+        setTimeout(function() {
+            debugLog('🔧 Method 5: Emergency fallback (2 seconds)');
+            
+            // Find ALL buttons on the page
+            const allButtons = document.getElementsByTagName('button');
+            debugLog('Total buttons found: ' + allButtons.length);
+            
+            for (let i = 0; i < allButtons.length; i++) {
+                const btn = allButtons[i];
+                const buttonText = btn.textContent || btn.innerText;
+                debugLog('Button ' + i + ': "' + buttonText + '" (ID: ' + btn.id + ')');
+                
+                // Add click handler to every button
+                btn.addEventListener('click', function(e) {
+                    debugLog('🚨 EMERGENCY HANDLER: Button clicked: ' + buttonText);
+                    alert('Emergency handler!\nButton: ' + buttonText + '\nID: ' + btn.id);
+                    
+                    // Navigate based on button content
+                    if (buttonText.includes('Timeline') || buttonText.includes('Timeline')) {
+                        window.location.href = 'index.html';
+                    } else if (buttonText.includes('Project') || buttonText.includes('Manage')) {
+                        window.location.href = 'project-details.html';
+                    } else if (buttonText.includes('Table') || buttonText.includes('Data')) {
+                        alert('Table view coming soon!');
+                    }
+                });
+                
+                // Make button visually obvious
+                btn.style.border = '3px solid red';
+                btn.style.fontWeight = 'bold';
+            }
+            
+            debugLog('✅ Emergency fallback complete');
+        }, 2000);
+        
+        // Global test function
+        window.testInlineButtons = function() {
+            debugLog('🧪 Manual test function called');
+            const buttons = document.getElementsByTagName('button');
+            for (let i = 0; i < buttons.length; i++) {
+                debugLog('Clicking button ' + i);
+                buttons[i].click();
+                break; // Only click the first one for testing
+            }
+        };
+        
+        debugLog('🎉 INLINE JAVASCRIPT COMPLETE');
+        debugLog('💡 Try: window.testInlineButtons()');
+        
+        // Visual feedback that JavaScript loaded
+        document.body.style.borderTop = '5px solid green';
+        debugLog('✅ Green border added to indicate JS loaded');
+        
+    </script>
+</body>
+</html>

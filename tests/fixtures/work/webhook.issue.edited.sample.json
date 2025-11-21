@@ -1,0 +1,13 @@
+{
+  "action": "edited",
+  "issue": {
+    "number": 123,
+    "title": "[Story] As a PM, I can export roadmap to CSV",
+    "labels": [{ "name": "status:in-progress" }],
+    "body": "---\nrt_project_id: proj-001\nrt_task_id: task-100\nstart_date_nz: 05-03-2025\nend_date_nz: 20-03-2025\nstatus: in-progress\npriority: P3\n---\n..."
+  },
+  "repository": { 
+    "name": "roadmap-work", 
+    "owner": { "login": "one-nz" } 
+  }
+}

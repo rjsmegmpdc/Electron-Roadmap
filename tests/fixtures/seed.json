@@ -1,0 +1,30 @@
+{
+  "projects": [
+    {
+      "id": "proj-001",
+      "title": "Project Alpha",
+      "description": "Test project",
+      "lane": "office365",
+      "start_date": "01-01-2025",
+      "end_date": "30-06-2025",
+      "status": "concept-design",
+      "pm_name": "Alice Example",
+      "budget_cents": 10000000,
+      "financial_treatment": "CAPEX",
+      "tasks": [
+        {
+          "id": "task-001",
+          "project_id": "proj-001",
+          "title": "Kickoff",
+          "start_date": "01-01-2025",
+          "end_date": "05-01-2025",
+          "effort_hours": 8,
+          "status": "completed",
+          "assigned_resources": []
+        }
+      ],
+      "resources": [],
+      "forecasts": []
+    }
+  ]
+}

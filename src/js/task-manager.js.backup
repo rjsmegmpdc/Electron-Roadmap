@@ -1,0 +1,249 @@
+/**
+ * TaskManager
+ * 
+ * Manages tasks within projects with CRUD operations.
+ * Uses ProjectManager for persistence and DateUtils for validation.
+ * Enforces task validation and status enum checking.
+ * 
+ * Features:
+ * - Task CRUD operations within projects
+ * - Task field validation (title, status, dates, effort)
+ * - Status enum enforcement
+ * - Date validation using NZ format
+ * - Integration with ProjectManager for persistence
+ */
+
+import DateUtils from './date-utils.js';
+
+class TaskManager {
+  /**
+   * Valid task status values
+   */
+  static VALID_STATUSES = ['planned', 'in-progress', 'completed', 'blocked', 'cancelled'];
+
+  /**
+   * Constructor
+   * @param {ProjectManager} projectManager - ProjectManager instance for persistence
+   */
+  constructor(projectManager) {
+    if (!projectManager) {
+      throw new Error('ProjectManager is required');
+    }
+    this.projectManager = projectManager;
+  }
+
+  /**
+   * Add a task to a project
+   * @param {string} projectId - Project ID to add task to
+   * @param {Object} taskData - Task data to add
+   * @returns {Object} The added task
+   * @throws {Error} If validation fails or project not found
+   */
+  addTask(projectId, taskData) {
+    // Find the project
+    const project = this.projectManager.getProject(projectId);
+    if (!project) {
+      throw new Error(`Project not found: ${projectId}`);
+    }
+
+    // Create a copy to avoid mutating original
+    const task = { ...taskData };
+
+    // Generate ID if not provided
+    if (!task.id) {
+      task.id = this._generateId();
+    }
+
+    // Check for duplicate task ID within project
+    if (project.tasks.find(t => t.id === task.id)) {
+      throw new Error(`Task id already exists: ${task.id}`);
+    }
+
+    // Set default status if not provided
+    if (!task.status) {
+      task.status = 'planned';
+    }
+
+    // Validate the task
+    this._validateTask(task, false);
+
+    // Add task to project
+    const updatedProject = {
+      ...project,
+      tasks: [...project.tasks, task]
+    };
+
+    // Update the tasks array in the project's internal storage
+    // We need to get fresh project data and update just the tasks
+    const projects = this.projectManager.dataPM.loadProjects();
+    const projectIndex = projects.findIndex(p => p.id === projectId);
+    projects[projectIndex] = updatedProject;
+    this.projectManager.dataPM.saveProjects(projects);
+
+    return task;
+  }
+
+  /**
+   * Get a task by ID from a project
+   * @param {string} projectId - Project ID
+   * @param {string} taskId - Task ID
+   * @returns {Object|null} The task or null if not found
+   * @throws {Error} If project not found
+   */
+  getTask(projectId, taskId) {
+    const project = this.projectManager.getProject(projectId);
+    if (!project) {
+      throw new Error(`Project not found: ${projectId}`);
+    }
+
+    return project.tasks.find(task => task.id === taskId) || null;
+  }
+
+  /**
+   * Update a task in a project
+   * @param {string} projectId - Project ID
+   * @param {string} taskId - Task ID
+   * @param {Object} updates - Fields to update
+   * @returns {Object} The updated task
+   * @throws {Error} If project or task not found, or validation fails
+   */
+  updateTask(projectId, taskId, updates) {
+    const project = this.projectManager.getProject(projectId);
+    if (!project) {
+      throw new Error(`Project not found: ${projectId}`);
+    }
+
+    const taskIndex = project.tasks.findIndex(task => task.id === taskId);
+    if (taskIndex === -1) {
+      throw new Error(`Task not found: ${taskId}`);
+    }
+
+    const currentTask = project.tasks[taskIndex];
+    const updatedTask = { ...currentTask, ...updates };
+
+    // Validate the updated task
+    this._validateTask(updatedTask, true);
+
+    // Update the task in the project
+    const updatedTasks = [...project.tasks];
+    updatedTasks[taskIndex] = updatedTask;
+
+    // Update the tasks array in the project's internal storage
+    const projects = this.projectManager.dataPM.loadProjects();
+    const projectIndex = projects.findIndex(p => p.id === projectId);
+    projects[projectIndex].tasks = updatedTasks;
+    this.projectManager.dataPM.saveProjects(projects);
+
+    return updatedTask;
+  }
+
+  /**
+   * Delete a task from a project
+   * @param {string} projectId - Project ID
+   * @param {string} taskId - Task ID
+   * @returns {boolean} True if deleted, false if not found
+   * @throws {Error} If project not found
+   */
+  deleteTask(projectId, taskId) {
+    const project = this.projectManager.getProject(projectId);
+    if (!project) {
+      throw new Error(`Project not found: ${projectId}`);
+    }
+
+    const initialLength = project.tasks.length;
+    const filteredTasks = project.tasks.filter(task => task.id !== taskId);
+
+    if (filteredTasks.length === initialLength) {
+      return false; // Task not found
+    }
+
+    // Update the tasks array in the project's internal storage
+    const projects = this.projectManager.dataPM.loadProjects();
+    const projectIndex = projects.findIndex(p => p.id === projectId);
+    projects[projectIndex].tasks = filteredTasks;
+    this.projectManager.dataPM.saveProjects(projects);
+
+    return true;
+  }
+
+  /**
+   * List all tasks for a project
+   * @param {string} projectId - Project ID
+   * @returns {Array} Array of tasks
+   * @throws {Error} If project not found
+   */
+  listTasks(projectId) {
+    const project = this.projectManager.getProject(projectId);
+    if (!project) {
+      throw new Error(`Project not found: ${projectId}`);
+    }
+
+    return project.tasks || [];
+  }
+
+  /**
+   * Get tasks filtered by status
+   * @param {string} projectId - Project ID
+   * @param {string} status - Status to filter by
+   * @returns {Array} Array of tasks with matching status
+   * @throws {Error} If project not found
+   */
+  getTasksByStatus(projectId, status) {
+    const project = this.projectManager.getProject(projectId);
+    if (!project) {
+      throw new Error(`Project not found: ${projectId}`);
+    }
+
+    return (project.tasks || []).filter(task => task.status === status);
+  }
+
+  /**
+   * Private method to validate task data
+   * @param {Object} taskData - Task data to validate
+   * @param {boolean} isUpdate - Whether this is an update operation
+   * @throws {Error} If validation fails
+   * @private
+   */
+  _validateTask(taskData, isUpdate = false) {
+    // For updates, only validate fields that are present
+    if (!isUpdate || taskData.hasOwnProperty('title')) {
+      if (!taskData.title) {
+        throw new Error('Task title is required');
+      }
+    }
+
+    // Validate status enum if provided
+    if (taskData.hasOwnProperty('status')) {
+      if (taskData.status && !TaskManager.VALID_STATUSES.includes(taskData.status)) {
+        throw new Error(`Task status must be one of: ${TaskManager.VALID_STATUSES.join(', ')}`);
+      }
+    }
+
+    // Validate due_date format if provided
+    if (taskData.hasOwnProperty('due_date') && taskData.due_date) {
+      if (!DateUtils.isValidNZ(taskData.due_date)) {
+        throw new Error('Task due_date must be in valid NZ format (DD-MM-YYYY)');
+      }
+    }
+
+    // Validate effort_hours if provided
+    if (taskData.hasOwnProperty('effort_hours') && taskData.effort_hours !== undefined) {
+      if (typeof taskData.effort_hours !== 'number' || taskData.effort_hours < 0) {
+        throw new Error('Task effort_hours must be >= 0');
+      }
+    }
+  }
+
+  /**
+   * Private method to generate a unique task ID
+   * @returns {string} Generated ID
+   * @private
+   */
+  _generateId() {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000);
+    return `task-${timestamp}-${random}`;
+  }
+}
+
+export default TaskManager;

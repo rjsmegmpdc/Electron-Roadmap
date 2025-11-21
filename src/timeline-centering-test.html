@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Centering Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .feature-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>📅 Timeline Centering Test</h1>
+    
+    <div class="test-section">
+        <h2>Today-Centered Timeline Features</h2>
+        <div class="feature-list">
+            <p>✅ <strong>Default Centering:</strong> Timeline opens with today in the center</p>
+            <p>✅ <strong>Multiple Zoom Levels:</strong> Centering works at all zoom levels</p>
+            <p>✅ <strong>Reliable Positioning:</strong> Multiple timing attempts ensure success</p>
+            <p>✅ <strong>Window Resize Support:</strong> Re-centers when window is resized</p>
+            <p>✅ <strong>Visual Today Marker:</strong> Red line and TODAY label at center</p>
+            <p>✅ <strong>Today Button:</strong> One-click return to today from anywhere</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Centering Verification Test</h2>
+        <button class="test-button" onclick="addSampleProjects()">➕ Add Sample Projects</button>
+        <button class="test-button" onclick="openTimeline()">📅 Open Timeline (Test Centering)</button>
+        <button class="test-button" onclick="testDifferentZooms()">🔍 Test All Zoom Levels</button>
+        
+        <div id="status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>What to Verify</h2>
+        <ol>
+            <li><strong>Initial Load:</strong> Timeline opens with red TODAY marker in center</li>
+            <li><strong>Calendar Headers:</strong> Current date appears in middle of date headers</li>
+            <li><strong>Project Alignment:</strong> Projects positioned correctly relative to today</li>
+            <li><strong>Zoom Consistency:</strong> Today stays centered when zooming in/out</li>
+            <li><strong>Today Button:</strong> Returns to center from any position</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>Expected Behavior</h2>
+        <div class="feature-list">
+            <p><strong>📍 Visual Centering:</strong></p>
+            <ul>
+                <li>Red vertical line at center of screen = TODAY</li>
+                <li>Current date visible in calendar headers at center</li>
+                <li>Project bars positioned relative to today's center position</li>
+            </ul>
+            
+            <p><strong>🔄 Consistent Centering:</strong></p>
+            <ul>
+                <li>Year View: Shows months with today centered</li>
+                <li>Quarter View: Shows weeks with today centered</li>
+                <li>Month View: Shows weeks with today centered (default)</li>
+                <li>Fortnight View: Shows days with today centered</li>
+                <li>Week View: Shows daily detail with today centered</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        const SimpleStorage = {
+            getProjects() {
+                try {
+                    return JSON.parse(localStorage.getItem('roadmap-projects') || '[]');
+                } catch {
+                    return [];
+                }
+            },
+            saveProject(project) {
+                const projects = this.getProjects();
+                project.id = project.id || 'proj-' + Date.now();
+                project.status = project.status || 'concept-design';
+                projects.push(project);
+                localStorage.setItem('roadmap-projects', JSON.stringify(projects));
+                return project;
+            },
+            clearAll() {
+                localStorage.removeItem('roadmap-projects');
+            }
+        };
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<p class="${type}">📅 ${message}</p>`;
+        }
+        
+        function addSampleProjects() {
+            SimpleStorage.clearAll();
+            
+            const today = new Date();
+            const sampleProjects = [
+                {
+                    title: 'Project Before Today',
+                    start_date: formatDate(addDays(today, -45)),
+                    end_date: formatDate(addDays(today, -10)),
+                    budget_cents: 100000,
+                    status: 'uat',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Project Crossing Today',
+                    start_date: formatDate(addDays(today, -15)),
+                    end_date: formatDate(addDays(today, 20)),
+                    budget_cents: 150000,
+                    status: 'engineering',
+                    financial_treatment: 'CAPEX'
+                },
+                {
+                    title: 'Project Starting Today',
+                    start_date: formatDate(today),
+                    end_date: formatDate(addDays(today, 30)),
+                    budget_cents: 80000,
+                    status: 'concept-design',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Project After Today',
+                    start_date: formatDate(addDays(today, 10)),
+                    end_date: formatDate(addDays(today, 50)),
+                    budget_cents: 120000,
+                    status: 'solution-design',
+                    financial_treatment: 'CAPEX'
+                }
+            ];
+            
+            sampleProjects.forEach(project => {
+                SimpleStorage.saveProject(project);
+            });
+            
+            updateStatus(`✅ Added ${sampleProjects.length} projects with dates around today`, 'success');
+        }
+        
+        function openTimeline() {
+            updateStatus('Opening timeline - check that TODAY marker is centered!', 'info');
+            window.open('index.html', '_blank');
+        }
+        
+        function testDifferentZooms() {
+            updateStatus('Open timeline and test zoom levels - today should stay centered', 'info');
+            alert(`Timeline Zoom Test Instructions:
+            
+1. Open the timeline
+2. Try each zoom level:
+   - Zoom Out → Year, Quarter views
+   - Zoom In → Fortnight, Week views
+   - Reset → Month view
+3. Verify TODAY marker stays centered at each zoom level
+4. Use Today button to return to center from any position`);
+        }
+        
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+        
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        // Initialize
+        updateStatus('Timeline centering test ready');
+        
+        setTimeout(() => {
+            const projects = SimpleStorage.getProjects();
+            updateStatus(`Found ${projects.length} existing projects in storage`);
+        }, 500);
+    </script>
+</body>
+</html>
