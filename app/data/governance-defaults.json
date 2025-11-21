@@ -1,0 +1,275 @@
+{
+  "gates": [
+    {
+      "gate_name": "Ideation",
+      "gate_order": 1,
+      "gate_description": "Initial project concept and feasibility assessment",
+      "gate_type": "standard",
+      "is_mandatory": true,
+      "template_id": 1
+    },
+    {
+      "gate_name": "Business Case",
+      "gate_order": 2,
+      "gate_description": "Business justification and approval to proceed",
+      "gate_type": "standard",
+      "is_mandatory": true,
+      "template_id": 1
+    },
+    {
+      "gate_name": "Design",
+      "gate_order": 3,
+      "gate_description": "Detailed solution design and architecture approval",
+      "gate_type": "standard",
+      "is_mandatory": true,
+      "template_id": 1
+    },
+    {
+      "gate_name": "Build",
+      "gate_order": 4,
+      "gate_description": "Development and construction phase",
+      "gate_type": "standard",
+      "is_mandatory": true,
+      "template_id": 1
+    },
+    {
+      "gate_name": "UAT",
+      "gate_order": 5,
+      "gate_description": "User acceptance testing and validation",
+      "gate_type": "standard",
+      "is_mandatory": true,
+      "template_id": 1
+    },
+    {
+      "gate_name": "Deploy",
+      "gate_order": 6,
+      "gate_description": "Production deployment and go-live",
+      "gate_type": "standard",
+      "is_mandatory": true,
+      "template_id": 1
+    },
+    {
+      "gate_name": "Post-Implementation Review",
+      "gate_order": 7,
+      "gate_description": "Lessons learned and benefits realization review",
+      "gate_type": "standard",
+      "is_mandatory": true,
+      "template_id": 1
+    }
+  ],
+  "gateCriteria": [
+    {
+      "gate_order": 1,
+      "criteria": [
+        {
+          "criteria_type": "document",
+          "criteria_name": "Concept Paper",
+          "criteria_description": "Initial project concept document submitted",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "approval",
+          "criteria_name": "Sponsor Endorsement",
+          "criteria_description": "Executive sponsor identified and endorsed",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "gate_order": 2,
+      "criteria": [
+        {
+          "criteria_type": "document",
+          "criteria_name": "Business Case",
+          "criteria_description": "Complete business case with ROI analysis",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "approval",
+          "criteria_name": "Finance Approval",
+          "criteria_description": "Budget approved by finance team",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "budget",
+          "criteria_name": "Budget Allocated",
+          "criteria_description": "Project budget allocated in financial system",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "gate_order": 3,
+      "criteria": [
+        {
+          "criteria_type": "document",
+          "criteria_name": "Solution Design",
+          "criteria_description": "Detailed technical and solution design documented",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "approval",
+          "criteria_name": "Architecture Approval",
+          "criteria_description": "Architecture board reviewed and approved design",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "approval",
+          "criteria_name": "Security Review",
+          "criteria_description": "Security team completed risk assessment",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "resource",
+          "criteria_name": "Team Assigned",
+          "criteria_description": "Project team members identified and assigned",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "gate_order": 4,
+      "criteria": [
+        {
+          "criteria_type": "document",
+          "criteria_name": "Test Plan",
+          "criteria_description": "Comprehensive test plan documented",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "quality",
+          "criteria_name": "Code Quality Standards",
+          "criteria_description": "Code meets quality standards and passes code review",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "gate_order": 5,
+      "criteria": [
+        {
+          "criteria_type": "quality",
+          "criteria_name": "UAT Passed",
+          "criteria_description": "User acceptance testing completed successfully",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "approval",
+          "criteria_name": "Business Sign-Off",
+          "criteria_description": "Business owner approved for production deployment",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "gate_order": 6,
+      "criteria": [
+        {
+          "criteria_type": "document",
+          "criteria_name": "Deployment Plan",
+          "criteria_description": "Deployment runbook and rollback plan documented",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "document",
+          "criteria_name": "Operational Handover",
+          "criteria_description": "Operations team received handover documentation",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "gate_order": 7,
+      "criteria": [
+        {
+          "criteria_type": "document",
+          "criteria_name": "PIR Report",
+          "criteria_description": "Post-implementation review report completed",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "document",
+          "criteria_name": "Benefits Realized",
+          "criteria_description": "Benefits realization measurement documented",
+          "is_mandatory": true
+        },
+        {
+          "criteria_type": "document",
+          "criteria_name": "Lessons Learned",
+          "criteria_description": "Lessons learned captured and shared",
+          "is_mandatory": true
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "policy_name": "Security Review",
+      "policy_category": "Security",
+      "policy_description": "All projects must undergo security risk assessment before deployment",
+      "policy_owner": "Chief Information Security Officer",
+      "version": "1.0",
+      "applicability_rules": "All projects involving IT systems or data"
+    },
+    {
+      "policy_name": "Privacy Assessment",
+      "policy_category": "Privacy",
+      "policy_description": "Projects handling personal data must complete privacy impact assessment",
+      "policy_owner": "Privacy Officer",
+      "version": "1.0",
+      "applicability_rules": "All projects handling PII or sensitive data"
+    },
+    {
+      "policy_name": "Architecture Approval",
+      "policy_category": "Architecture",
+      "policy_description": "Technical architecture must be reviewed and approved by architecture board",
+      "policy_owner": "Chief Architect",
+      "version": "1.0",
+      "applicability_rules": "All technology projects"
+    },
+    {
+      "policy_name": "Budget Approval",
+      "policy_category": "Finance",
+      "policy_description": "Project budget must be approved by finance and appropriate management level",
+      "policy_owner": "Chief Financial Officer",
+      "version": "1.0",
+      "applicability_rules": "All projects with budget >$50,000"
+    },
+    {
+      "policy_name": "Procurement Compliance",
+      "policy_category": "Procurement",
+      "policy_description": "All vendor contracts must follow procurement policies and approval matrix",
+      "policy_owner": "Procurement Manager",
+      "version": "1.0",
+      "applicability_rules": "All projects engaging external vendors"
+    },
+    {
+      "policy_name": "Legal Review",
+      "policy_category": "Legal",
+      "policy_description": "Contracts and agreements must be reviewed by legal team",
+      "policy_owner": "General Counsel",
+      "version": "1.0",
+      "applicability_rules": "All projects with contractual obligations"
+    }
+  ],
+  "settings": {
+    "governance.portfolio_health_weights": {
+      "onTime": 0.30,
+      "budget": 0.25,
+      "risk": 0.20,
+      "compliance": 0.15,
+      "benefits": 0.10
+    },
+    "governance.escalation_sla_hours": {
+      "level1": 24,
+      "level2": 48,
+      "level3": 72,
+      "level4": 120,
+      "level5": 168
+    },
+    "governance.auto_progression_enabled": false,
+    "governance.compliance_alert_days": 30,
+    "governance.gate_review_reminder_days": 7,
+    "governance.default_gate_template": 1
+  }
+}

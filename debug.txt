@@ -1,0 +1,54 @@
+
+﻿
+VM122 C:\Users\smhar…\main\preload.js:94 Preload script loaded
+react-dom_client.js?v=42d5fcbe:20357 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+store.ts:736 Zustand store initialized
+VM118 renderer_init:2 Electron Security Warning (Insecure Content-Security-Policy) This renderer process has either no Content Security
+  Policy set or a policy with "unsafe-eval" enabled. This exposes users of
+  this app to unnecessary security risks.
+
+For more information and help, consult
+https://electronjs.org/docs/tutorial/security.
+This warning will not show up
+once the app is packaged.
+GanttChart.tsx:83 GanttChart: Loading settings from localStorage: null
+GanttChart.tsx:95 GanttChart: No settings found in localStorage
+DashboardLayout.tsx:68 DashboardLayout: Loaded settings on startup: 
+Object
+DashboardLayout.tsx:73 DashboardLayout: No settings found in database on startup
+Settings.tsx:24 Settings component: Loaded from database: 
+Object
+Settings.tsx:30 Settings component: No settings found in database
+store.ts:419 Loaded 253 projects from database
+Settings.tsx:105 Settings component: Date changed to: 04-04-2029 Full settings: 
+{timelineEndDate: '04-04-2029'}
+Settings.tsx:109 Settings component: Saved to localStorage: {"timelineEndDate":"04-04-2029"}
+Settings.tsx:105 Settings component: Date changed to: 30-03-2029 Full settings: 
+{timelineEndDate: '30-03-2029'}
+Settings.tsx:109 Settings component: Saved to localStorage: {"timelineEndDate":"30-03-2029"}
+Settings.tsx:62 Settings saved to database successfully
+Settings.tsx:24 Settings component: Loaded from database: 
+{timelineEndDate: '30-03-2029'}
+GanttChart.tsx:298 GanttChart projectData: currentSettingsEndDate = 30-03-2029 (state was: null )
+GanttChart.tsx:302 GanttChart projectData: Using settings end date: 2029-03-30T00:00:00.000Z
+GanttChart.tsx:83 GanttChart: Loading settings from localStorage: {"timelineEndDate":"30-03-2029"}
+GanttChart.tsx:86 GanttChart: Parsed settings: 
+{timelineEndDate: '30-03-2029'}
+GanttChart.tsx:88 GanttChart: Setting timeline end date to: 30-03-2029
+GanttChart.tsx:298 GanttChart projectData: currentSettingsEndDate = 30-03-2029 (state was: 30-03-2029 )
+GanttChart.tsx:302 GanttChart projectData: Using settings end date: 2029-03-30T00:00:00.000Z
+store.ts:419 Loaded 253 projects from database
+GanttChart.tsx:298 GanttChart projectData: currentSettingsEndDate = 30-03-2029 (state was: null )
+GanttChart.tsx:302 GanttChart projectData: Using settings end date: 2029-03-30T00:00:00.000Z
+GanttChart.tsx:83 GanttChart: Loading settings from localStorage: {"timelineEndDate":"30-03-2029"}
+GanttChart.tsx:86 GanttChart: Parsed settings: 
+{timelineEndDate: '30-03-2029'}
+GanttChart.tsx:88 GanttChart: Setting timeline end date to: 30-03-2029
+GanttChart.tsx:298 GanttChart projectData: currentSettingsEndDate = 30-03-2029 (state was: null )
+GanttChart.tsx:302 GanttChart projectData: Using settings end date: 2029-03-30T00:00:00.000Z
+GanttChart.tsx:83 GanttChart: Loading settings from localStorage: {"timelineEndDate":"30-03-2029"}
+GanttChart.tsx:86 GanttChart: Parsed settings: 
+{timelineEndDate: '30-03-2029'}
+GanttChart.tsx:88 GanttChart: Setting timeline end date to: 30-03-2029
+GanttChart.tsx:298 GanttChart projectData: currentSettingsEndDate = 30-03-2029 (state was: 30-03-2029 )
+GanttChart.tsx:302 GanttChart projectData: Using settings end date: 2029-03-30T00:00:00.000Z

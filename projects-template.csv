@@ -1,0 +1,4 @@
+id,title,description,lane,start_date,end_date,status,pm_name,budget_nzd,financial_treatment,row
+proj-001,Digital Transformation Initiative,Modernize core systems and infrastructure,Platform,01-01-2024,31-12-2024,in-progress,John Smith,"1,500,000.00",CAPEX,1
+proj-002,Customer Portal Redesign,Improve user experience and add self-service features,Customer Experience,01-03-2024,30-06-2024,planned,Jane Doe,"500,000.00",OPEX,2
+proj-003,Data Analytics Platform,Build centralized analytics and reporting system,Data & Analytics,15-02-2024,15-08-2024,in-progress,Bob Johnson,"750,000.00",CAPEX,3

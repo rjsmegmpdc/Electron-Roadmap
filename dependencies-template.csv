@@ -1,0 +1,5 @@
+id,from_type,from_id,to_type,to_id,kind,lag_days,note
+dep-001,project,proj-001,project,proj-002,FS,0,Platform must be stable before portal redesign
+dep-002,task,task-001,task,task-002,FS,0,Requirements must be complete before design
+dep-003,epic,epic-001,epic,epic-002,FS,30,Platform modernization enables security features
+dep-004,feature,feat-001,feature,feat-002,FS,0,Database migration must complete before API updates

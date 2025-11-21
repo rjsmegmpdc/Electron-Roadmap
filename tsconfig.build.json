@@ -1,0 +1,45 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "dist/main",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": false
+  },
+  "include": [
+    "app/main/db.ts",
+    "app/main/validation.ts",
+    "app/main/mutations.ts",
+    "app/main/preload.ts",
+    "app/main/main.ts",
+    "app/main/services/security/**/*.ts",
+    "app/main/services/debug/**/*.ts",
+    "app/main/services/AuditLogger.ts",
+    "app/main/services/BackupRestoreService.ts",
+    "app/main/services/DependencyService.ts",
+    "app/main/services/ExportImportService.ts",
+    "app/main/services/ProjectService.ts",
+    "app/main/services/TaskService.ts",
+    "app/main/services/ado/**/*.ts",
+    "app/main/services/coordinator/**/*.ts",
+    "app/main/ipc/projectHandlers.ts",
+    "app/main/ipc/taskHandlers.ts",
+    "app/main/ipc/dependencyHandlers.ts",
+    "app/main/ipc/settingsHandlers.ts",
+    "app/main/ipc/exportImportHandlers.ts",
+    "app/main/ipc/coordinatorHandlers.ts",
+    "app/main/types/coordinator.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "app/main/services/governance/**/*.ts",
+    "app/main/ipc/governanceHandlers.ts",
+    "app/main/types/governance.ts",
+    "app/main/repositories/**/*.ts"
+  ]
+}

@@ -1,0 +1,5 @@
+id,project_id,title,start_date,end_date,effort_hours,status,assigned_resources
+task-001,proj-001,Requirements Gathering,01-01-2024,15-01-2024,80,done,"[""John Smith"",""Jane Doe""]"
+task-002,proj-001,Design Phase,16-01-2024,15-02-2024,120,in-progress,"[""Bob Johnson""]"
+task-003,proj-002,User Research,01-03-2024,15-03-2024,60,planned,"[""Alice Williams""]"
+task-004,proj-002,Wireframe Creation,16-03-2024,31-03-2024,40,planned,"[""Bob Johnson"",""Alice Williams""]"

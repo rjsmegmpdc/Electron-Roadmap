@@ -1,0 +1,17 @@
+Labour Rates - FY26
+Import Template
+Band,,Activity Type,Hourly Rate,Daily Rate,$ Uplift,% Uplift
+N1,Junior Developer,CAP,$75.00,$600.00,,
+N1,Junior Developer,OPX,$75.00,$600.00,,
+N2,Intermediate Developer,CAP,$100.00,$800.00,,
+N2,Intermediate Developer,OPX,$100.00,$800.00,,
+N3,Senior Developer,CAP,$125.00,$1000.00,,
+N3,Senior Developer,OPX,$125.00,$1000.00,,
+N4,Lead Developer,CAP,$150.00,$1200.00,,
+N4,Lead Developer,OPX,$150.00,$1200.00,,
+N5,Principal Developer,CAP,$175.00,$1400.00,,
+N5,Principal Developer,OPX,$175.00,$1400.00,,
+N6,Architect,CAP,$200.00,$1600.00,,
+N6,Architect,OPX,$200.00,$1600.00,,
+External,External Consultant,CAP,$250.00,$2000.00,$50.00,25%
+External,External Consultant,OPX,$250.00,$2000.00,$50.00,25%
