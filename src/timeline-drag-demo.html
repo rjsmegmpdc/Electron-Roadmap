@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Drag Panning Demo</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .demo-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 12px;
+        }
+        .demo-banner h1 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+        }
+        .demo-banner p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .feature-highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .feature-highlight strong {
+            color: #d63384;
+        }
+        .demo-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .demo-controls button {
+            margin: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-banner">
+        <h1>🖱️ Interactive Timeline Navigation</h1>
+        <p>Experience smooth scrolling with both scrollbars and intuitive drag panning!</p>
+    </div>
+    
+    <main class="timeline-view">
+        <div class="feature-highlight">
+            <h3>✨ Navigation Features</h3>
+            <p><strong>🖱️ Click & Drag:</strong> Click and hold anywhere in the timeline to pan smoothly</p>
+            <p><strong>📜 Scrollbars:</strong> Use the stylized horizontal scrollbars for precise control</p>
+            <p><strong>⌨️ Keyboard:</strong> Arrow keys, wheel, and trackpad gestures all work</p>
+        </div>
+        
+        <div class="demo-controls">
+            <button id="btn-add-sample" class="primary-btn">➕ Add Sample Project</button>
+            <button id="btn-go-to-start" class="secondary-btn">⏪ Go to 2025</button>
+            <button id="btn-go-to-today" class="today-btn" style="background: linear-gradient(45deg, #dc3545, #e74c3c); color: white;">📅 Today</button>
+            <button id="btn-go-to-future" class="secondary-btn">⏩ Go to 2026</button>
+        </div>
+        
+        <section class="timeline-controls">
+            <div class="controls-left">
+                <button id="btn-zoom-in" class="control-btn">🔍 Zoom In</button>
+                <button id="btn-zoom-out" class="control-btn">🔍 Zoom Out</button>
+                <button id="btn-reset-zoom" class="control-btn">🔄 Reset</button>
+            </div>
+            
+            <div class="controls-right">
+                <button id="btn-clear-demo" class="danger-btn">🗑️ Clear Demo</button>
+            </div>
+        </section>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+        
+        <section class="timeline-legend">
+            <div class="legend-item">
+                <span class="legend-color concept-design"></span>
+                <span>Concept Design</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color solution-design"></span>
+                <span>Solution Design</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color engineering"></span>
+                <span>Engineering</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color uat"></span>
+                <span>UAT</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color release"></span>
+                <span>Release</span>
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🎬 Timeline drag demo loading...');
+        
+        // Demo navigation functions
+        function goToYear(year) {
+            const container = document.querySelector('.timeline-wrapper');
+            const headerContainer = document.querySelector('.timeline-header');
+            
+            if (!container || !headerContainer) return;
+            
+            // Calculate position of the target year
+            const targetDate = new Date(year, 0, 1);
+            const projects = SimpleStorage.getAllProjects();
+            const bounds = TimelineRenderer.calculateTimelineBounds(projects);
+            const zoomConfig = TimelineRenderer.zoomLevels[TimelineRenderer.currentZoom];
+            const dayWidth = zoomConfig.dayWidth;
+            
+            const daysDiff = Math.floor((targetDate - bounds.start) / (24 * 60 * 60 * 1000));
+            const targetX = daysDiff * dayWidth;
+            const containerWidth = container.parentElement.clientWidth;
+            const targetScrollLeft = Math.max(0, targetX - (containerWidth / 2));
+            
+            // Smooth scroll animation
+            animateScrollTo(targetScrollLeft);
+            
+            showNotification(`📅 Navigated to ${year}!`, 'info');
+        }
+        
+        function animateScrollTo(targetScrollLeft) {
+            const container = document.querySelector('.timeline-wrapper');
+            const headerContainer = document.querySelector('.timeline-header');
+            
+            if (!container || !headerContainer) return;
+            
+            const startScrollLeft = container.parentElement.scrollLeft;
+            const scrollDistance = targetScrollLeft - startScrollLeft;
+            const duration = 600;
+            const startTime = performance.now();
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                
+                const newScrollLeft = startScrollLeft + (scrollDistance * easeOut);
+                container.parentElement.scrollLeft = newScrollLeft;
+                headerContainer.scrollLeft = newScrollLeft;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        function addSampleProject() {
+            const sampleProjects = [
+                {
+                    title: 'Website Redesign',
+                    start_date: '2025-02-01',
+                    end_date: '2025-05-31',
+                    status: 'engineering',
+                    budget_cents: 80000 * 100,
+                    financial_treatment: 'CAPEX'
+                },
+                {
+                    title: 'Mobile App Development',
+                    start_date: '2025-04-15',
+                    end_date: '2025-08-30',
+                    status: 'solution-design',
+                    budget_cents: 120000 * 100,
+                    financial_treatment: 'CAPEX'
+                },
+                {
+                    title: 'Data Migration',
+                    start_date: '2025-06-01',
+                    end_date: '2025-12-31',
+                    status: 'concept-design',
+                    budget_cents: 95000 * 100,
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Security Audit',
+                    start_date: '2025-09-01',
+                    end_date: '2025-11-15',
+                    status: 'uat',
+                    budget_cents: 45000 * 100,
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Cloud Infrastructure',
+                    start_date: '2025-03-15',
+                    end_date: '2026-01-31',
+                    status: 'release',
+                    budget_cents: 200000 * 100,
+                    financial_treatment: 'CAPEX'
+                }
+            ];
+            
+            const randomProject = sampleProjects[Math.floor(Math.random() * sampleProjects.length)];
+            SimpleStorage.saveProject(randomProject);
+            
+            console.log('✅ Added sample project:', randomProject.title);
+            showNotification(`Added: ${randomProject.title}`, 'success');
+            
+            setTimeout(() => loadTimelineProjects(), 300);
+        }
+        
+        function clearDemo() {
+            if (confirm('Clear all demo projects?')) {
+                localStorage.removeItem('roadmap-projects');
+                showNotification('Demo cleared!', 'success');
+                setTimeout(() => loadTimelineProjects(), 300);
+            }
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎬 Setting up demo event listeners...');
+            
+            // Demo button handlers
+            document.getElementById('btn-add-sample')?.addEventListener('click', addSampleProject);
+            document.getElementById('btn-clear-demo')?.addEventListener('click', clearDemo);
+            document.getElementById('btn-go-to-start')?.addEventListener('click', () => goToYear(2025));
+            document.getElementById('btn-go-to-future')?.addEventListener('click', () => goToYear(2026));
+            
+            // Auto-populate demo if no projects exist
+            setTimeout(() => {
+                const projects = SimpleStorage.getAllProjects();
+                if (projects.length === 0) {
+                    console.log('🎬 Creating demo projects...');
+                    addSampleProject();
+                    setTimeout(() => addSampleProject(), 200);
+                    setTimeout(() => addSampleProject(), 400);
+                }
+            }, 1000);
+            
+            console.log('✅ Demo setup complete!');
+        });
+    </script>
+</body>
+</html>

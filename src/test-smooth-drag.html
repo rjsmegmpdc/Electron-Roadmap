@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Drag Test - Roadmap Timeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8f9fa; 
+            padding: 20px;
+        }
+        .test-info {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-controls {
+            background: #e8f5e8;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .timeline-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            height: 600px;
+        }
+        .drag-instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .performance-tips {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 6px;
+            padding: 15px;
+        }
+        .improvement-badge {
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="test-info">
+            <h1>🚀 Smooth Drag Experience Test</h1>
+            <p><strong>Purpose:</strong> Test the enhanced drag system with improved visual feedback and smooth animations.</p>
+            <p><strong>New Improvements:</strong></p>
+            <ul>
+                <li>✨ <strong>Real-time Visual Following</strong><span class="improvement-badge">NEW</span>: Projects visually follow your mouse cursor instantly</li>
+                <li>🎯 <strong>Smooth Row Transitions</strong><span class="improvement-badge">NEW</span>: Seamless movement between rows with interpolated positioning</li>
+                <li>⚡ <strong>Enhanced Performance</strong><span class="improvement-badge">IMPROVED</span>: 60fps smooth animations using requestAnimationFrame</li>
+                <li>🎨 <strong>Better Visual Feedback</strong><span class="improvement-badge">IMPROVED</span>: Enhanced drag feedback with smooth animations</li>
+                <li>🎪 <strong>Smooth Transitions</strong><span class="improvement-badge">NEW</span>: Projects smoothly transition back to position on drop</li>
+            </ul>
+        </div>
+
+        <div class="test-controls">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-success" onclick="loadSmoothTestProjects()">🎯 Load Drag Test Projects</button>
+                    <button class="btn btn-secondary" onclick="clearAllProjects()">🗑️ Clear All</button>
+                    <button class="btn btn-info" onclick="TimelineRenderer.renderTimeline()">🔄 Refresh Timeline</button>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('out')">🔍 Zoom Out</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('reset')">🎯 Month View</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('in')">🔍 Zoom In</button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="goToToday()">📅 Today</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="drag-instructions">
+            <h5>🎮 Drag Testing Instructions</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Horizontal Dragging (Date Changes):</h6>
+                    <ul style="font-size: 14px;">
+                        <li><strong>Left/Right Drag:</strong> Move entire project to change dates</li>
+                        <li><strong>Left Edge Drag:</strong> Resize start date (left handle)</li>
+                        <li><strong>Right Edge Drag:</strong> Resize end date (right handle)</li>
+                        <li><strong>Edge Scrolling:</strong> Drag near timeline edges for auto-scroll</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Vertical Dragging (Row Changes):</h6>
+                    <ul style="font-size: 14px;">
+                        <li><strong>Up/Down Drag:</strong> Move project between rows</li>
+                        <li><strong>Row Indicators:</strong> Blue highlights show target row</li>
+                        <li><strong>Smooth Transitions:</strong> Watch projects smoothly follow mouse</li>
+                        <li><strong>Visual Feedback:</strong> Enhanced tooltips show real-time info</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="timeline-container">
+                    <!-- Timeline Header -->
+                    <div class="timeline-header" style="overflow-x: auto; margin-bottom: 10px;">
+                        <div class="timeline-dates" style="position: relative; height: 90px;"></div>
+                    </div>
+                    
+                    <!-- Timeline Content -->
+                    <div id="timeline-container" style="overflow-x: auto; overflow-y: visible; height: 450px; border: 1px solid #ddd; border-radius: 8px;">
+                        <!-- Timeline content will be rendered here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="performance-tips">
+                    <h6>🎯 What to Look For</h6>
+                    <ul style="font-size: 13px;">
+                        <li><strong>Immediate Response:</strong> Project should start moving the moment you click and drag</li>
+                        <li><strong>Smooth Following:</strong> Project bar should follow your mouse cursor in real-time</li>
+                        <li><strong>Visual Polish:</strong> Enhanced shadows, scaling, and transitions</li>
+                        <li><strong>Row Transitions:</strong> Smooth interpolated movement between rows</li>
+                        <li><strong>Feedback Quality:</strong> Rich, informative drag feedback tooltips</li>
+                        <li><strong>Drop Animation:</strong> Smooth transition back to final position</li>
+                    </ul>
+                </div>
+                
+                <div class="test-info mt-3">
+                    <h6>🧪 Test Scenarios</h6>
+                    <ol style="font-size: 13px;">
+                        <li>Click and drag a project horizontally - does it follow smoothly?</li>
+                        <li>Try dragging vertically between rows - smooth transition?</li>
+                        <li>Test resize handles - immediate visual response?</li>
+                        <li>Drag near timeline edges - smooth auto-scroll?</li>
+                        <li>Drop project - smooth animation to final position?</li>
+                        <li>Test at different zoom levels</li>
+                    </ol>
+                </div>
+                
+                <div id="drag-performance-info" class="test-info mt-3">
+                    <h6>📊 Performance Info</h6>
+                    <p style="font-size: 13px;">
+                        <strong>Frame Rate:</strong> <span id="fps-counter">Calculating...</span><br>
+                        <strong>Drag Mode:</strong> <span id="drag-mode">None</span><br>
+                        <strong>Active Projects:</strong> <span id="project-count">0</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include all necessary JavaScript -->
+    <script src="js/core/config.js"></script>
+    <script src="js/storage-system.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        // FPS counter for performance monitoring
+        let fpsCounter = 0;
+        let lastFpsTime = performance.now();
+        
+        function updateFPS() {
+            const now = performance.now();
+            fpsCounter++;
+            
+            if (now - lastFpsTime >= 1000) {
+                document.getElementById('fps-counter').textContent = `${fpsCounter} fps`;
+                fpsCounter = 0;
+                lastFpsTime = now;
+            }
+            
+            requestAnimationFrame(updateFPS);
+        }
+        
+        // Start FPS monitoring
+        requestAnimationFrame(updateFPS);
+        
+        // Test projects with overlapping dates for smooth drag testing
+        function loadSmoothTestProjects() {
+            console.log('🎯 Loading smooth drag test projects...');
+            
+            const testProjects = [
+                {
+                    id: 'smooth-test-1',
+                    title: '🚀 Alpha FY26 - Drag Me!',
+                    description: 'Test horizontal dragging across Q1 FY26',
+                    start_date: '2025-04-15',
+                    end_date: '2025-05-31',
+                    status: 'engineering',
+                    row: 0
+                },
+                {
+                    id: 'smooth-test-2', 
+                    title: '🎨 Beta FY26 - Smooth Moves',
+                    description: 'Test vertical row dragging Q1-Q2 FY26',
+                    start_date: '2025-05-15',
+                    end_date: '2025-08-10',
+                    status: 'solution-design',
+                    row: 1
+                },
+                {
+                    id: 'smooth-test-3',
+                    title: '⚡ Gamma FY26 - Speed Test',
+                    description: 'Test resize handle responsiveness Q2 FY26',
+                    start_date: '2025-07-01',
+                    end_date: '2025-09-30',
+                    status: 'uat',
+                    row: 0
+                },
+                {
+                    id: 'smooth-test-4',
+                    title: '🎪 Delta FY26 - Animation Pro',
+                    description: 'Test smooth transitions spanning FY26',
+                    start_date: '2025-04-01',
+                    end_date: '2025-11-30',
+                    status: 'concept-design',
+                    row: 2
+                },
+                {
+                    id: 'smooth-test-5',
+                    title: '🎯 Epsilon FY26 - Precision',
+                    description: 'Test edge scrolling Q3 FY26',
+                    start_date: '2025-10-01',
+                    end_date: '2025-12-31',
+                    status: 'release',
+                    row: 1
+                },
+                {
+                    id: 'smooth-test-6',
+                    title: '🌟 Zeta FY26 - Polish',
+                    description: 'Test visual feedback H2 FY26',
+                    start_date: '2025-12-15',
+                    end_date: '2026-03-15',
+                    status: 'engineering',
+                    row: 0
+                }
+            ];
+            
+            // Clear existing projects
+            localStorage.removeItem('roadmap-projects');
+            
+            // Save test projects
+            localStorage.setItem('roadmap-projects', JSON.stringify(testProjects));
+            
+            // Update project count
+            document.getElementById('project-count').textContent = testProjects.length;
+            
+            // Re-render timeline
+            TimelineRenderer.renderTimeline();
+            
+            showNotification(`🚀 Loaded ${testProjects.length} smooth drag test projects!`, 'success');
+            console.log('✅ Smooth drag test projects loaded successfully');
+        }
+        
+        function clearAllProjects() {
+            localStorage.removeItem('roadmap-projects');
+            document.getElementById('project-count').textContent = '0';
+            TimelineRenderer.renderTimeline();
+            showNotification('🗑️ All projects cleared', 'info');
+        }
+        
+        // Monitor drag mode for performance info
+        let lastDragMode = 'None';
+        setInterval(() => {
+            const dragElement = document.querySelector('.timeline-project-bar.dragging');
+            const currentMode = dragElement ? 'Active' : 'None';
+            
+            if (currentMode !== lastDragMode) {
+                document.getElementById('drag-mode').textContent = currentMode;
+                lastDragMode = currentMode;
+            }
+        }, 100);
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Smooth Drag Test Page Initialized');
+            
+            // Initialize timeline
+            TimelineRenderer.init();
+            
+            // Show current project count
+            const existingProjects = SimpleStorage.getAllProjects();
+            document.getElementById('project-count').textContent = existingProjects.length;
+            
+            console.log('🎯 Ready to test smooth drag functionality!');
+            
+            // Auto-load test projects if none exist
+            if (existingProjects.length === 0) {
+                setTimeout(() => {
+                    console.log('🎯 Auto-loading smooth drag test projects...');
+                    loadSmoothTestProjects();
+                }, 1000);
+            }
+            
+            // Add performance monitoring message
+            setTimeout(() => {
+                showNotification('🎮 Try dragging projects horizontally and vertically for smooth experience!', 'info');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

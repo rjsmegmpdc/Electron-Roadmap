@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Scroll Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .test-instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #1976d2;
+        }
+        .test-instructions h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+        .test-instructions ul {
+            margin-left: 20px;
+        }
+        .test-instructions li {
+            margin-bottom: 8px;
+        }
+        .scroll-info {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border-left: 4px solid #7b1fa2;
+        }
+        .timeline-controls button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🖱️ Timeline Horizontal Scrolling Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+            <a href="launchpad.html">← Back to Launchpad</a>
+        </nav>
+    </header>
+    
+    <main class="timeline-view">
+        <div class="test-instructions">
+            <h3>🧪 Scrolling Test Instructions</h3>
+            <p><strong>Test the following scrolling methods:</strong></p>
+            <ul>
+                <li><strong>🖱️ Click & Drag:</strong> Click and hold left mouse button, then drag to pan (like Google Maps)</li>
+                <li><strong>Mouse Wheel:</strong> Hold Shift and scroll with mouse wheel for horizontal scrolling</li>
+                <li><strong>Trackpad:</strong> Use two-finger horizontal swipe gestures</li>
+                <li><strong>Scrollbar:</strong> Use the horizontal scrollbar at the bottom</li>
+                <li><strong>Keyboard:</strong> Click in timeline area, then use Left/Right arrow keys</li>
+                <li><strong>Today Button:</strong> Click the red "Today" button to auto-center</li>
+                <li><strong>Zoom Controls:</strong> Test scrolling at different zoom levels</li>
+            </ul>
+            <p><strong>Expected Behavior:</strong> Both the year/date headers and project content should scroll together synchronously.</p>
+        </div>
+        
+        <section class="timeline-controls">
+            <div class="controls-left">
+                <button id="btn-zoom-in" class="control-btn">🔍 Zoom In</button>
+                <button id="btn-zoom-out" class="control-btn">🔍 Zoom Out</button>
+                <button id="btn-reset-zoom" class="control-btn">🔄 Reset</button>
+                <button id="btn-go-to-today" class="control-btn today-btn" style="background: linear-gradient(45deg, #dc3545, #e74c3c); color: white; font-weight: bold;">📅 Today</button>
+            </div>
+            
+            <div class="controls-right">
+                <button id="btn-add-test-project" class="primary-btn">➕ Add Test Project</button>
+                <button id="btn-clear-projects" class="danger-btn">🗑️ Clear All Projects</button>
+            </div>
+        </section>
+        
+        <div class="scroll-info" id="scroll-info">
+            <strong>Scroll Position:</strong> <span id="scroll-position">0px</span> |
+            <strong>Header Scroll:</strong> <span id="header-scroll">0px</span> |
+            <strong>Content Scroll:</strong> <span id="content-scroll">0px</span> |
+            <strong>Cursor:</strong> <span id="cursor-status">grab</span>
+        </div>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+        
+        <section class="timeline-legend">
+            <div class="legend-item">
+                <span class="legend-color concept-design"></span>
+                <span>Concept Design</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color solution-design"></span>
+                <span>Solution Design</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color engineering"></span>
+                <span>Engineering</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color uat"></span>
+                <span>UAT</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color release"></span>
+                <span>Release</span>
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🧪 Timeline scroll test loading...');
+        
+        // Create test projects if none exist
+        function addTestProject() {
+            const testProjects = [
+                {
+                    title: `Test Project ${Date.now()}`,
+                    start_date: '2025-01-15',
+                    end_date: '2025-04-30',
+                    status: 'engineering',
+                    budget_cents: 50000 * 100,
+                    financial_treatment: 'CAPEX'
+                },
+                {
+                    title: `Future Project ${Date.now()}`,
+                    start_date: '2025-06-01', 
+                    end_date: '2025-09-15',
+                    status: 'concept-design',
+                    budget_cents: 75000 * 100,
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: `Long Project ${Date.now()}`,
+                    start_date: '2025-03-01',
+                    end_date: '2026-02-28',
+                    status: 'solution-design',
+                    budget_cents: 120000 * 100,
+                    financial_treatment: 'CAPEX'
+                }
+            ];
+            
+            const randomProject = testProjects[Math.floor(Math.random() * testProjects.length)];
+            SimpleStorage.saveProject(randomProject);
+            
+            console.log('✅ Added test project:', randomProject.title);
+            showNotification(`Added test project: ${randomProject.title}`, 'success');
+            
+            // Reload timeline
+            setTimeout(() => {
+                loadTimelineProjects();
+            }, 500);
+        }
+        
+        function clearAllProjects() {
+            if (confirm('Are you sure you want to clear all projects? This action cannot be undone.')) {
+                localStorage.removeItem('roadmap-projects');
+                console.log('🗑️ All projects cleared');
+                showNotification('All projects cleared', 'success');
+                
+                // Reload timeline
+                setTimeout(() => {
+                    loadTimelineProjects();
+                }, 500);
+            }
+        }
+        
+        // Monitor scroll positions and drag status
+        function updateScrollInfo() {
+            const headerContainer = document.querySelector('.timeline-header');
+            const contentContainer = document.getElementById('timeline-container');
+            
+            if (headerContainer && contentContainer) {
+                document.getElementById('header-scroll').textContent = headerContainer.scrollLeft + 'px';
+                document.getElementById('content-scroll').textContent = contentContainer.scrollLeft + 'px';
+                document.getElementById('scroll-position').textContent = Math.max(headerContainer.scrollLeft, contentContainer.scrollLeft) + 'px';
+                
+                // Monitor cursor status for drag panning
+                const isDragging = contentContainer.classList.contains('dragging');
+                const isDraggable = contentContainer.classList.contains('draggable');
+                
+                let cursorStatus = 'default';
+                if (isDragging) {
+                    cursorStatus = 'grabbing (dragging)';
+                } else if (isDraggable) {
+                    cursorStatus = 'grab (ready)';
+                }
+                
+                document.getElementById('cursor-status').textContent = cursorStatus;
+            }
+        }
+        
+        // Add event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Setting up scroll test event listeners...');
+            
+            const btnAddTest = document.getElementById('btn-add-test-project');
+            const btnClear = document.getElementById('btn-clear-projects');
+            
+            if (btnAddTest) {
+                btnAddTest.addEventListener('click', addTestProject);
+            }
+            
+            if (btnClear) {
+                btnClear.addEventListener('click', clearAllProjects);
+            }
+            
+            // Monitor scroll positions
+            const headerContainer = document.querySelector('.timeline-header');
+            const contentContainer = document.getElementById('timeline-container');
+            
+            if (headerContainer) {
+                headerContainer.addEventListener('scroll', updateScrollInfo, { passive: true });
+            }
+            
+            if (contentContainer) {
+                contentContainer.addEventListener('scroll', updateScrollInfo, { passive: true });
+            }
+            
+            // Update scroll info every 100ms
+            setInterval(updateScrollInfo, 100);
+            
+            console.log('✅ Scroll test setup complete');
+        });
+        
+        // Auto-create some test projects if none exist
+        setTimeout(() => {
+            const projects = SimpleStorage.getAllProjects();
+            if (projects.length === 0) {
+                console.log('🆕 No projects found, creating test projects...');
+                addTestProject();
+                addTestProject();
+                addTestProject();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

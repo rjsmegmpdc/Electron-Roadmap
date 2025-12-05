@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Scroll Drag Test - Roadmap Tool</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .demo-info {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px;
+        }
+        .scroll-zone-demo {
+            position: relative;
+            background: linear-gradient(to right, 
+                rgba(220, 53, 69, 0.1) 0%, 
+                rgba(220, 53, 69, 0.05) 100px, 
+                transparent 100px, 
+                transparent calc(100% - 100px), 
+                rgba(220, 53, 69, 0.05) calc(100% - 100px), 
+                rgba(220, 53, 69, 0.1) 100%);
+            border: 2px dashed #dc3545;
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🖱️ Auto-Scroll Drag Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+            <a href="test-5-year-timeline.html">5-Year Test</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="demo-info">
+            <h2>🎯 Auto-Scroll Drag Feature</h2>
+            <p>This test demonstrates the new auto-scroll functionality when dragging projects near the edges of the timeline.</p>
+            
+            <h3>📋 How it works:</h3>
+            <ul>
+                <li><strong>🔄 Edge Detection:</strong> When you drag a project within 100px of either edge, auto-scroll activates</li>
+                <li><strong>⚡ Variable Speed:</strong> Scroll speed increases the closer you get to the edge</li>
+                <li><strong>🎯 Smart Compensation:</strong> Drag position is automatically adjusted to account for scrolling</li>
+                <li><strong>👁️ Visual Feedback:</strong> Animated indicators show when auto-scroll is active</li>
+            </ul>
+        </div>
+        
+        <div class="instructions">
+            <h3>🧪 Test Instructions:</h3>
+            <ol>
+                <li><strong>Start Dragging:</strong> Click and drag any project bar below</li>
+                <li><strong>Move to Edge:</strong> Drag the project toward either the left or right edge of the timeline</li>
+                <li><strong>Watch Auto-Scroll:</strong> When you get within 100px of the edge, auto-scroll will activate</li>
+                <li><strong>See Indicators:</strong> Look for the animated "Auto-scroll Left/Right" indicators</li>
+                <li><strong>Control Speed:</strong> Move closer to the edge for faster scrolling, further away for slower</li>
+                <li><strong>Drop Project:</strong> Release the mouse to place the project at its new location</li>
+            </ol>
+        </div>
+        
+        <section class="timeline-section">
+            <div class="scroll-zone-demo">
+                <p style="text-align: center; margin: 0; font-size: 12px; color: #dc3545; font-weight: bold;">
+                    ← 100px Auto-Scroll Zone | Timeline Content | 100px Auto-Scroll Zone →
+                </p>
+            </div>
+            
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+        
+        <div class="demo-info">
+            <h2>🔧 Configuration</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <strong>Auto-Scroll Settings:</strong><br>
+                    • Edge Zone: 100px<br>
+                    • Max Speed: 20px per frame<br>
+                    • Acceleration: 1.5x<br>
+                    • Frame Rate: ~60fps<br>
+                </div>
+                <div>
+                    <strong>Features:</strong><br>
+                    • ✅ Smooth scrolling<br>
+                    • ✅ Visual indicators<br>
+                    • ✅ Drag compensation<br>
+                    • ✅ Header sync<br>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>💡 Tips for Testing:</h3>
+            <ul>
+                <li><strong>Wide Timeline:</strong> Zoom out to "Year View" for the best auto-scroll demonstration</li>
+                <li><strong>Long Projects:</strong> Try dragging longer project bars to see the full effect</li>
+                <li><strong>Edge Cases:</strong> Test dragging very close to the edges vs. just inside the scroll zone</li>
+                <li><strong>Multiple Operations:</strong> Try both moving projects and resizing with the drag handles</li>
+            </ul>
+        </div>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🖱️ Auto-Scroll Drag Test loaded');
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📖 DOM ready - setting up auto-scroll drag test');
+            
+            // Add test projects if none exist
+            const projects = SimpleStorage.getAllProjects();
+            if (projects.length === 0) {
+                console.log('➕ Adding auto-scroll test projects');
+                
+                const testProjects = [
+                    {
+                        id: 'proj-autoscroll-1',
+                        title: 'Project Alpha (Drag Me!)',
+                        start_date: '2025-02-01',
+                        end_date: '2025-04-30',
+                        budget_cents: 5000000,
+                        status: 'engineering',
+                        financial_treatment: 'CAPEX'
+                    },
+                    {
+                        id: 'proj-autoscroll-2',
+                        title: 'Long Project Beta (Great for Testing)',
+                        start_date: '2025-05-01',
+                        end_date: '2025-09-30',
+                        budget_cents: 8000000,
+                        status: 'concept-design',
+                        financial_treatment: 'CAPEX'
+                    },
+                    {
+                        id: 'proj-autoscroll-3',
+                        title: 'Future Project Gamma',
+                        start_date: '2026-01-01',
+                        end_date: '2026-06-30',
+                        budget_cents: 12000000,
+                        status: 'solution-design',
+                        financial_treatment: 'OPEX'
+                    },
+                    {
+                        id: 'proj-autoscroll-4',
+                        title: 'Short Sprint Delta',
+                        start_date: '2025-11-01',
+                        end_date: '2025-11-30',
+                        budget_cents: 3000000,
+                        status: 'uat',
+                        financial_treatment: 'OPEX'
+                    },
+                    {
+                        id: 'proj-autoscroll-5',
+                        title: 'Year-End Project Epsilon',
+                        start_date: '2025-12-01',
+                        end_date: '2026-03-31',
+                        budget_cents: 15000000,
+                        status: 'release',
+                        financial_treatment: 'CAPEX'
+                    }
+                ];
+                
+                testProjects.forEach(project => {
+                    SimpleStorage.saveProject(project);
+                });
+            }
+            
+            // Initialize timeline in year view for best auto-scroll demonstration
+            setTimeout(() => {
+                console.log('🎯 Initializing timeline in year view for auto-scroll testing');
+                TimelineRenderer.currentZoom = 'year';
+                TimelineRenderer.renderTimeline();
+                
+                // Show helpful notification
+                setTimeout(() => {
+                    showNotification('🖱️ Drag any project near the edges to test auto-scroll!', 'info');
+                }, 1000);
+                
+            }, 500);
+            
+            console.log('✅ Auto-scroll drag test initialized');
+        });
+    </script>
+</body>
+</html>

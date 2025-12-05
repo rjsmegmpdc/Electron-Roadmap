@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+    <style>
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Test</h1>
+    <p>Testing button functionality:</p>
+    
+    <button id="btn-roadmap">Open Timeline</button>
+    <button id="btn-details">Manage Projects</button>
+    <button id="btn-table">View Table</button>
+    
+    <div id="output"></div>
+    
+    <script>
+        console.log('Starting button test...');
+        
+        // Test button finding
+        const btnRoadmap = document.getElementById('btn-roadmap');
+        const btnDetails = document.getElementById('btn-details');
+        const btnTable = document.getElementById('btn-table');
+        
+        console.log('Buttons found:', {
+            roadmap: !!btnRoadmap,
+            details: !!btnDetails,
+            table: !!btnTable
+        });
+        
+        const output = document.getElementById('output');
+        
+        function logAndDisplay(message) {
+            console.log(message);
+            output.innerHTML += '<p>' + message + '</p>';
+        }
+        
+        // Attach event listeners
+        if (btnRoadmap) {
+            btnRoadmap.addEventListener('click', function() {
+                logAndDisplay('✅ Timeline button clicked successfully!');
+                alert('Timeline button works!');
+            });
+            logAndDisplay('Timeline button handler attached');
+        }
+        
+        if (btnDetails) {
+            btnDetails.addEventListener('click', function() {
+                logAndDisplay('✅ Project Details button clicked successfully!');
+                alert('Project Details button works!');
+            });
+            logAndDisplay('Project Details button handler attached');
+        }
+        
+        if (btnTable) {
+            btnTable.addEventListener('click', function() {
+                logAndDisplay('✅ Table button clicked successfully!');
+                alert('Table button works!');
+            });
+            logAndDisplay('Table button handler attached');
+        }
+        
+        logAndDisplay('Test page loaded - click buttons to test functionality');
+    </script>
+</body>
+</html>

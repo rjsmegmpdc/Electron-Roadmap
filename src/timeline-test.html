@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .feature-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .feature-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗓️ Timeline Visualization Test</h1>
+    
+    <div class="test-section">
+        <h2>Timeline Features Implemented</h2>
+        <div class="feature-list">
+            <p>✅ <strong>Full Timeline Visualization:</strong></p>
+            <ul>
+                <li>Gantt chart-style timeline with date headers</li>
+                <li>Project bars positioned by actual start/end dates</li>
+                <li>Today marker with red line and "TODAY" label</li>
+                <li>Automatic centering on today's date</li>
+                <li>Horizontal scrolling for timeline navigation</li>
+            </ul>
+            
+            <p>✅ <strong>Working Zoom Controls:</strong></p>
+            <ul>
+                <li>Zoom In: Increases timeline detail (up to 300%)</li>
+                <li>Zoom Out: Decreases timeline detail (down to 30%)</li>
+                <li>Reset: Returns to default 100% zoom</li>
+                <li>Dynamic date intervals based on zoom level</li>
+            </ul>
+            
+            <p>✅ <strong>Project Visualization:</strong></p>
+            <ul>
+                <li>Color-coded project bars by status</li>
+                <li>Hover effects with elevation and shadow</li>
+                <li>Click to navigate to project details</li>
+                <li>Proper positioning based on project dates</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Timeline</h2>
+        <button class="test-button" onclick="openTimeline()">🗓️ Open Timeline View</button>
+        <button class="test-button" onclick="addSampleProjects()">➕ Add Sample Projects</button>
+        <button class="test-button" onclick="clearProjects()">🗑️ Clear All Projects</button>
+        
+        <div id="status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>How to Test</h2>
+        <ol>
+            <li><strong>Add Sample Projects:</strong> Click "Add Sample Projects" to create test projects with dates</li>
+            <li><strong>Open Timeline:</strong> Click "Open Timeline View" to see the Gantt chart</li>
+            <li><strong>Test Zoom Controls:</strong>
+                <ul>
+                    <li>Click "Zoom In" to see more detail</li>
+                    <li>Click "Zoom Out" to see broader view</li>
+                    <li>Click "Reset" to return to default zoom</li>
+                </ul>
+            </li>
+            <li><strong>Verify Features:</strong>
+                <ul>
+                    <li>Look for the red "TODAY" marker in the center</li>
+                    <li>Check that project bars are positioned by their dates</li>
+                    <li>Hover over project bars for interactive effects</li>
+                    <li>Scroll horizontally to navigate the timeline</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>Status Colors</h2>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #6f42c1; border-radius: 3px;"></div>
+                <span>Concept Design</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #007bff; border-radius: 3px;"></div>
+                <span>Solution Design</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #28a745; border-radius: 3px;"></div>
+                <span>Engineering</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ffc107; border-radius: 3px;"></div>
+                <span>UAT</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #dc3545; border-radius: 3px;"></div>
+                <span>Release</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Same storage implementation as main app
+        const SimpleStorage = {
+            getProjects() {
+                try {
+                    return JSON.parse(localStorage.getItem('roadmap-projects') || '[]');
+                } catch {
+                    return [];
+                }
+            },
+            
+            saveProject(project) {
+                const projects = this.getProjects();
+                project.id = project.id || 'proj-' + Date.now();
+                project.status = project.status || 'concept-design';
+                projects.push(project);
+                localStorage.setItem('roadmap-projects', JSON.stringify(projects));
+                return project;
+            },
+            
+            clearAll() {
+                localStorage.removeItem('roadmap-projects');
+            }
+        };
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<p class="${type}">📊 ${message}</p>`;
+        }
+        
+        function openTimeline() {
+            window.open('index.html', '_blank');
+        }
+        
+        function addSampleProjects() {
+            updateStatus('Adding sample projects...', 'info');
+            
+            // Clear existing projects first
+            SimpleStorage.clearAll();
+            
+            const today = new Date();
+            const sampleProjects = [
+                {
+                    title: 'Project Alpha - Mobile App',
+                    start_date: formatDate(addDays(today, -30)),
+                    end_date: formatDate(addDays(today, 45)),
+                    budget_cents: 150000,
+                    status: 'engineering',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Project Beta - Backend API',
+                    start_date: formatDate(addDays(today, -60)),
+                    end_date: formatDate(addDays(today, 15)),
+                    budget_cents: 200000,
+                    status: 'uat',
+                    financial_treatment: 'CAPEX'
+                },
+                {
+                    title: 'Project Gamma - Dashboard',
+                    start_date: formatDate(addDays(today, 10)),
+                    end_date: formatDate(addDays(today, 75)),
+                    budget_cents: 100000,
+                    status: 'concept-design',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Project Delta - Analytics',
+                    start_date: formatDate(addDays(today, -15)),
+                    end_date: formatDate(addDays(today, 30)),
+                    budget_cents: 80000,
+                    status: 'solution-design',
+                    financial_treatment: 'OPEX'
+                },
+                {
+                    title: 'Project Echo - Integration',
+                    start_date: formatDate(addDays(today, 20)),
+                    end_date: formatDate(addDays(today, 90)),
+                    budget_cents: 120000,
+                    status: 'concept-design',
+                    financial_treatment: 'CAPEX'
+                }
+            ];
+            
+            sampleProjects.forEach(project => {
+                SimpleStorage.saveProject(project);
+            });
+            
+            updateStatus(`✅ Added ${sampleProjects.length} sample projects with timeline dates!`, 'success');
+            
+            setTimeout(() => {
+                updateStatus('Ready to test timeline - click "Open Timeline View"', 'info');
+            }, 2000);
+        }
+        
+        function clearProjects() {
+            SimpleStorage.clearAll();
+            updateStatus('🗑️ All projects cleared', 'warning');
+        }
+        
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+        
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        // Initialize
+        updateStatus('Timeline test page loaded - Ready to test!');
+        
+        // Show current project count
+        setTimeout(() => {
+            const projects = SimpleStorage.getProjects();
+            updateStatus(`Found ${projects.length} existing projects in storage`);
+        }, 500);
+    </script>
+</body>
+</html>

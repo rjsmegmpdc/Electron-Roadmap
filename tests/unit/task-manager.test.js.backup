@@ -1,0 +1,481 @@
+/**
+ * @jest-environment jsdom
+ * 
+ * Test Suite for TaskManager
+ * 
+ * Tests cover:
+ * - Task CRUD operations within projects
+ * - Task validation and field requirements
+ * - Status transitions and enum validation
+ * - Date validation integration with DateUtils
+ * - Integration with ProjectManager for persistence
+ * - Edge cases and error handling
+ */
+
+import TaskManager from '../../src/js/task-manager.js';
+import ProjectManager from '../../src/js/project-manager.js';
+import DataPersistenceManager from '../../src/js/data-persistence-manager.js';
+import DateUtils from '../../src/js/date-utils.js';
+
+// Mock the dependencies
+jest.mock('../../src/js/data-persistence-manager.js');
+jest.mock('../../src/js/date-utils.js');
+
+describe('TaskManager', () => {
+  let taskManager;
+  let projectManager;
+  let mockDataPM;
+  let testProject;
+  let testTask;
+
+  beforeEach(() => {
+    // Reset mocks
+    jest.clearAllMocks();
+    
+    // Create mock DataPersistenceManager instance
+    mockDataPM = {
+      loadProjects: jest.fn(),
+      saveProjects: jest.fn()
+    };
+    DataPersistenceManager.mockImplementation(() => mockDataPM);
+    
+    // Setup DateUtils mocks
+    DateUtils.isValidNZ = jest.fn();
+    DateUtils.compareNZ = jest.fn();
+    
+    // Create ProjectManager and TaskManager instances
+    projectManager = new ProjectManager(mockDataPM);
+    taskManager = new TaskManager(projectManager);
+    
+    // Default test project with tasks array
+    testProject = {
+      id: 'test-proj-001',
+      title: 'Test Project',
+      start_date: '01-01-2025',
+      end_date: '30-06-2025',
+      status: 'engineering',
+      budget_cents: 1000000,
+      financial_treatment: 'CAPEX',
+      tasks: [
+        {
+          id: 'existing-task-001',
+          title: 'Existing Task',
+          description: 'An existing task',
+          status: 'in-progress',
+          assigned_to: 'John Doe',
+          due_date: '15-02-2025',
+          effort_hours: 20
+        }
+      ],
+      resources: [],
+      forecasts: []
+    };
+    
+    // Default test task
+    testTask = {
+      id: 'task-new-001',
+      title: 'New Task',
+      description: 'A new task to be added',
+      status: 'planned',
+      assigned_to: 'Jane Smith',
+      due_date: '01-03-2025',
+      effort_hours: 40
+    };
+  });
+
+  describe('Constructor', () => {
+    test('should accept ProjectManager dependency', () => {
+      const tm = new TaskManager(projectManager);
+      expect(tm).toBeDefined();
+      expect(tm.projectManager).toBe(projectManager);
+    });
+
+    test('should throw error without ProjectManager', () => {
+      expect(() => {
+        new TaskManager();
+      }).toThrow('ProjectManager is required');
+    });
+  });
+
+  describe('addTask', () => {
+    beforeEach(() => {
+      mockDataPM.loadProjects.mockReturnValue([testProject]);
+      DateUtils.isValidNZ.mockReturnValue(true);
+    });
+
+    test('should add task to existing project', () => {
+      const addedTask = taskManager.addTask('test-proj-001', testTask);
+      
+      expect(addedTask).toEqual(testTask);
+      expect(mockDataPM.saveProjects).toHaveBeenCalled();
+      
+      // Verify the project was updated with the new task
+      const saveCall = mockDataPM.saveProjects.mock.calls[0][0];
+      const updatedProject = saveCall.find(p => p.id === 'test-proj-001');
+      expect(updatedProject.tasks).toHaveLength(2);
+      expect(updatedProject.tasks).toContainEqual(testTask);
+    });
+
+    test('should generate ID if not provided', () => {
+      const taskWithoutId = { ...testTask };
+      delete taskWithoutId.id;
+      
+      const addedTask = taskManager.addTask('test-proj-001', taskWithoutId);
+      
+      expect(addedTask.id).toBeDefined();
+      expect(typeof addedTask.id).toBe('string');
+      expect(addedTask.id.length).toBeGreaterThan(0);
+    });
+
+    test('should set default status to planned if not provided', () => {
+      const taskWithoutStatus = { ...testTask };
+      delete taskWithoutStatus.status;
+      
+      const addedTask = taskManager.addTask('test-proj-001', taskWithoutStatus);
+      
+      expect(addedTask.status).toBe('planned');
+    });
+
+    test('should throw error for non-existent project', () => {
+      mockDataPM.loadProjects.mockReturnValue([]);
+      
+      expect(() => {
+        taskManager.addTask('non-existent-project', testTask);
+      }).toThrow('Project not found: non-existent-project');
+    });
+
+    test('should throw error for duplicate task ID', () => {
+      const duplicateTask = { ...testTask, id: 'existing-task-001' };
+      
+      expect(() => {
+        taskManager.addTask('test-proj-001', duplicateTask);
+      }).toThrow('Task id already exists: existing-task-001');
+    });
+
+    describe('Task Validation', () => {
+      test('should throw error for missing title', () => {
+        const invalidTask = { ...testTask };
+        delete invalidTask.title;
+        
+        expect(() => {
+          taskManager.addTask('test-proj-001', invalidTask);
+        }).toThrow('Task title is required');
+      });
+
+      test('should throw error for invalid status', () => {
+        const invalidTask = { ...testTask, status: 'invalid-status' };
+        
+        expect(() => {
+          taskManager.addTask('test-proj-001', invalidTask);
+        }).toThrow('Task status must be one of: planned, in-progress, completed, blocked, cancelled');
+      });
+
+      test('should accept all valid statuses', () => {
+        const validStatuses = ['planned', 'in-progress', 'completed', 'blocked', 'cancelled'];
+        
+        validStatuses.forEach((status, index) => {
+          const task = { ...testTask, id: `task-${index}`, status };
+          const addedTask = taskManager.addTask('test-proj-001', task);
+          expect(addedTask.status).toBe(status);
+        });
+      });
+
+      test('should throw error for invalid due_date format', () => {
+        DateUtils.isValidNZ.mockReturnValue(false);
+        
+        expect(() => {
+          taskManager.addTask('test-proj-001', testTask);
+        }).toThrow('Task due_date must be in valid NZ format (DD-MM-YYYY)');
+      });
+
+      test('should throw error for negative effort_hours', () => {
+        const invalidTask = { ...testTask, effort_hours: -10 };
+        
+        expect(() => {
+          taskManager.addTask('test-proj-001', invalidTask);
+        }).toThrow('Task effort_hours must be >= 0');
+      });
+
+      test('should allow zero effort_hours', () => {
+        const taskWithZeroHours = { ...testTask, effort_hours: 0 };
+        
+        const addedTask = taskManager.addTask('test-proj-001', taskWithZeroHours);
+        expect(addedTask.effort_hours).toBe(0);
+      });
+
+      test('should handle optional fields', () => {
+        const minimalTask = {
+          title: 'Minimal Task'
+          // description, assigned_to, due_date, effort_hours optional
+        };
+        
+        const addedTask = taskManager.addTask('test-proj-001', minimalTask);
+        expect(addedTask.title).toBe('Minimal Task');
+        expect(addedTask.status).toBe('planned'); // default
+        expect(addedTask.id).toBeDefined(); // generated
+      });
+    });
+  });
+
+  describe('getTask', () => {
+    beforeEach(() => {
+      mockDataPM.loadProjects.mockReturnValue([testProject]);
+    });
+
+    test('should return task when found', () => {
+      const task = taskManager.getTask('test-proj-001', 'existing-task-001');
+      
+      expect(task).toEqual(testProject.tasks[0]);
+    });
+
+    test('should return null when task not found', () => {
+      const task = taskManager.getTask('test-proj-001', 'non-existent-task');
+      
+      expect(task).toBeNull();
+    });
+
+    test('should throw error when project not found', () => {
+      expect(() => {
+        taskManager.getTask('non-existent-project', 'existing-task-001');
+      }).toThrow('Project not found: non-existent-project');
+    });
+  });
+
+  describe('updateTask', () => {
+    beforeEach(() => {
+      mockDataPM.loadProjects.mockReturnValue([testProject]);
+      DateUtils.isValidNZ.mockReturnValue(true);
+    });
+
+    test('should update task when found', () => {
+      const updates = {
+        title: 'Updated Task Title',
+        status: 'completed',
+        effort_hours: 25
+      };
+      
+      const updatedTask = taskManager.updateTask('test-proj-001', 'existing-task-001', updates);
+      
+      expect(updatedTask.title).toBe('Updated Task Title');
+      expect(updatedTask.status).toBe('completed');
+      expect(updatedTask.effort_hours).toBe(25);
+      expect(mockDataPM.saveProjects).toHaveBeenCalled();
+    });
+
+    test('should throw error when project not found', () => {
+      expect(() => {
+        taskManager.updateTask('non-existent-project', 'existing-task-001', { title: 'Updated' });
+      }).toThrow('Project not found: non-existent-project');
+    });
+
+    test('should throw error when task not found', () => {
+      expect(() => {
+        taskManager.updateTask('test-proj-001', 'non-existent-task', { title: 'Updated' });
+      }).toThrow('Task not found: non-existent-task');
+    });
+
+    test('should validate updates using same validation rules', () => {
+      expect(() => {
+        taskManager.updateTask('test-proj-001', 'existing-task-001', { effort_hours: -5 });
+      }).toThrow('Task effort_hours must be >= 0');
+    });
+
+    test('should allow partial updates', () => {
+      const updatedTask = taskManager.updateTask('test-proj-001', 'existing-task-001', {
+        status: 'completed'
+      });
+      
+      // Original values preserved
+      expect(updatedTask.title).toBe('Existing Task');
+      expect(updatedTask.assigned_to).toBe('John Doe');
+      
+      // Updated value changed
+      expect(updatedTask.status).toBe('completed');
+    });
+  });
+
+  describe('deleteTask', () => {
+    beforeEach(() => {
+      mockDataPM.loadProjects.mockReturnValue([testProject]);
+    });
+
+    test('should delete task when found', () => {
+      const deleted = taskManager.deleteTask('test-proj-001', 'existing-task-001');
+      
+      expect(deleted).toBe(true);
+      expect(mockDataPM.saveProjects).toHaveBeenCalled();
+      
+      // Verify task was removed from project
+      const saveCall = mockDataPM.saveProjects.mock.calls[0][0];
+      const updatedProject = saveCall.find(p => p.id === 'test-proj-001');
+      expect(updatedProject.tasks).toHaveLength(0);
+    });
+
+    test('should return false when task not found', () => {
+      const deleted = taskManager.deleteTask('test-proj-001', 'non-existent-task');
+      
+      expect(deleted).toBe(false);
+      expect(mockDataPM.saveProjects).not.toHaveBeenCalled();
+    });
+
+    test('should throw error when project not found', () => {
+      expect(() => {
+        taskManager.deleteTask('non-existent-project', 'existing-task-001');
+      }).toThrow('Project not found: non-existent-project');
+    });
+  });
+
+  describe('listTasks', () => {
+    beforeEach(() => {
+      mockDataPM.loadProjects.mockReturnValue([testProject]);
+    });
+
+    test('should return all tasks for project', () => {
+      const tasks = taskManager.listTasks('test-proj-001');
+      
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0]).toEqual(testProject.tasks[0]);
+    });
+
+    test('should return empty array for project with no tasks', () => {
+      const projectWithNoTasks = { ...testProject, tasks: [] };
+      mockDataPM.loadProjects.mockReturnValue([projectWithNoTasks]);
+      
+      const tasks = taskManager.listTasks('test-proj-001');
+      
+      expect(tasks).toEqual([]);
+    });
+
+    test('should throw error when project not found', () => {
+      expect(() => {
+        taskManager.listTasks('non-existent-project');
+      }).toThrow('Project not found: non-existent-project');
+    });
+  });
+
+  describe('getTasksByStatus', () => {
+    beforeEach(() => {
+      const projectWithMultipleTasks = {
+        ...testProject,
+        tasks: [
+          { id: 'task-1', title: 'Task 1', status: 'planned' },
+          { id: 'task-2', title: 'Task 2', status: 'in-progress' },
+          { id: 'task-3', title: 'Task 3', status: 'completed' },
+          { id: 'task-4', title: 'Task 4', status: 'in-progress' }
+        ]
+      };
+      mockDataPM.loadProjects.mockReturnValue([projectWithMultipleTasks]);
+    });
+
+    test('should return tasks filtered by status', () => {
+      const inProgressTasks = taskManager.getTasksByStatus('test-proj-001', 'in-progress');
+      
+      expect(inProgressTasks).toHaveLength(2);
+      expect(inProgressTasks.every(task => task.status === 'in-progress')).toBe(true);
+    });
+
+    test('should return empty array when no tasks match status', () => {
+      const blockedTasks = taskManager.getTasksByStatus('test-proj-001', 'blocked');
+      
+      expect(blockedTasks).toEqual([]);
+    });
+
+    test('should throw error when project not found', () => {
+      expect(() => {
+        taskManager.getTasksByStatus('non-existent-project', 'planned');
+      }).toThrow('Project not found: non-existent-project');
+    });
+  });
+
+  describe('_validateTask', () => {
+    test('should be a private method', () => {
+      expect(typeof taskManager._validateTask).toBe('function');
+    });
+
+    test('should validate all required fields on create', () => {
+      DateUtils.isValidNZ.mockReturnValue(true);
+      
+      // Should not throw for valid task
+      expect(() => {
+        taskManager._validateTask(testTask, false);
+      }).not.toThrow();
+    });
+
+    test('should allow partial validation on update', () => {
+      DateUtils.isValidNZ.mockReturnValue(true);
+      
+      // Should not throw for partial update
+      expect(() => {
+        taskManager._validateTask({ title: 'Updated Title' }, true);
+      }).not.toThrow();
+    });
+
+    test('should validate title is required for create', () => {
+      expect(() => {
+        taskManager._validateTask({}, false);
+      }).toThrow('Task title is required');
+    });
+
+    test('should validate status enum values', () => {
+      expect(() => {
+        taskManager._validateTask({ title: 'Test', status: 'invalid' }, false);
+      }).toThrow('Task status must be one of: planned, in-progress, completed, blocked, cancelled');
+    });
+
+    test('should validate due_date format when provided', () => {
+      DateUtils.isValidNZ.mockReturnValue(false);
+      
+      expect(() => {
+        taskManager._validateTask({ title: 'Test', due_date: 'invalid-date' }, false);
+      }).toThrow('Task due_date must be in valid NZ format (DD-MM-YYYY)');
+    });
+
+    test('should validate effort_hours is non-negative', () => {
+      expect(() => {
+        taskManager._validateTask({ title: 'Test', effort_hours: -1 }, false);
+      }).toThrow('Task effort_hours must be >= 0');
+    });
+  });
+
+  describe('Edge Cases', () => {
+    beforeEach(() => {
+      mockDataPM.loadProjects.mockReturnValue([testProject]);
+      DateUtils.isValidNZ.mockReturnValue(true);
+    });
+
+    test('should handle tasks with special characters in title', () => {
+      const taskWithSpecialChars = {
+        ...testTask,
+        title: 'Task with Special Characters: @#$%^&*()'
+      };
+      
+      const addedTask = taskManager.addTask('test-proj-001', taskWithSpecialChars);
+      expect(addedTask.title).toBe('Task with Special Characters: @#$%^&*()');
+    });
+
+    test('should handle very long task titles', () => {
+      const longTitle = 'A'.repeat(1000); // Very long title
+      const taskWithLongTitle = { ...testTask, title: longTitle };
+      
+      const addedTask = taskManager.addTask('test-proj-001', taskWithLongTitle);
+      expect(addedTask.title).toBe(longTitle);
+    });
+
+    test('should handle maximum effort hours', () => {
+      const taskWithMaxHours = { ...testTask, effort_hours: 999999 };
+      
+      const addedTask = taskManager.addTask('test-proj-001', taskWithMaxHours);
+      expect(addedTask.effort_hours).toBe(999999);
+    });
+
+    test('should handle names with apostrophes and hyphens', () => {
+      const taskWithComplexName = {
+        ...testTask,
+        assigned_to: "John O'Connor-Smith"
+      };
+      
+      const addedTask = taskManager.addTask('test-proj-001', taskWithComplexName);
+      expect(addedTask.assigned_to).toBe("John O'Connor-Smith");
+    });
+  });
+});

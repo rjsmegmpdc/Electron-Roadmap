@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Diagnostic</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .diagnostic-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .status-log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Button Functionality Diagnostic</h1>
+    
+    <div class="diagnostic-section">
+        <h2>Test Environment</h2>
+        <p><strong>Current URL:</strong> <span id="current-url"></span></p>
+        <p><strong>User Agent:</strong> <span id="user-agent"></span></p>
+        <p><strong>DOM Ready State:</strong> <span id="dom-state"></span></p>
+    </div>
+    
+    <div class="diagnostic-section">
+        <h2>Button Tests</h2>
+        <p>Click each button to test functionality:</p>
+        <button class="test-button" onclick="testNavigation('index.html', 'Timeline View')">🗓️ Open Timeline</button>
+        <button class="test-button" onclick="testNavigation('project-details.html', 'Project Details')">📋 Manage Projects</button>
+        <button class="test-button" onclick="testAlert('Table View')">📊 View Table (Alert Test)</button>
+    </div>
+    
+    <div class="diagnostic-section">
+        <h2>Launchpad Button Analysis</h2>
+        <button class="test-button" onclick="analyzeLaunchpadButtons()">🔍 Analyze Launchpad Buttons</button>
+        <button class="test-button" onclick="openLaunchpad()">🚀 Open Launchpad</button>
+    </div>
+    
+    <div class="diagnostic-section">
+        <h2>Status Log</h2>
+        <div id="status-log" class="status-log">Ready for testing...\n</div>
+    </div>
+    
+    <script>
+        // Initialize diagnostic info
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('user-agent').textContent = navigator.userAgent;
+        document.getElementById('dom-state').textContent = document.readyState;
+        
+        const statusLog = document.getElementById('status-log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            statusLog.textContent += logEntry;
+            statusLog.scrollTop = statusLog.scrollHeight;
+            console.log(message);
+        }
+        
+        function testNavigation(url, description) {
+            log(`🎯 Testing navigation to ${description} (${url})`);
+            log(`✅ Button click detected - navigation would occur`);
+            
+            if (confirm(`Navigate to ${description}?\n\nThis will open: ${url}`)) {
+                window.location.href = url;
+            } else {
+                log(`❌ Navigation cancelled by user`);
+            }
+        }
+        
+        function testAlert(description) {
+            log(`🎯 Testing alert for ${description}`);
+            alert(`${description} functionality - Alert test successful!`);
+            log(`✅ Alert test completed for ${description}`);
+        }
+        
+        function analyzeLaunchpadButtons() {
+            log(`🔍 Analyzing launchpad buttons...`);
+            
+            // Try to access launchpad in an iframe for analysis
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'launchpad.html';
+            
+            iframe.onload = function() {
+                try {
+                    const doc = iframe.contentDocument;
+                    const buttons = doc.querySelectorAll('button');
+                    
+                    log(`📊 Found ${buttons.length} buttons in launchpad`);
+                    buttons.forEach((btn, index) => {
+                        log(`  Button ${index}: "${btn.textContent}" (ID: ${btn.id || 'none'})`);
+                        log(`    - Has onclick: ${!!btn.onclick}`);
+                        log(`    - Has event listeners: ${btn.hasAttribute('data-fallback-attached')}`);
+                    });
+                } catch (error) {
+                    log(`❌ Could not analyze iframe contents: ${error.message}`);
+                }
+                
+                document.body.removeChild(iframe);
+            };
+            
+            iframe.onerror = function() {
+                log(`❌ Failed to load launchpad.html for analysis`);
+                document.body.removeChild(iframe);
+            };
+            
+            document.body.appendChild(iframe);
+        }
+        
+        function openLaunchpad() {
+            log(`🚀 Opening launchpad.html`);
+            window.open('launchpad.html', '_blank');
+        }
+        
+        // Log initial state
+        log('🔧 Diagnostic page loaded successfully');
+        log(`📄 Running from: ${window.location.href}`);
+    </script>
+</body>
+</html>

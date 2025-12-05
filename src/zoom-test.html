@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Zoom Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .zoom-test-info {
+            background: #e8f5e8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        .zoom-status {
+            background: #fff3cd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .zoom-controls-enhanced {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .zoom-level-btn {
+            padding: 8px 16px;
+            border: 2px solid #007bff;
+            background: #f8f9fa;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .zoom-level-btn.active {
+            background: #007bff;
+            color: white;
+        }
+        .zoom-level-btn:hover {
+            background: #0056b3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔍 Timeline Zoom Level Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+            <a href="timeline-drag-demo.html">← Demo Page</a>
+        </nav>
+    </header>
+    
+    <main class="timeline-view">
+        <div class="zoom-test-info">
+            <h3>🔍 Zoom Test Instructions</h3>
+            <p>Test all zoom levels and verify:</p>
+            <ul>
+                <li><strong>Zoom In/Out buttons</strong> work correctly</li>
+                <li><strong>Direct zoom level buttons</strong> jump to specific levels</li>
+                <li><strong>Scroll position</strong> is maintained during zoom changes</li>
+                <li><strong>Drag panning</strong> continues to work at all zoom levels</li>
+                <li><strong>Project bars</strong> scale appropriately with zoom</li>
+            </ul>
+        </div>
+        
+        <div class="zoom-status" id="zoom-status">
+            Current Zoom: <span id="current-zoom">month</span><br>
+            Day Width: <span id="day-width">8px</span><br>
+            Timeline Width: <span id="timeline-width">0px</span><br>
+            Scroll Position: <span id="scroll-position">0px</span>
+        </div>
+        
+        <section class="timeline-controls">
+            <div class="controls-left">
+                <button id="btn-zoom-in" class="control-btn">🔍 Zoom In</button>
+                <button id="btn-zoom-out" class="control-btn">🔍 Zoom Out</button>
+                <button id="btn-reset-zoom" class="control-btn">🔄 Reset</button>
+                <button id="btn-go-to-today" class="control-btn today-btn" style="background: linear-gradient(45deg, #dc3545, #e74c3c); color: white; font-weight: bold;">📅 Today</button>
+            </div>
+            
+            <div class="controls-right">
+                <button id="btn-add-project" class="primary-btn">➕ Add Project</button>
+            </div>
+        </section>
+        
+        <div class="zoom-controls-enhanced">
+            <strong>Direct Zoom:</strong>
+            <button class="zoom-level-btn" data-zoom="year">Year View</button>
+            <button class="zoom-level-btn" data-zoom="quarter">Quarter View</button>
+            <button class="zoom-level-btn active" data-zoom="month">Month View</button>
+            <button class="zoom-level-btn" data-zoom="fortnight">Fortnight View</button>
+            <button class="zoom-level-btn" data-zoom="week">Week View</button>
+        </div>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+        
+        <section class="timeline-legend">
+            <div class="legend-item">
+                <span class="legend-color concept-design"></span>
+                <span>Concept Design</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color solution-design"></span>
+                <span>Solution Design</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color engineering"></span>
+                <span>Engineering</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color uat"></span>
+                <span>UAT</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color release"></span>
+                <span>Release</span>
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🔍 Zoom test loading...');
+        
+        // Update zoom status display
+        function updateZoomStatus() {
+            const currentZoom = TimelineRenderer.currentZoom;
+            const zoomConfig = TimelineRenderer.zoomLevels[currentZoom];
+            const timelineContainer = document.getElementById('timeline-container');
+            const timelineWrapper = document.querySelector('.timeline-wrapper');
+            
+            document.getElementById('current-zoom').textContent = currentZoom;
+            document.getElementById('day-width').textContent = zoomConfig.dayWidth + 'px';
+            
+            if (timelineWrapper) {
+                document.getElementById('timeline-width').textContent = timelineWrapper.offsetWidth + 'px';
+            }
+            
+            if (timelineContainer) {
+                document.getElementById('scroll-position').textContent = timelineContainer.scrollLeft + 'px';
+            }
+            
+            // Update active zoom button
+            document.querySelectorAll('.zoom-level-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.zoom === currentZoom);
+            });
+        }
+        
+        // Direct zoom level switching
+        function setZoomLevel(zoomLevel) {
+            if (TimelineRenderer.zoomLevels[zoomLevel]) {
+                console.log(`🔍 Direct zoom to: ${zoomLevel}`);
+                
+                // Store current position
+                const timelineContainer = document.getElementById('timeline-container');
+                const currentScrollLeft = timelineContainer ? timelineContainer.scrollLeft : 0;
+                
+                // Calculate relative position
+                const oldZoomConfig = TimelineRenderer.zoomLevels[TimelineRenderer.currentZoom];
+                const projects = SimpleStorage.getAllProjects();
+                const bounds = TimelineRenderer.calculateTimelineBounds(projects);
+                const totalDays = Math.ceil((bounds.end - bounds.start) / (24 * 60 * 60 * 1000));
+                const oldTotalWidth = totalDays * oldZoomConfig.dayWidth;
+                const relativePosition = oldTotalWidth > 0 ? currentScrollLeft / oldTotalWidth : 0;
+                
+                // Change zoom level
+                TimelineRenderer.currentZoom = zoomLevel;
+                
+                // Re-render
+                TimelineRenderer.renderTimeline();
+                
+                // Restore position
+                setTimeout(() => {
+                    const newZoomConfig = TimelineRenderer.zoomLevels[zoomLevel];
+                    const newTotalWidth = totalDays * newZoomConfig.dayWidth;
+                    const newScrollLeft = newTotalWidth * relativePosition;
+                    
+                    if (timelineContainer) {
+                        timelineContainer.scrollLeft = newScrollLeft;
+                        const headerContainer = document.querySelector('.timeline-header');
+                        if (headerContainer) {
+                            headerContainer.scrollLeft = newScrollLeft;
+                        }
+                    }
+                    updateZoomStatus();
+                }, 100);
+                
+                showNotification(`Zoom: ${TimelineRenderer.zoomLevels[zoomLevel].name}`, 'info');
+            }
+        }
+        
+        // Add test project
+        function addTestProject() {
+            SimpleStorage.saveProject({
+                title: `Zoom Test Project ${Date.now()}`,
+                start_date: '2025-02-15',
+                end_date: '2025-07-30',
+                status: ['concept-design', 'solution-design', 'engineering', 'uat', 'release'][Math.floor(Math.random() * 5)],
+                budget_cents: Math.floor(Math.random() * 100000) * 100,
+                financial_treatment: Math.random() > 0.5 ? 'CAPEX' : 'OPEX'
+            });
+            
+            showNotification('Test project added!', 'success');
+            setTimeout(() => {
+                loadTimelineProjects();
+                updateZoomStatus();
+            }, 300);
+        }
+        
+        // Initialize zoom test
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Setting up zoom test...');
+            
+            // Add project button
+            document.getElementById('btn-add-project')?.addEventListener('click', addTestProject);
+            
+            // Direct zoom buttons
+            document.querySelectorAll('.zoom-level-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setZoomLevel(btn.dataset.zoom);
+                });
+            });
+            
+            // Monitor zoom status
+            setInterval(updateZoomStatus, 100);
+            
+            // Add test project if none exist
+            setTimeout(() => {
+                const projects = SimpleStorage.getAllProjects();
+                if (projects.length === 0) {
+                    addTestProject();
+                    setTimeout(addTestProject, 200);
+                    setTimeout(addTestProject, 400);
+                }
+            }, 1000);
+            
+            console.log('✅ Zoom test ready!');
+        });
+    </script>
+</body>
+</html>

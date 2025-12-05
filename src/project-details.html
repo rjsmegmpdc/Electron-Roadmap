@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap Tool - Project Details</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <header>
+        <h1>Project Details</h1>
+        <nav>
+            <a href="launchpad.html">← Back to Launchpad</a>
+        </nav>
+    </header>
+    
+    <main class="project-details">
+        <section class="project-form">
+            <h2>Project Information</h2>
+            <form id="project-form">
+                <div class="form-group">
+                    <label for="input-title">Project Title *</label>
+                    <input type="text" id="input-title" required>
+                    <span id="err-title" class="error-message"></span>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="input-start-date">Start Date *</label>
+                        <input type="date" id="input-start-date" required>
+                        <span id="err-start-date" class="error-message"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="input-end-date">End Date *</label>
+                        <input type="date" id="input-end-date" required>
+                        <span id="err-end-date" class="error-message"></span>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="input-budget">Budget *</label>
+                        <input type="text" id="input-budget" placeholder="Enter amount">
+                        <span id="err-budget" class="error-message"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="select-financial-treatment">Financial Treatment *</label>
+                        <select id="select-financial-treatment" required>
+                            <option value="">Select treatment</option>
+                            <option value="CAPEX">CAPEX</option>
+                            <option value="OPEX">OPEX</option>
+                            <option value="MIXED">MIXED</option>
+                        </select>
+                        <span id="err-treatment" class="error-message"></span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" id="btn-save-project" class="primary-btn">Save Project</button>
+                    <button type="button" id="btn-delete-project" class="danger-btn">Delete Project</button>
+                    <button type="button" id="btn-forecast" class="secondary-btn">Generate Forecast</button>
+                    <button type="button" id="btn-approve" class="success-btn">Approve Project</button>
+                </div>
+            </form>
+        </section>
+        
+        <section class="tabs-section">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="tasks">Tasks</button>
+                <button class="tab-btn" data-tab="resources">Resources</button>
+                <button class="tab-btn" data-tab="financials">Financials</button>
+            </div>
+            
+            <div id="tasks-tab" class="tab-content active">
+                <h3>Project Tasks</h3>
+                <div id="tasks-container"></div>
+            </div>
+            
+            <div id="resources-tab" class="tab-content">
+                <h3>Resource Allocation</h3>
+                <div id="resources-container"></div>
+            </div>
+            
+            <div id="financials-tab" class="tab-content">
+                <h3>Financial Overview</h3>
+                <div id="financials-container"></div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+</body>
+</html>

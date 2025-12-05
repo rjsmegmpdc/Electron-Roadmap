@@ -1,0 +1,61 @@
+{
+  "github": { 
+    "authMode": "PAT", 
+    "owner": "one-nz", 
+    "repo": "roadmap-work", 
+    "apiBase": "https://api.github.com" 
+  },
+  "sync": { 
+    "direction": "two-way", 
+    "schedule": "manual", 
+    "batchSize": 10, 
+    "retryMax": 2, 
+    "backoffMs": 500 
+  },
+  "overlays": { 
+    "sourceType": "zip-upload", 
+    "path": ".github" 
+  },
+  "mapping": {
+    "statusProject": { 
+      "concept-design": ["status:concept"], 
+      "solution-design": ["status:design"], 
+      "engineering": ["status:eng"], 
+      "uat": ["status:uat"], 
+      "release": ["status:release"] 
+    },
+    "statusTask": { 
+      "planned": ["status:planned"], 
+      "in-progress": ["status:in-progress"], 
+      "blocked": ["status:blocked"], 
+      "completed": ["status:completed"] 
+    },
+    "priority": { 
+      "P1": "priority:P1", 
+      "P2": "priority:P2", 
+      "P3": "priority:P3", 
+      "P4": "priority:P4" 
+    },
+    "defaults": { 
+      "assignees": { 
+        "epic": ["example-user"] 
+      }, 
+      "labels": { 
+        "epic": ["type:epic"], 
+        "userstory": ["type:story"] 
+      }, 
+      "milestoneStrategy": "none" 
+    }
+  },
+  "governance": { 
+    "enforceTitle": true, 
+    "enforceSections": true, 
+    "lockAfter": "uat", 
+    "lockedFields": ["rt_ids","security_block"], 
+    "violationAction": "comment-and-allow" 
+  },
+  "regional": { 
+    "dateFormat": "DD-MM-YYYY", 
+    "timezone": "Pacific/Auckland" 
+  }
+}

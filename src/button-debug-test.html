@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Debug Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .debug-info {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+        }
+        .button-test {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+        }
+        .console-output {
+            background: #000;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            min-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔧 Button Debug Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+        </nav>
+    </header>
+    
+    <main class="timeline-view">
+        <div class="debug-info">
+            <h3>🚨 Button Debug Information</h3>
+            <p>This page tests if the zoom and today buttons are working properly.</p>
+            <p>Watch the console output below and click the buttons to see what happens.</p>
+        </div>
+        
+        <section class="timeline-controls">
+            <div class="controls-left">
+                <button id="btn-zoom-in" class="control-btn">🔍 Zoom In</button>
+                <button id="btn-zoom-out" class="control-btn">🔍 Zoom Out</button>
+                <button id="btn-reset-zoom" class="control-btn">🔄 Reset</button>
+                <button id="btn-go-to-today" class="control-btn today-btn" style="background: linear-gradient(45deg, #dc3545, #e74c3c); color: white; font-weight: bold;">📅 Today</button>
+            </div>
+        </section>
+        
+        <div class="button-test">
+            <h4>Manual Test Buttons (Direct Function Calls)</h4>
+            <button onclick="testZoomIn()" class="primary-btn">Test Zoom In</button>
+            <button onclick="testZoomOut()" class="primary-btn">Test Zoom Out</button>
+            <button onclick="testResetZoom()" class="primary-btn">Test Reset</button>
+            <button onclick="testGoToToday()" class="primary-btn">Test Today</button>
+        </div>
+        
+        <div class="console-output" id="console-output">
+            Console output will appear here...
+        </div>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        // Capture console.log output
+        const originalConsoleLog = console.log;
+        const consoleOutput = document.getElementById('console-output');
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            consoleOutput.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        };
+        
+        console.log('🔧 Button debug test started');
+        
+        // Manual test functions
+        function testZoomIn() {
+            console.log('🧪 Manual test: calling timelineZoom("in")');
+            try {
+                if (typeof timelineZoom === 'function') {
+                    timelineZoom('in');
+                } else {
+                    console.error('❌ timelineZoom function not found!');
+                }
+            } catch (error) {
+                console.error('❌ Error calling timelineZoom("in"):', error);
+            }
+        }
+        
+        function testZoomOut() {
+            console.log('🧪 Manual test: calling timelineZoom("out")');
+            try {
+                if (typeof timelineZoom === 'function') {
+                    timelineZoom('out');
+                } else {
+                    console.error('❌ timelineZoom function not found!');
+                }
+            } catch (error) {
+                console.error('❌ Error calling timelineZoom("out"):', error);
+            }
+        }
+        
+        function testResetZoom() {
+            console.log('🧪 Manual test: calling timelineZoom("reset")');
+            try {
+                if (typeof timelineZoom === 'function') {
+                    timelineZoom('reset');
+                } else {
+                    console.error('❌ timelineZoom function not found!');
+                }
+            } catch (error) {
+                console.error('❌ Error calling timelineZoom("reset"):', error);
+            }
+        }
+        
+        function testGoToToday() {
+            console.log('🧪 Manual test: calling goToToday()');
+            try {
+                if (typeof goToToday === 'function') {
+                    goToToday();
+                } else {
+                    console.error('❌ goToToday function not found!');
+                }
+            } catch (error) {
+                console.error('❌ Error calling goToToday():', error);
+            }
+        }
+        
+        // Debug button state
+        function debugButtons() {
+            console.log('🔍 Debugging button states...');
+            
+            const buttons = {
+                'btn-zoom-in': document.getElementById('btn-zoom-in'),
+                'btn-zoom-out': document.getElementById('btn-zoom-out'),
+                'btn-reset-zoom': document.getElementById('btn-reset-zoom'),
+                'btn-go-to-today': document.getElementById('btn-go-to-today')
+            };
+            
+            Object.entries(buttons).forEach(([id, button]) => {
+                if (button) {
+                    console.log(`✅ Button ${id}: found, handler attached: ${button.hasAttribute('data-handler-attached')}`);
+                    
+                    // Check if it has click listeners
+                    const listeners = getEventListeners ? getEventListeners(button) : 'Cannot check listeners';
+                    console.log(`   Listeners:`, listeners);
+                } else {
+                    console.error(`❌ Button ${id}: NOT FOUND!`);
+                }
+            });
+            
+            // Check if functions exist
+            console.log('📋 Function availability:');
+            console.log(`  timelineZoom: ${typeof timelineZoom}`);
+            console.log(`  goToToday: ${typeof goToToday}`);
+            console.log(`  TimelineRenderer: ${typeof TimelineRenderer}`);
+            
+            if (typeof TimelineRenderer === 'object') {
+                console.log(`  TimelineRenderer.currentZoom: ${TimelineRenderer.currentZoom}`);
+                console.log(`  TimelineRenderer.zoomLevels: ${Object.keys(TimelineRenderer.zoomLevels || {})}`);
+            }
+        }
+        
+        // Run debug on load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 DOM Content Loaded - running button debug...');
+            setTimeout(debugButtons, 500);
+            
+            // Add a test project if none exist
+            setTimeout(() => {
+                const projects = SimpleStorage.getAllProjects();
+                if (projects.length === 0) {
+                    console.log('➕ Adding test project for debugging...');
+                    SimpleStorage.saveProject({
+                        title: 'Debug Test Project',
+                        start_date: '2025-03-01',
+                        end_date: '2025-06-30',
+                        status: 'engineering',
+                        budget_cents: 50000 * 100,
+                        financial_treatment: 'CAPEX'
+                    });
+                    setTimeout(() => loadTimelineProjects(), 200);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

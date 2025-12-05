@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Row Timeline Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8f9fa; 
+            padding: 20px;
+        }
+        .test-info {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-controls {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .timeline-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            height: 600px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+        }
+        .project-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="test-info">
+            <h1>🚦 Multi-Row Timeline System Test</h1>
+            <p><strong>Purpose:</strong> Test the new multi-row system that allows multiple projects per row and prevents overlaps.</p>
+            <p><strong>Features to Test:</strong></p>
+            <ul>
+                <li>✅ <strong>Automatic Row Assignment:</strong> Projects are automatically assigned to rows to minimize overlaps</li>
+                <li>✅ <strong>Row Backgrounds:</strong> Visual separation between rows with alternating colors</li>
+                <li>✅ <strong>Row Labels:</strong> Each row has a clear "Row 1", "Row 2", etc. label</li>
+                <li>✅ <strong>Drag Between Rows:</strong> Projects can be dragged vertically between rows</li>
+                <li>✅ <strong>Overlap Prevention:</strong> System prevents projects from overlapping on the same row</li>
+                <li>✅ <strong>Storage Integration:</strong> Row assignments persist in localStorage</li>
+            </ul>
+        </div>
+
+        <div class="test-controls">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary" onclick="loadTestProjects()">📊 Load Test Projects</button>
+                    <button class="btn btn-secondary" onclick="clearAllProjects()">🗑️ Clear All</button>
+                    <button class="btn btn-info" onclick="TimelineRenderer.renderTimeline()">🔄 Refresh Timeline</button>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('out')">🔍 Zoom Out</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('reset')">🎯 Reset</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="timelineZoom('in')">🔍 Zoom In</button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="goToToday()">📅 Today</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="timeline-container">
+                    <!-- Timeline Header -->
+                    <div class="timeline-header" style="overflow-x: auto; margin-bottom: 10px;">
+                        <div class="timeline-dates" style="position: relative; height: 90px;"></div>
+                    </div>
+                    
+                    <!-- Timeline Content -->
+                    <div id="timeline-container" style="overflow-x: auto; overflow-y: visible; height: 450px; border: 1px solid #ddd; border-radius: 8px;">
+                        <!-- Timeline content will be rendered here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="test-info">
+                    <h5>📋 Test Projects</h5>
+                    <div id="project-list" class="project-list">
+                        <!-- Will be populated by loadTestProjects -->
+                    </div>
+                    
+                    <h6 class="mt-3">🎯 Test Instructions</h6>
+                    <ol style="font-size: 14px;">
+                        <li>Click "Load Test Projects" to add overlapping projects</li>
+                        <li>Verify projects are automatically assigned to different rows</li>
+                        <li>Try dragging projects vertically between rows</li>
+                        <li>Check that row backgrounds provide visual separation</li>
+                        <li>Test zoom levels and timeline navigation</li>
+                        <li>Refresh page to verify row assignments persist</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include all necessary JavaScript -->
+    <script src="js/core/config.js"></script>
+    <script src="js/storage-system.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        // Test projects with intentional date overlaps
+        function loadTestProjects() {
+            console.log('🧪 Loading test projects with overlapping dates...');
+            
+            const testProjects = [
+                {
+                    id: 'test-project-1',
+                    title: 'Project Alpha - Q1 FY26 Launch',
+                    description: 'First quarter FY26 product launch',
+                    start_date: '2025-04-15',
+                    end_date: '2025-06-30',
+                    status: 'engineering',
+                    row: null // Will be auto-assigned
+                },
+                {
+                    id: 'test-project-2', 
+                    title: 'Project Beta - Overlapping Initiative',
+                    description: 'Overlaps with Alpha, should go to different row',
+                    start_date: '2025-05-01',
+                    end_date: '2025-07-15',
+                    status: 'solution-design',
+                    row: null
+                },
+                {
+                    id: 'test-project-3',
+                    title: 'Project Gamma - Q2 FY26 Focus',
+                    description: 'Second quarter FY26 initiative',
+                    start_date: '2025-07-01',
+                    end_date: '2025-09-30',
+                    status: 'concept-design',
+                    row: null
+                },
+                {
+                    id: 'test-project-4',
+                    title: 'Project Delta - Full Year Program',
+                    description: 'Spans most of FY26',
+                    start_date: '2025-04-01',
+                    end_date: '2026-01-31',
+                    status: 'uat',
+                    row: null
+                },
+                {
+                    id: 'test-project-5',
+                    title: 'Project Epsilon - Q4 FY25 Sprint',
+                    description: 'Quick project ending FY25',
+                    start_date: '2025-02-01',
+                    end_date: '2025-03-15',
+                    status: 'release',
+                    row: null
+                },
+                {
+                    id: 'test-project-6',
+                    title: 'Project Zeta - H2 FY26 Planning',
+                    description: 'Second half FY26 strategic project',
+                    start_date: '2025-10-01',
+                    end_date: '2026-03-31',
+                    status: 'concept-design',
+                    row: null
+                }
+            ];
+            
+            // Clear existing projects
+            localStorage.removeItem('roadmap-projects');
+            
+            // Save test projects
+            localStorage.setItem('roadmap-projects', JSON.stringify(testProjects));
+            
+            // Update project list display
+            updateProjectList(testProjects);
+            
+            // Re-render timeline
+            TimelineRenderer.renderTimeline();
+            
+            showNotification(`✅ Loaded ${testProjects.length} test projects with overlapping dates!`, 'success');
+            console.log('✅ Test projects loaded successfully');
+        }
+        
+        function clearAllProjects() {
+            localStorage.removeItem('roadmap-projects');
+            document.getElementById('project-list').innerHTML = '<p class="text-muted">No projects loaded</p>';
+            TimelineRenderer.renderTimeline();
+            showNotification('🗑️ All projects cleared', 'info');
+        }
+        
+        function updateProjectList(projects) {
+            const container = document.getElementById('project-list');
+            if (projects.length === 0) {
+                container.innerHTML = '<p class="text-muted">No projects loaded</p>';
+                return;
+            }
+            
+            const statusColors = {
+                'concept-design': '#6f42c1',
+                'solution-design': '#007bff',
+                'engineering': '#28a745',
+                'uat': '#ffc107',
+                'release': '#dc3545'
+            };
+            
+            const html = projects.map(project => `
+                <div class="border-start border-3 ps-2 mb-2" style="border-color: ${statusColors[project.status]}!important;">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1 text-truncate">${project.title}</h6>
+                            <small class="text-muted">${project.start_date} → ${project.end_date}</small>
+                            <br><span class="status-badge" style="background: ${statusColors[project.status]}">${project.status}</span>
+                        </div>
+                        <small class="text-muted ms-2">Row ${typeof project.row === 'number' ? project.row + 1 : 'Auto'}</small>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Multi-Row Timeline Test Page Initialized');
+            
+            // Initialize timeline
+            TimelineRenderer.init();
+            
+            // Show current projects if any
+            const existingProjects = SimpleStorage.getAllProjects();
+            updateProjectList(existingProjects);
+            
+            // Add some helpful console info
+            console.log(`📊 Current projects in storage: ${existingProjects.length}`);
+            console.log('🎯 Ready to test multi-row functionality!');
+            
+            // Auto-load test projects if none exist
+            if (existingProjects.length === 0) {
+                setTimeout(() => {
+                    console.log('🧪 Auto-loading test projects since none exist...');
+                    loadTestProjects();
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

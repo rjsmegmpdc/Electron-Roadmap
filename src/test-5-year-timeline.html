@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Year Timeline Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .timeline-info {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px;
+            font-family: monospace;
+        }
+        .year-indicator {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .today-year {
+            background: #dc3545 !important;
+        }
+        .future-year {
+            background: #28a745 !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🗓️ 5-Year Timeline Extension Test</h1>
+        <nav>
+            <a href="index.html">← Back to Timeline</a>
+            <a href="test-year-view.html">Year View Test</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="timeline-info">
+            <h2>📊 Timeline Coverage Analysis</h2>
+            <div id="timeline-analysis">
+                <p>🔄 Analyzing timeline bounds...</p>
+            </div>
+        </div>
+        
+        <div class="timeline-info">
+            <h2>📅 Year Coverage</h2>
+            <div id="year-coverage">
+                <p>🔄 Loading year coverage...</p>
+            </div>
+        </div>
+        
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-dates">
+                    <!-- Date headers will be dynamically generated -->
+                </div>
+            </div>
+            
+            <div id="timeline-container" class="timeline-container">
+                <!-- Project bars will be dynamically rendered here -->
+            </div>
+        </section>
+        
+        <div class="timeline-info">
+            <h2>🎯 Test Results</h2>
+            <div id="test-results">
+                <p>🔄 Running tests...</p>
+            </div>
+        </div>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🗓️ 5-Year Timeline Extension Test loaded');
+        
+        function analyzeTimelineBounds() {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const targetYear = currentYear + 5; // 5 years from now
+            
+            // Get projects
+            const projects = SimpleStorage.getAllProjects();
+            
+            // Add some future test projects to verify they work
+            if (projects.length === 0) {
+                console.log('➕ Adding future test projects');
+                const futureProjects = [
+                    {
+                        id: 'proj-future-1',
+                        title: 'Project 2027',
+                        start_date: '2027-01-01',
+                        end_date: '2027-06-30',
+                        budget_cents: 5000000,
+                        status: 'concept-design',
+                        financial_treatment: 'CAPEX'
+                    },
+                    {
+                        id: 'proj-future-2',
+                        title: 'Project 2028',
+                        start_date: '2028-03-01',
+                        end_date: '2028-12-31',
+                        budget_cents: 8000000,
+                        status: 'solution-design',
+                        financial_treatment: 'OPEX'
+                    },
+                    {
+                        id: 'proj-future-3',
+                        title: 'Long-term Initiative 2030',
+                        start_date: '2029-01-01',
+                        end_date: '2030-12-31',
+                        budget_cents: 15000000,
+                        status: 'engineering',
+                        financial_treatment: 'CAPEX'
+                    }
+                ];
+                
+                futureProjects.forEach(project => {
+                    SimpleStorage.saveProject(project);
+                });
+            }
+            
+            // Calculate bounds using the TimelineRenderer logic
+            const bounds = TimelineRenderer.calculateTimelineBounds(SimpleStorage.getAllProjects());
+            
+            // Analyze the results
+            const analysis = {
+                today: today.toISOString().split('T')[0],
+                currentYear: currentYear,
+                targetYear: targetYear,
+                timelineStart: bounds.start.toISOString().split('T')[0],
+                timelineEnd: bounds.end.toISOString().split('T')[0],
+                timelineStartYear: bounds.start.getFullYear(),
+                timelineEndYear: bounds.end.getFullYear(),
+                totalYears: bounds.end.getFullYear() - bounds.start.getFullYear(),
+                yearsFromToday: bounds.end.getFullYear() - currentYear,
+                meetsRequirement: bounds.end.getFullYear() >= targetYear
+            };
+            
+            // Display analysis
+            const analysisDiv = document.getElementById('timeline-analysis');
+            analysisDiv.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <strong>📅 Key Dates:</strong><br>
+                        Today: ${analysis.today}<br>
+                        Timeline Start: ${analysis.timelineStart}<br>
+                        Timeline End: ${analysis.timelineEnd}<br>
+                    </div>
+                    <div>
+                        <strong>📊 Coverage:</strong><br>
+                        Total Years: ${analysis.totalYears}<br>
+                        Years from Today: ${analysis.yearsFromToday}<br>
+                        Meets 5-Year Requirement: ${analysis.meetsRequirement ? '✅ YES' : '❌ NO'}<br>
+                    </div>
+                </div>
+            `;
+            
+            // Display year coverage
+            const years = [];
+            for (let year = analysis.timelineStartYear; year <= analysis.timelineEndYear; year++) {
+                const yearClass = year === currentYear ? 'today-year' : 
+                                 year > currentYear ? 'future-year' : 
+                                 'year-indicator';
+                years.push(`<span class="year-indicator ${yearClass}">${year}</span>`);
+            }
+            
+            document.getElementById('year-coverage').innerHTML = `
+                <p><strong>Timeline spans from ${analysis.timelineStartYear} to ${analysis.timelineEndYear}:</strong></p>
+                <div style="line-height: 2;">${years.join('')}</div>
+                <p style="margin-top: 10px; font-size: 12px;">
+                    <span class="year-indicator">Past Years</span>
+                    <span class="year-indicator today-year">Current Year</span>
+                    <span class="year-indicator future-year">Future Years</span>
+                </p>
+            `;
+            
+            // Test results
+            const testResults = [];
+            testResults.push(analysis.meetsRequirement ? 
+                '✅ Timeline extends at least 5 years from today' : 
+                '❌ Timeline does not extend 5 years from today');
+            testResults.push(analysis.totalYears >= 7 ? 
+                '✅ Timeline shows sufficient historical context (7+ years)' : 
+                '⚠️ Timeline shows limited historical context');
+            testResults.push(analysis.yearsFromToday >= 5 ? 
+                '✅ Can plan projects 5+ years in advance' : 
+                '❌ Cannot plan projects 5 years in advance');
+            
+            document.getElementById('test-results').innerHTML = `
+                <ul style="list-style: none; padding: 0;">
+                    ${testResults.map(result => `<li style="margin: 10px 0;">${result}</li>`).join('')}
+                </ul>
+            `;
+            
+            return analysis;
+        }
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📖 DOM ready - analyzing timeline bounds');
+            
+            setTimeout(() => {
+                const analysis = analyzeTimelineBounds();
+                console.log('📊 Timeline Analysis Complete:', analysis);
+                
+                // Render the timeline in year view to verify
+                TimelineRenderer.currentZoom = 'year';
+                TimelineRenderer.renderTimeline();
+                
+            }, 500);
+            
+            console.log('✅ 5-Year timeline test initialized');
+        });
+    </script>
+</body>
+</html>

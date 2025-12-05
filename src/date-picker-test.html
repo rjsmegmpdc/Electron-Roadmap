@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Picker Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .date-demo {
+            background: #e8f5e8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        .validation-demo {
+            background: #fff3cd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+        }
+        .feature-list {
+            background: #d1ecf1;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border-left: 4px solid #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📅 Date Picker Test</h1>
+        <nav>
+            <a href="project-details.html">← Project Details</a>
+            <a href="index.html">← Timeline</a>
+        </nav>
+    </header>
+    
+    <main class="project-details">
+        <div class="date-demo">
+            <h3>✨ Calendar Date Picker Features</h3>
+            <p>The project form now includes enhanced date picker functionality with smart defaults for financial year planning:</p>
+            <ul>
+                <li><strong>📱 Native Calendar Widgets</strong> - Click the date fields to open calendar pickers</li>
+                <li><strong>✅ Smart Validation</strong> - Real-time validation ensures end date is after start date</li>
+                <li><strong>🎯 Default Values</strong> - Start date defaults to today, end date to April 1st next year</li>
+                <li><strong>📊 Duration Display</strong> - Shows project duration in days, weeks, and months</li>
+                <li><strong>🎨 Visual Feedback</strong> - Green borders for valid dates, red for errors</li>
+            </ul>
+        </div>
+        
+        <section class="project-form">
+            <h2>Project Information</h2>
+            <form id="project-form">
+                <div class="form-group">
+                    <label for="input-title">Project Title *</label>
+                    <input type="text" id="input-title" placeholder="Enter project title..." required>
+                    <span id="err-title" class="error-message"></span>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="input-start-date">Start Date * 📅</label>
+                        <input type="date" id="input-start-date" required>
+                        <span id="err-start-date" class="error-message"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="input-end-date">End Date * 📅</label>
+                        <input type="date" id="input-end-date" required>
+                        <span id="err-end-date" class="error-message"></span>
+                    </div>
+                </div>
+                
+                <div class="validation-demo">
+                    <h4>🧪 Try These Tests:</h4>
+                    <ol>
+                        <li><strong>Open Calendar:</strong> Click on either date field to see the native calendar picker</li>
+                        <li><strong>Test Validation:</strong> Try setting end date before start date</li>
+                        <li><strong>See Duration:</strong> Set valid dates to see the calculated project duration</li>
+                        <li><strong>Visual Feedback:</strong> Notice the border colors change based on validation</li>
+                    </ol>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="input-budget">Budget *</label>
+                        <input type="text" id="input-budget" placeholder="Enter amount">
+                        <span id="err-budget" class="error-message"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="select-financial-treatment">Financial Treatment *</label>
+                        <select id="select-financial-treatment" required>
+                            <option value="">Select treatment</option>
+                            <option value="CAPEX">CAPEX</option>
+                            <option value="OPEX">OPEX</option>
+                            <option value="MIXED">MIXED</option>
+                        </select>
+                        <span id="err-treatment" class="error-message"></span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" id="btn-save-project" class="primary-btn">Save Test Project</button>
+                    <button type="button" id="btn-clear-form" class="secondary-btn">Clear Form</button>
+                    <button type="button" id="btn-set-example" class="secondary-btn">Set Example Dates</button>
+                </div>
+            </form>
+        </section>
+        
+        <div class="feature-list">
+            <h4>🚀 Implementation Details</h4>
+            <ul>
+                <li><strong>HTML5 Date Input:</strong> Using <code>type="date"</code> for native calendar widgets</li>
+                <li><strong>CSS Styling:</strong> Custom styling with calendar icons and hover effects</li>
+                <li><strong>JavaScript Validation:</strong> Real-time validation with visual feedback</li>
+                <li><strong>Smart Defaults:</strong> Automatically sets reasonable default dates</li>
+                <li><strong>Cross-Browser Support:</strong> Works on all modern browsers</li>
+            </ul>
+        </div>
+    </main>
+    
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('📅 Date picker test page loaded');
+        
+        // Additional test functions
+        function clearForm() {
+            document.getElementById('project-form').reset();
+            // Reset to default dates
+            initializeDefaultDates();
+            
+            showNotification('Form cleared and default dates set!', 'info');
+        }
+        
+        function setExampleDates() {
+            // Set example project dates for FY26
+            document.getElementById('input-title').value = 'Digital Transformation FY26';
+            document.getElementById('input-start-date').value = '2025-05-01';
+            document.getElementById('input-end-date').value = '2025-11-30';
+            document.getElementById('input-budget').value = '125000';
+            document.getElementById('select-financial-treatment').value = 'CAPEX';
+            
+            // Trigger validation
+            setTimeout(() => {
+                document.getElementById('input-start-date').dispatchEvent(new Event('change'));
+                document.getElementById('input-end-date').dispatchEvent(new Event('change'));
+            }, 100);
+            
+            showNotification('Example project data loaded!', 'success');
+        }
+        
+        // Initialize default dates aligned with financial year (April 1 - March 31)
+        function initializeDefaultDates() {
+            const today = new Date();
+            
+            // Determine the appropriate FY end date
+            let fyEndDate;
+            if (today.getMonth() >= 3) { // April (3) or later = current FY
+                fyEndDate = new Date(today.getFullYear() + 1, 2, 31); // March 31st next year
+            } else { // January-March = previous FY
+                fyEndDate = new Date(today.getFullYear(), 2, 31); // March 31st this year
+            }
+            
+            document.getElementById('input-start-date').value = today.toISOString().split('T')[0];
+            document.getElementById('input-end-date').value = fyEndDate.toISOString().split('T')[0];
+            
+            console.log('📅 Default dates initialized for Financial Year:', {
+                startDate: today.toISOString().split('T')[0],
+                endDate: fyEndDate.toISOString().split('T')[0],
+                fyNote: `Ends ${fyEndDate.getFullYear()} FY`
+            });
+        }
+        
+        // Add event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default dates on page load
+            initializeDefaultDates();
+            
+            const clearBtn = document.getElementById('btn-clear-form');
+            const exampleBtn = document.getElementById('btn-set-example');
+            
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearForm);
+            }
+            
+            if (exampleBtn) {
+                exampleBtn.addEventListener('click', setExampleDates);
+            }
+            
+            console.log('✅ Date picker test page initialized');
+        });
+    </script>
+</body>
+</html>

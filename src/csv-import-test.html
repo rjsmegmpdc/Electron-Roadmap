@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Import Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #218838;
+        }
+        .secondary-button {
+            background: #6c757d;
+        }
+        .secondary-button:hover {
+            background: #5a6268;
+        }
+        .csv-sample {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🧪 CSV Import Test</h1>
+    
+    <div class="test-section">
+        <h2>CSV Import Feature</h2>
+        <p>✅ <strong>Added:</strong> CSV import button handler</p>
+        <p>✅ <strong>Added:</strong> File input event handler</p>
+        <p>✅ <strong>Added:</strong> CSV parsing with proper quote handling</p>
+        <p>✅ <strong>Added:</strong> Flexible header mapping (case-insensitive)</p>
+        <p>✅ <strong>Added:</strong> Import confirmation dialog</p>
+        <p>✅ <strong>Added:</strong> Auto-refresh timeline after import</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test CSV Import</h2>
+        <button class="test-button" onclick="goToTimeline()">🗓️ Open Timeline & Test Import</button>
+        <button class="test-button secondary-button" onclick="downloadSampleCSV()">📤 Download Sample CSV</button>
+        <button class="test-button secondary-button" onclick="showCurrentProjects()">📊 Show Current Projects</button>
+        
+        <div id="status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Sample CSV Format</h2>
+        <p>Here's a sample CSV file you can use to test the import:</p>
+        <div class="csv-sample" id="sample-csv">Title,Start Date,End Date,Budget,Status,Financial Treatment
+"Test Project A","2024-01-15","2024-04-15",1500,"concept-design","OPEX"
+"Test Project B","2024-02-01","2024-05-31",2500,"engineering","CAPEX"
+"Test Project C","2024-03-10","2024-07-10",1800,"uat","OPEX"</div>
+        
+        <p><small>Copy this content to a .csv file or click "Download Sample CSV" above.</small></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>How to Test</h2>
+        <ol>
+            <li><strong>Create a test CSV file:</strong>
+                <ul>
+                    <li>Click "Download Sample CSV" to get a test file, OR</li>
+                    <li>Copy the sample content above into a new file and save as .csv</li>
+                </ul>
+            </li>
+            <li><strong>Test the import:</strong>
+                <ul>
+                    <li>Click "Open Timeline & Test Import"</li>
+                    <li>On the timeline page, click "Import CSV" button</li>
+                    <li>Select your CSV file</li>
+                    <li>Confirm the import when prompted</li>
+                </ul>
+            </li>
+            <li><strong>Verify results:</strong>
+                <ul>
+                    <li>Check that new projects appear on the timeline</li>
+                    <li>Open browser console (F12) to see detailed import logs</li>
+                    <li>Test export to verify the imported data is correct</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    
+    <script>
+        // Same storage implementation as main app
+        const SimpleStorage = {
+            getProjects() {
+                try {
+                    return JSON.parse(localStorage.getItem('roadmap-projects') || '[]');
+                } catch {
+                    return [];
+                }
+            }
+        };
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<p class="${type}">📊 ${message}</p>`;
+        }
+        
+        function goToTimeline() {
+            window.open('index.html', '_blank');
+        }
+        
+        function downloadSampleCSV() {
+            const csvContent = `Title,Start Date,End Date,Budget,Status,Financial Treatment
+"Sample Project Alpha","2024-01-15","2024-04-15",1500,"concept-design","OPEX"
+"Sample Project Beta","2024-02-01","2024-05-31",2500,"engineering","CAPEX"
+"Sample Project Gamma","2024-03-10","2024-07-10",1800,"uat","OPEX"
+"Sample Project Delta","2024-04-01","2024-08-01",3200,"release","CAPEX"`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'sample-projects.csv';
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            updateStatus('✅ Sample CSV file downloaded!', 'success');
+        }
+        
+        function showCurrentProjects() {
+            const projects = SimpleStorage.getProjects();
+            updateStatus(`Found ${projects.length} projects currently stored`);
+            
+            if (projects.length > 0) {
+                console.log('Current projects:', projects);
+                const projectList = projects.map((p, i) => `${i + 1}. ${p.title || 'Untitled'}`).join('\\n');
+                alert(`Current Projects (${projects.length}):\\n\\n${projectList}`);
+            } else {
+                alert('No projects currently stored.\\n\\nTry importing some CSV data or creating projects manually.');
+            }
+        }
+        
+        // Initialize
+        updateStatus('CSV Import Test page loaded - Ready to test!');
+        
+        console.log('🧪 CSV Import Test page loaded');
+        console.log('Open browser console to see detailed import logs when testing');
+    </script>
+</body>
+</html>

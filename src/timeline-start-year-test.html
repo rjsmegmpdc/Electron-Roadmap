@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Start Year Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .config-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #1976d2;
+            margin-bottom: 20px;
+        }
+        .bounds-info {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #7b1fa2;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .timeline-dates {
+            position: relative;
+            border: 2px solid #ddd;
+            background: #fff;
+            margin: 20px 0;
+            overflow-x: auto;
+            min-height: 100px;
+        }
+        #timeline-container {
+            position: relative;
+            border: 2px solid #ddd;
+            background: #fff;
+            margin: 20px 0;
+            overflow: auto;
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗓️ Timeline Start Year Configuration Test</h1>
+    
+    <div class="test-section">
+        <h2>Configuration</h2>
+        <div class="config-info" id="config-info">
+            Loading configuration...
+        </div>
+        
+        <h2>Timeline Bounds Calculation</h2>
+        <div class="bounds-info" id="bounds-info">
+            Testing bounds calculation...
+        </div>
+        
+        <button onclick="testTimelineBounds()">🔄 Recalculate Bounds</button>
+        <button onclick="changeStartYear()">📅 Change Start Year</button>
+        <button onclick="renderTestTimeline()">🎨 Render Timeline</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Timeline Headers (Year & Date)</h2>
+        <div class="timeline-dates" id="timeline-dates"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Timeline Container</h2>
+        <div id="timeline-container"></div>
+    </div>
+
+    <!-- Load the app script -->
+    <script src="js/app-simple.js"></script>
+    
+    <script>
+        console.log('🧪 Timeline Start Year Test Loading...');
+        
+        // Test functions
+        function displayConfig() {
+            const config = TimelineRenderer.config;
+            document.getElementById('config-info').innerHTML = `
+                <strong>Current Timeline Configuration:</strong><br>
+                • Start Year: <strong>${config.timelineStartYear}</strong><br>
+                • Year Header Height: ${config.yearHeaderHeight}px<br>
+                • Timeline Height: ${config.timelineHeight}px<br>
+                • Project Height: ${config.projectHeight}px<br>
+                • Today Marker Width: ${config.todayMarkerWidth}px
+            `;
+        }
+        
+        function testTimelineBounds() {
+            console.log('🧪 Testing timeline bounds calculation...');
+            
+            // Create some test projects
+            const testProjects = [
+                {
+                    id: 'test1',
+                    title: 'Test Project 1',
+                    start_date: '2025-03-15',
+                    end_date: '2025-08-30'
+                },
+                {
+                    id: 'test2', 
+                    title: 'Test Project 2',
+                    start_date: '2026-01-01',
+                    end_date: '2026-06-15'
+                }
+            ];
+            
+            const bounds = TimelineRenderer.calculateTimelineBounds(testProjects);
+            
+            document.getElementById('bounds-info').innerHTML = `
+                <strong>Timeline Bounds (with test projects):</strong><br>
+                • Start Date: <strong>${bounds.start.toDateString()}</strong><br>
+                • End Date: <strong>${bounds.end.toDateString()}</strong><br>
+                • Today: <strong>${bounds.today.toDateString()}</strong><br>
+                • Total Days: <strong>${Math.ceil((bounds.end - bounds.start) / (24 * 60 * 60 * 1000))}</strong>
+            `;
+            
+            console.log('📅 Timeline bounds:', bounds);
+        }
+        
+        function testEmptyTimelineBounds() {
+            console.log('🧪 Testing timeline bounds with no projects...');
+            
+            const bounds = TimelineRenderer.calculateTimelineBounds([]);
+            
+            document.getElementById('bounds-info').innerHTML = `
+                <strong>Timeline Bounds (no projects):</strong><br>
+                • Start Date: <strong>${bounds.start.toDateString()}</strong><br>
+                • End Date: <strong>${bounds.end.toDateString()}</strong><br>
+                • Today: <strong>${bounds.today.toDateString()}</strong><br>
+                • Total Days: <strong>${Math.ceil((bounds.end - bounds.start) / (24 * 60 * 60 * 1000))}</strong>
+            `;
+            
+            console.log('📅 Empty timeline bounds:', bounds);
+        }
+        
+        function changeStartYear() {
+            const newYear = prompt('Enter new start year:', TimelineRenderer.config.timelineStartYear);
+            if (newYear && !isNaN(newYear)) {
+                TimelineRenderer.config.timelineStartYear = parseInt(newYear);
+                displayConfig();
+                testTimelineBounds();
+                console.log(`✅ Updated start year to ${newYear}`);
+            }
+        }
+        
+        function renderTestTimeline() {
+            console.log('🎨 Rendering test timeline...');
+            
+            // Clear containers
+            document.getElementById('timeline-dates').innerHTML = '';
+            document.getElementById('timeline-container').innerHTML = '';
+            
+            // Create test bounds
+            const bounds = TimelineRenderer.calculateTimelineBounds([]);
+            
+            // Render headers
+            const headerContainer = document.getElementById('timeline-dates');
+            TimelineRenderer.renderYearHeaders(headerContainer, bounds);
+            TimelineRenderer.renderDateHeaders(headerContainer, bounds);
+            
+            // Render today marker in main container
+            const mainContainer = document.getElementById('timeline-container');
+            TimelineRenderer.renderTodayMarker(mainContainer, bounds);
+            
+            console.log('✅ Test timeline rendered');
+        }
+        
+        // Initialize test
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Initializing timeline start year test...');
+            displayConfig();
+            testEmptyTimelineBounds();
+            
+            // Add test buttons
+            const buttonContainer = document.createElement('div');
+            buttonContainer.innerHTML = `
+                <button onclick="testEmptyTimelineBounds()">📊 Test Empty Timeline</button>
+                <button onclick="testTimelineBounds()">📊 Test With Projects</button>
+            `;
+            document.querySelector('.test-section').appendChild(buttonContainer);
+        });
+    </script>
+</body>
+</html>
