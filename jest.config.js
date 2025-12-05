@@ -10,7 +10,8 @@ module.exports = {
       testMatch: [
         '<rootDir>/tests/integration/ipc/**/*.test.ts', 
         '<rootDir>/tests/integration/**/!(stores)*.test.ts',
-        '<rootDir>/tests/unit/**/*.test.ts'
+        '<rootDir>/tests/unit/**/*.test.ts',
+        '<rootDir>/tests/security/**/*.test.ts'
       ],
       transform: {
         '^.+\\.(ts|tsx)$': ['ts-jest', {

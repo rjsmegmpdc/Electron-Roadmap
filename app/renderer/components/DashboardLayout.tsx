@@ -22,6 +22,13 @@ import { ExportImport } from './ExportImport';
 import { ProjectCoordinatorDashboard } from './ProjectCoordinatorDashboard';
 import { ResourceManagement } from './ResourceManagement';
 
+// Import Coordinator pages
+import { CoordinatorImport } from '../pages/CoordinatorImport';
+import { ResourceCommitment } from '../pages/ResourceCommitment';
+import { ResourceManagementPage } from '../pages/ResourceManagementPage';
+import { VarianceAlerts } from '../pages/VarianceAlerts';
+import { ProjectFinance } from '../pages/ProjectFinance';
+
 // Import Governance pages
 import { GovernanceDashboard } from '../pages/GovernanceDashboard';
 import { GovernanceAnalytics } from '../pages/GovernanceAnalytics';
@@ -805,6 +812,61 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             subtitle="Manage resources, commitments, allocations, and capacity"
           >
             <ResourceManagement />
+          </ContentPane>
+        );
+
+      case 'coordinator-import':
+        return (
+          <ContentPane
+            activeModule={activeModule}
+            title="Import Financial Data"
+            subtitle="Upload SAP timesheets, actuals, and labour rates"
+          >
+            <CoordinatorImport />
+          </ContentPane>
+        );
+
+      case 'coordinator-commitment':
+        return (
+          <ContentPane
+            activeModule={activeModule}
+            title="Resource Commitment Tracker"
+            subtitle="Define resource capacity and availability"
+          >
+            <ResourceCommitment />
+          </ContentPane>
+        );
+
+      case 'coordinator-resources':
+        return (
+          <ContentPane
+            activeModule={activeModule}
+            title="Manage Resources"
+            subtitle="Create, view, edit, and manage all resources"
+          >
+            <ResourceManagementPage />
+          </ContentPane>
+        );
+
+      case 'coordinator-alerts':
+        return (
+          <ContentPane
+            activeModule={activeModule}
+            title="Variance Alerts"
+            subtitle="Monitor and acknowledge project variances"
+          >
+            <VarianceAlerts />
+          </ContentPane>
+        );
+
+      case 'coordinator-finance':
+        return (
+          <ContentPane
+            activeModule={activeModule}
+            title="Project Finance"
+            subtitle="Budget, forecast, and actual costs by workstream"
+          >
+            <ProjectFinance />
           </ContentPane>
         );
 

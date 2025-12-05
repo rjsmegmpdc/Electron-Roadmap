@@ -100,6 +100,9 @@ export interface IpcResponse<T = any> {
 
 // Define the API interface for type safety
 export interface ElectronAPI {
+  // Generic request handler for arbitrary IPC channels
+  request: (channel: string, ...args: any[]) => Promise<any>;
+  
   // Basic functionality
   ping: () => Promise<string>;
   getAppPath: (name: string) => Promise<string>;
@@ -557,6 +560,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     generateComplianceAuditReport: (policyId?: string) => Promise.resolve({ success: false, error: 'Governance module temporarily disabled' }),
     exportReport: (report: any, format: string) => Promise.resolve({ success: false, error: 'Governance module temporarily disabled' })
   },
+
+  // Generic request handler for arbitrary IPC channels (used by new pages)
+  request: (channel: string, ...args: any[]) =>
+    ipcRenderer.invoke(channel, ...args),
 
   // Project Coordinator API
   coordinator: {

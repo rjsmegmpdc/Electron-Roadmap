@@ -36,7 +36,7 @@ describe('ProjectService', () => {
         description: 'A test project for validation',
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active',
+        status: 'in-progress',
         pm_name: 'John Doe',
         budget_nzd: '10,000.50',
         financial_treatment: 'CAPEX'
@@ -52,7 +52,7 @@ describe('ProjectService', () => {
         title: '',
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.validateProject(invalidProject);
@@ -65,7 +65,7 @@ describe('ProjectService', () => {
         title: 'A'.repeat(201),
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.validateProject(invalidProject);
@@ -78,7 +78,7 @@ describe('ProjectService', () => {
         title: 'Test Project',
         start_date: '2025-01-01', // ISO format instead of DD-MM-YYYY
         end_date: '2025/12/31',   // Wrong separator
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.validateProject(invalidProject);
@@ -92,7 +92,7 @@ describe('ProjectService', () => {
         title: 'Test Project',
         start_date: '32-01-2025', // Invalid day
         end_date: '01-13-2025',   // Invalid month
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.validateProject(invalidProject);
@@ -106,7 +106,7 @@ describe('ProjectService', () => {
         title: 'Test Project',
         start_date: '31-12-2025',
         end_date: '01-01-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.validateProject(invalidProject);
@@ -124,7 +124,7 @@ describe('ProjectService', () => {
 
       const result = projectService.validateProject(invalidProject);
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain('Status must be one of: active, completed, on-hold, cancelled');
+      expect(result.errors).toContain('Status must be one of: planned, in-progress, blocked, done, archived');
     });
 
     test('should reject invalid budget format', () => {
@@ -132,7 +132,7 @@ describe('ProjectService', () => {
         title: 'Test Project',
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active',
+        status: 'in-progress',
         budget_nzd: 'invalid-budget'
       };
 
@@ -146,7 +146,7 @@ describe('ProjectService', () => {
         title: 'Test Project',
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active',
+        status: 'in-progress',
         financial_treatment: 'INVALID' as FinancialTreatment
       };
 
@@ -163,7 +163,7 @@ describe('ProjectService', () => {
         lane: 'C'.repeat(101),          // Too long
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.validateProject(invalidProject);
@@ -182,7 +182,7 @@ describe('ProjectService', () => {
         lane: 'Development',
         start_date: '15-01-2025',
         end_date: '15-12-2025',
-        status: 'active',
+        status: 'in-progress',
         pm_name: 'Jane Smith',
         budget_nzd: '25,500.75',
         financial_treatment: 'CAPEX',
@@ -211,7 +211,7 @@ describe('ProjectService', () => {
         title: 'Minimal Project',
         start_date: '01-06-2025',
         end_date: '30-06-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.createProject(projectData);
@@ -238,7 +238,7 @@ describe('ProjectService', () => {
       expect(result.success).toBe(false);
       expect(result.errors).toContain('Project title is required');
       expect(result.errors).toContain('Start date must be in DD-MM-YYYY format');
-      expect(result.errors).toContain('Status must be one of: active, completed, on-hold, cancelled');
+      expect(result.errors).toContain('Status must be one of: planned, in-progress, blocked, done, archived');
     });
 
     test('should handle budget conversion correctly', () => {
@@ -254,7 +254,7 @@ describe('ProjectService', () => {
           title: `Budget Test ${index}`,
           start_date: '01-01-2025',
           end_date: '31-12-2025',
-          status: 'active',
+          status: 'in-progress',
           budget_nzd
         };
 
@@ -274,7 +274,7 @@ describe('ProjectService', () => {
         description: 'For testing retrieval operations',
         start_date: '01-03-2025',
         end_date: '31-08-2025',
-        status: 'active',
+        status: 'in-progress',
         pm_name: 'Test Manager',
         budget_nzd: '15000.00'
       };
@@ -303,7 +303,7 @@ describe('ProjectService', () => {
         title: 'Second Test Project',
         start_date: '01-02-2025',
         end_date: '28-02-2025',
-        status: 'completed'
+        status: 'done'
       };
       projectService.createProject(projectData2);
 
@@ -317,7 +317,7 @@ describe('ProjectService', () => {
 
     test('should retrieve projects by status', () => {
       // Create projects with different statuses
-      const statuses: ProjectStatus[] = ['completed', 'on-hold', 'cancelled'];
+      const statuses: ProjectStatus[] = ['done', 'blocked', 'archived'];
       statuses.forEach((status, index) => {
         const projectData: CreateProjectRequest = {
           title: `Project ${status}`,
@@ -328,13 +328,13 @@ describe('ProjectService', () => {
         projectService.createProject(projectData);
       });
 
-      const activeProjects = projectService.getProjectsByStatus('active');
-      expect(activeProjects).toHaveLength(1);
-      expect(activeProjects[0].status).toBe('active');
+      const inProgressProjects = projectService.getProjectsByStatus('in-progress');
+      expect(inProgressProjects).toHaveLength(1);
+      expect(inProgressProjects[0].status).toBe('in-progress');
 
-      const completedProjects = projectService.getProjectsByStatus('completed');
-      expect(completedProjects).toHaveLength(1);
-      expect(completedProjects[0].status).toBe('completed');
+      const doneProjects = projectService.getProjectsByStatus('done');
+      expect(doneProjects).toHaveLength(1);
+      expect(doneProjects[0].status).toBe('done');
     });
   });
 
@@ -347,7 +347,7 @@ describe('ProjectService', () => {
         description: 'Original description',
         start_date: '01-04-2025',
         end_date: '30-09-2025',
-        status: 'active',
+        status: 'in-progress',
         pm_name: 'Original Manager',
         budget_nzd: '10000.00'
       };
@@ -361,7 +361,7 @@ describe('ProjectService', () => {
         id: testProject.id,
         title: 'Updated Project Title',
         description: 'Updated description',
-        status: 'on-hold',
+        status: 'blocked',
         budget_nzd: '20000.50'
       };
 
@@ -370,7 +370,7 @@ describe('ProjectService', () => {
       expect(result.success).toBe(true);
       expect(result.project!.title).toBe('Updated Project Title');
       expect(result.project!.description).toBe('Updated description');
-      expect(result.project!.status).toBe('on-hold');
+      expect(result.project!.status).toBe('blocked');
       expect(result.project!.budget_cents).toBe(2000050);
       
       // Unchanged fields should remain the same
@@ -383,13 +383,13 @@ describe('ProjectService', () => {
       const originalTitle = testProject.title;
       const updateData: UpdateProjectRequest = {
         id: testProject.id,
-        status: 'completed'
+        status: 'done'
       };
 
       const result = projectService.updateProject(updateData);
       
       expect(result.success).toBe(true);
-      expect(result.project!.status).toBe('completed');
+      expect(result.project!.status).toBe('done');
       expect(result.project!.title).toBe(originalTitle); // Should remain unchanged
     });
 
@@ -446,7 +446,7 @@ describe('ProjectService', () => {
         title: 'Delete Test Project',
         start_date: '01-05-2025',
         end_date: '31-10-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.createProject(projectData);
@@ -479,28 +479,28 @@ describe('ProjectService', () => {
           title: 'Active Project 1',
           start_date: '01-01-2025',
           end_date: '31-03-2025',
-          status: 'active',
+          status: 'in-progress',
           budget_nzd: '10000.00'
         },
         {
           title: 'Active Project 2',
           start_date: '01-02-2025',
           end_date: '30-04-2025',
-          status: 'active',
+          status: 'in-progress',
           budget_nzd: '15000.50'
         },
         {
           title: 'Completed Project',
           start_date: '01-01-2024',
           end_date: '31-12-2024',
-          status: 'completed',
+          status: 'done',
           budget_nzd: '50000.00'
         },
         {
-          title: 'On Hold Project',
+          title: 'Blocked Project',
           start_date: '01-06-2025',
           end_date: '31-08-2025',
-          status: 'on-hold',
+          status: 'blocked',
           budget_nzd: '7500.25'
         }
       ];
@@ -512,10 +512,10 @@ describe('ProjectService', () => {
       const stats = projectService.getProjectStats();
       
       expect(stats.total).toBe(4);
-      expect(stats.by_status.active).toBe(2);
-      expect(stats.by_status.completed).toBe(1);
-      expect(stats.by_status['on-hold']).toBe(1);
-      expect(stats.by_status.cancelled).toBe(0);
+      expect(stats.by_status['in-progress']).toBe(2);
+      expect(stats.by_status.done).toBe(1);
+      expect(stats.by_status.blocked).toBe(1);
+      expect(stats.by_status.archived).toBe(0);
       
       // Total budget: 10000 + 15000.50 + 50000 + 7500.25 = 82500.75 = 8250075 cents
       expect(stats.total_budget_cents).toBe(8250075);
@@ -528,7 +528,7 @@ describe('ProjectService', () => {
         title: 'Leap Year Project',
         start_date: '29-02-2024', // 2024 is a leap year
         end_date: '01-03-2024',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.createProject(projectData);
@@ -540,7 +540,7 @@ describe('ProjectService', () => {
         title: 'Invalid Leap Year Project',
         start_date: '29-02-2025', // 2025 is not a leap year
         end_date: '01-03-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.createProject(projectData);
@@ -553,7 +553,7 @@ describe('ProjectService', () => {
         title: 'Large Budget Project',
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active',
+        status: 'in-progress',
         budget_nzd: '99,999,999.99' // Maximum allowed
       };
 
@@ -570,7 +570,7 @@ describe('ProjectService', () => {
         pm_name: '  ',
         start_date: '01-01-2025',
         end_date: '31-12-2025',
-        status: 'active'
+        status: 'in-progress'
       };
 
       const result = projectService.createProject(projectData);

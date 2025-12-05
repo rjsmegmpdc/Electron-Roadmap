@@ -68,9 +68,39 @@ export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
     
     // Financial Management
     {
+      id: 'coordinator-import',
+      title: 'Import Financial Data',
+      icon: '📥',
+      category: 'finance'
+    },
+    {
+      id: 'coordinator-resources',
+      title: 'Manage Resources',
+      icon: '👨\u200d💼',
+      category: 'finance'
+    },
+    {
+      id: 'coordinator-commitment',
+      title: 'Resource Commitments',
+      icon: '📅',
+      category: 'finance'
+    },
+    {
+      id: 'coordinator-alerts',
+      title: 'Variance Alerts',
+      icon: '⚠️',
+      category: 'finance'
+    },
+    {
+      id: 'coordinator-finance',
+      title: 'Project Finance',
+      icon: '💰',
+      category: 'finance'
+    },
+    {
       id: 'coordinator',
       title: 'Project Coordinator',
-      icon: '💰',
+      icon: '📊',
       category: 'finance'
     },
     {
