@@ -64,6 +64,70 @@ This directory contains historical documentation that is no longer current but p
 
 ---
 
+### `/feature-implementations/`
+**Purpose:** Feature completion documents for various implemented features
+
+**Contents:** 26 feature-specific completion documents including:
+- CSV Templates completion docs
+- Dark Mode implementation
+- Gantt Chart features (fullscreen, keyboard nav, drag scroll)
+- Epic/Feature system docs
+- Calendar & Holiday features
+- Styling and theme implementations
+- Task management guides
+
+**Why Archived:**
+- Features complete and integrated
+- Documentation consolidated into README.md and MODULE-IMPLEMENTATION-STATUS.md
+- Reduced root directory clutter from 49 files to 6 core docs
+
+**Date Archived:** 6 December 2025
+
+**Replacement:** See README.md for current feature documentation
+
+---
+
+### `/implementation-plans/`
+**Purpose:** Implementation plans and technical notes from development
+
+**Contents:** 11 implementation planning documents including:
+- Various IMPLEMENTATION-PLAN versions
+- IMPLEMENTATION-NOTES documents
+- Refactoring plans
+- Epic/Feature config implementation plans
+- Governance implementation plan
+
+**Why Archived:**
+- Implementation complete
+- Plans served their purpose during development
+- Consolidated into ARCHITECTURE.md
+
+**Date Archived:** 6 December 2025
+
+**Replacement:** See ARCHITECTURE.md for current architecture and MODULE-IMPLEMENTATION-STATUS.md for status
+
+---
+
+### `/ado-integration/`
+**Purpose:** Azure DevOps integration assessment and testing documents
+
+**Contents:**
+- `ADO_INTEGRATION_ASSESSMENT.md` - Integration assessment
+- `ADO_INTEGRATION_TESTING.md` - Testing documentation
+- `ADO_OVERLAY_COMPLIANCE_VERIFICATION.md` - Compliance verification
+- `PRD-OLD.md` - Original PRD (JavaScript-era)
+
+**Why Archived:**
+- Assessment/testing complete, ADO integration operational
+- Multiple overlapping documents consolidated
+- Historical reference for integration decisions
+
+**Date Archived:** 6 December 2025
+
+**Replacement:** See docs/COMPLETE-PRD.md for current ADO integration documentation
+
+---
+
 ## When to Archive Documents
 
 Documents should be archived when:
