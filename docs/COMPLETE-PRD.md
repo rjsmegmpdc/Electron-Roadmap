@@ -111,34 +111,37 @@ To create the most comprehensive and user-friendly project management and visual
 
 ### System Architecture
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Frontend Layer                       │
-├─────────────────────────────────────────────────────────┤
-│  React/Vue Components │ Dashboard System │ UI Manager   │
-├─────────────────────────────────────────────────────────┤
-│                  Application Layer                      │
-├─────────────────────────────────────────────────────────┤
-│ Project Manager │ Resource Manager │ Task Manager       │
-│ Analytics Engine │ Chart Engine │ Streaming Manager     │
-├─────────────────────────────────────────────────────────┤
-│                   Service Layer                         │
-├─────────────────────────────────────────────────────────┤
-│ Data Persistence │ Event Bus │ Config Manager          │
-│ Logger │ Error Handler │ Validation System              │
-├─────────────────────────────────────────────────────────┤
-│                   Infrastructure                        │
-├─────────────────────────────────────────────────────────┤
-│ Browser Storage │ WebSocket │ File System │ APIs       │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                    User Interface                            │
+│                   (Electron Window)                          │
+└──────────────────────────────────────────────────────────────┘
+                            ↕ IPC
+┌──────────────────────────────────────────────────────────────┐
+│                  RENDERER PROCESS                            │
+│  React Components │ Pages │ State Management (Zustand)      │
+│         ↕ window.electronAPI (IPC calls)                    │
+└──────────────────────────────────────────────────────────────┘
+                            ↕ IPC
+┌──────────────────────────────────────────────────────────────┐
+│                    MAIN PROCESS                              │
+│  IPC Handlers │ Services │ Repositories                     │
+│         ↕ better-sqlite3                                     │
+│  SQLite Database (roadmap.db)                               │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ### Technology Stack
-- **Frontend**: JavaScript ES2020+, HTML5, CSS3
-- **Visualization**: D3.js, Canvas API, SVG
-- **Storage**: LocalStorage, IndexedDB (future)
-- **Communication**: WebSocket, REST APIs
-- **Testing**: Jest, Integration Testing
-- **Build**: Webpack, Babel (future)
+**Application Type:** Desktop (Electron)
+
+- **Frontend (Renderer)**: React 19.2.0, TypeScript 5.9.3, Vite 7.1.9
+- **Backend (Main)**: Node.js via Electron 38.2.2, TypeScript 5.9.3
+- **Database**: SQLite (better-sqlite3 12.4.1)
+- **State Management**: Zustand 5.0.8 + Direct IPC
+- **Testing**: Jest 30.2.0, Playwright 1.56.0, ts-jest 29.4.5
+- **Build**: TypeScript Compiler (main), Vite (renderer), electron-builder 26.0.12
+- **IPC**: Electron contextBridge with structured request/response pattern
+
+**Note:** This is an Electron desktop application, not a browser-based web app. See ARCHITECTURE.md for complete technical details.
 
 ---
 
@@ -168,9 +171,11 @@ To create the most comprehensive and user-friendly project management and visual
 - **Smart Defaults**: Auto-generated IDs and status initialization
 
 #### 1.3 Data Persistence ✅
-- **LocalStorage Integration**: Automatic data persistence
-- **Error Handling**: Comprehensive error reporting
-- **Data Integrity**: Validation and consistency checks
+- **SQLite Database**: Local file-based database with ACID compliance
+- **Schema Versioning**: Automatic migrations for database schema updates
+- **Error Handling**: Comprehensive error reporting and recovery
+- **Data Integrity**: Foreign key constraints and transaction support
+- **Backup/Restore**: Built-in backup and restore capabilities
 
 ### 2. Resource Management ✅
 
