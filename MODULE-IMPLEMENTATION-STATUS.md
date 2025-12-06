@@ -19,7 +19,7 @@
 | **Audit & Backup** | ✅ Complete | 100% | Audit logging, backup/restore |
 | **Security** | ✅ Complete | 100% | Encryption, token management |
 | **Financial Coordinator** | ✅ Complete | 100% | All 5 phases complete: Import, Resources, Commitments, Alerts, Finance |
-| **Governance** | 🟡 In Progress | 25% | Schema/types done, services pending |
+| **Governance** | ⏸️ Parked | 25% | **PARKED** - Feature parked for future release (Q2 2026) |
 | **Reporting** | 🔴 Not Started | 0% | PDF export, executive summaries |
 
 ---
@@ -261,7 +261,9 @@
 - Total Duration: 4-5 weeks
 - See: FINANCIAL-COORDINATOR-COMPLETE.md for full details
 
-### 11. Governance (25%)
+### 11. Governance ⏸️ **PARKED** (25%)
+
+**STATUS:** Feature development paused - UI shows "Coming Soon" placeholder
 
 **COMPLETED (Phases 1-2):**
 - ✅ Database schema (14 tables, 53 indexes)
@@ -306,7 +308,9 @@
 5. Phase 7: UI development
 6. Phases 8-10: Integration, testing, docs
 
-**Estimated Completion:** 8-10 weeks
+**Status:** ⏸️ PARKED FOR FUTURE RELEASE
+**Estimated Release:** Q2 2026
+**UI State:** Replaced with ComingSoon component showing "Feature Coming Soon"
 
 ---
 
