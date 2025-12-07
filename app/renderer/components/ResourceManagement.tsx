@@ -1,5 +1,6 @@
 // app/renderer/components/ResourceManagement.tsx
 import React, { useState, useEffect } from 'react';
+import { ResourceImportModal } from './ResourceImportModal';
 
 interface Resource {
   id: number;
@@ -81,6 +82,7 @@ export const ResourceManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingAllocation, setEditingAllocation] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<Allocation>>({});
+  const [showImportModal, setShowImportModal] = useState(false);
 
   // Commitment form state
   const [commitmentForm, setCommitmentForm] = useState({
@@ -424,19 +426,39 @@ export const ResourceManagement: React.FC = () => {
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ margin: 0, color: '#2c3e50' }}>Resource List</h3>
-            <input
-              type="text"
-              placeholder="Search resources..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                border: '1px solid #ced4da',
-                borderRadius: '4px',
-                fontSize: '14px',
-                width: '300px'
-              }}
-            />
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <input
+                type="text"
+                placeholder="Search resources..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ced4da',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  width: '300px'
+                }}
+              />
+              <button
+                onClick={() => setShowImportModal(true)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                📥 Import Resources
+              </button>
+            </div>
           </div>
 
           {loading ? (
@@ -1144,16 +1166,53 @@ export const ResourceManagement: React.FC = () => {
                     {cap.status.toUpperCase()}
                   </div>
 
-                  {/* Utilization Bar */}
-                  <div style={{ width: '100%', height: '8px', backgroundColor: '#e9ecef', borderRadius: '4px', overflow: 'hidden' }}>
+                  {/* Utilization Bar with Label */}
+                  <div style={{ 
+                    width: '100%', 
+                    height: '32px', 
+                    backgroundColor: '#e9ecef', 
+                    borderRadius: '4px', 
+                    overflow: 'hidden',
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}>
                     <div
                       style={{
                         height: '100%',
                         width: `${Math.min(cap.utilization_percent, 100)}%`,
                         backgroundColor: cap.utilization_percent < 70 ? '#ffc107' : cap.utilization_percent > 100 ? '#dc3545' : '#28a745',
-                        transition: 'width 0.3s'
+                        transition: 'width 0.3s',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        paddingRight: '8px'
                       }}
-                    />
+                    >
+                      {cap.utilization_percent >= 15 && (
+                        <span style={{
+                          color: 'white',
+                          fontSize: cap.utilization_percent >= 30 ? '13px' : '11px',
+                          fontWeight: '600',
+                          whiteSpace: 'nowrap',
+                          textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+                        }}>
+                          {cap.utilization_percent.toFixed(0)}%
+                        </span>
+                      )}
+                    </div>
+                    {cap.utilization_percent < 15 && (
+                      <span style={{
+                        position: 'absolute',
+                        left: '8px',
+                        color: '#6c757d',
+                        fontSize: '11px',
+                        fontWeight: '600'
+                      }}>
+                        {cap.utilization_percent.toFixed(0)}%
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -1161,6 +1220,16 @@ export const ResourceManagement: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* Resource Import Modal */}
+      <ResourceImportModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImportComplete={() => {
+          loadResources();
+          showMessage('success', 'Resources imported successfully!');
+        }}
+      />
     </div>
   );
 };
