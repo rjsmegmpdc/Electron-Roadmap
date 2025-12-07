@@ -153,6 +153,27 @@ View comprehensive P&L (Profit & Loss) by workstream.
 4. Use month filter to view specific periods
 5. Green = under budget, Red = over budget
 
+#### 6. 📊 Capacity Dashboard
+View resource utilization with intelligent visual indicators.
+
+**Auto-Sizing Bar Labels:**
+- Capacity utilization bars display percentage labels
+- Labels automatically adapt to bar width for optimal readability
+- Wide bars (≥30%): 13px label inside, right-aligned
+- Medium bars (15-30%): 11px label inside, right-aligned
+- Narrow bars (<15%): Label appears outside bar, left-aligned
+- Color coding: Green (70-100% optimal), Yellow (<70% under-utilized), Red (>100% over-committed)
+
+**How to use:**
+1. Navigate to "Resource Management" → "Capacity" tab
+2. View resource cards with utilization bars
+3. Labels show exact percentage at a glance
+4. Hover over cards for detailed capacity information
+
+**Documentation:**
+- [Complete PRD](./docs/features/AUTO-SIZING-BAR-LABELS-PRD.md) - Full technical specification
+- [Implementation Guide](./docs/features/AUTO-SIZING-BAR-LABELS-IMPLEMENTATION-PLAN.md) - Step-by-step for developers
+
 ### Workflow Example
 
 **Complete Financial Tracking Setup:**
